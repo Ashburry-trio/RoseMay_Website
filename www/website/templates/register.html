@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block title %}Register for an account{% endblock %}
+{% block h1 %}Register{% endblock h1 %}
+{% block content %}
+<form action="/register.html" method = "POST">
+    <p>Username <input type = "text" name = "username" /></p>
+    <p>password <input type = "password1" name = "password1" /></p>
+    <p>(confirm) password <input type = "password2" name = "password2" /></p>
+    <p>submit <input type = "submit" value = "Register New" /></p>
+</form>
+
+<h3>Already Have an Account?</h3><br>
+<h3><a href ="{{url_for('auth.login')}}">Login Here</a></h3
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Proxy service coverage{% endblock title %}
+{% block desc %}A list of proxy servers, the mIRC command to use the proxy, and your passcode.{% endblock desc %}
+{% block h1 %}Your Proxy Servers{% endblock h1 %}
+{% block content %}
+<p>
+Below this paragraph is a list of proxy servers you may use with <em>only</em> your <abbr title="Internet Relay Chat">IRC</abbr> clients and your secret username and password.
+It is recommended to use the <abbr title="mg-script">Machine Gun</abbr> <abbr title="mIRC scripting language">mSL script</abbr> with either
+<a href="https://www.mirc.com/get.html" target="_new">mIRC</a> (costs $20) or
+<a href="https://adiirc.com/download.php" target="_new">Adiirc</a> (FREE) <abbr title='IRC'>Internet Relay Chat</abbr> clients.
+</p>
+{% if bnc_list|length == 0 %}
+<h4>No proxies available.</h4>
+{% else %}
+<h4>Available proxy server access</h4>
+{% set count = [0] %}
+{% for host, desc in bnc_list.items() %}
+{% if count.append(count.pop() + 1) %}{% endif %}
+    <p>{% print(count[0]) %}. host: {{ host }}
+        &nbsp; {{ desc }}<br />/proxy -mP-d on {{ host }}&nbsp;
+        {{ session.username }}<a href="/client-name.html" name="_new"><em>@unique-client-name</em></a> {{ passcode }}
+    </p>
+
+{% endfor %}
+{% endif %}
+
+{% endblock content %}

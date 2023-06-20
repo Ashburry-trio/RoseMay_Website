@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}username@Client-Name for proxy server login{% endblock title %}
+{% block desc %}username@Client-Name help with your proxy server login. See more...{% endblock desc %}
+{% block h1 %}username@Client-Name Proxy Log-in Info{% endblock h1 %}
+{% block content %}
+<p>For each individual client process you are running you can give your client a name by appending @&lt;client-name&gt; to your username. You do this for each client not for each clients connection though.</p>
+<p>Since you can make multiple connections to IRC networks with one client you can give that client a name for all those connections. If you execute the client binary
+multiple times, give each process its own name. Do not make the mistake of giving two client processes the same name because this may prevent one client from receiving
+important meta-data about each client. For example, if you turn on <em>irc oper scan</em> for network Undernet, all clients connected to Undernet receive the message that
+irc oper scanning is turned on, not each client connection. Also, when viewing client settings it may be easier to see which clients were affected by their client name instead of by each individual connection.
+The client name is optional, it just organizes multiple connections under one client name. Those without a client name will receive messages in all affected connections
+instead of just the first connection by that client name. To set the client names log-in to the proxy server with your-username@your-clients-name-here for the username.
+For Example, <b>Ashburry@mg-mIRC-one</b> and <b>Ashburry@mg-Adiirc</b> and I can see the client name in the titlebar when connected and the connection is active. You can give your client more than one client name
+by changing the username log-in formation for the next IRC connection. This is not recommended as reconnecting to a irc server will take on a different client name for that connection, which defeats your purpose
+of having multiple client names for a single client. If you are using a terminal client multiple times it is okay to give them all
+the same client name, or no client name. If they all have the same client name only one client will receive messages that affect all or some of the clients.
+Or a client will receive/not receive messages for other clients. In the case of running the same terminal client for multiple
+connections do not use a client name and each connection will receive messages only if they are affected and not receive messages that do not affect that connection.
+You can also name a connection with <b>/msg *mg-script connection-name &lt;named-Irssi-2&gt;</b>.</p>
+{% endblock %}
