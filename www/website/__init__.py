@@ -22,10 +22,24 @@ casino_last_update: list[int] = [0]
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
 
+def checkAlnum(word: str):
+    if not word:
+        return False
+    for L in word:
+        if L.isdigit() or L.isalpha():
+            continue
+        return False
+    return True
+
 def clear_session():
     [session.pop(key) for key in list(session.keys()) if not key.startswith('_')]
 
+
 class BadHash(BaseException):
+    pass
+
+
+class NoSuchUser(BaseException):
     pass
 
 def gph(secret: str):
@@ -56,7 +70,7 @@ def strip_html(msg):
         return ('', True)
     if isinstance(msg, bytes):
         try:
-            msg = msg.decode('utf-8')
+            msg = msg.decode('utf-8', errors='replace')
         except (UnicodeWarning, UnicodeDecodeError, UnicodeError, UnicodeTranslateError):
             return ('', True)
 
@@ -83,6 +97,9 @@ def strip_html(msg):
     msg = msg.replace(':','')
     msg = msg.replace(';','')
     msg = msg.replace('@','')
+    msg = msg.replace('~','')
+    if checkAlnum(msg) == False:
+        return (msg, True)
     if len(msg) < length:
         return (msg, True)
     return (msg, False)
@@ -94,7 +111,7 @@ def user_exists(user: str):
     user_low = strip_html(user_low)
     if user_low[1]:
         return False
-    if isdir('../../website_and_proxy/users/' + user_low[0]):
+    if isdir(path.join(path.expanduser('~'), 'website_and_proxy', 'users' + user_low[0])):
         return True
     return False
 
@@ -104,8 +121,8 @@ def set_paths(username: str):
     del username
     if username_low[1]:
         return
-    user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low[0]}")
-    user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low[0]}", f"{username_low[0]}.ini")
+    user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0])
+    user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0], username_low[0] + ".ini")
 
 def load_casino_user(username: str | None = None):
     username_low: tuple[str, bool]
@@ -167,7 +184,7 @@ def login_user_post(username: str, password: str):
         try:
             ph_hash = checkPassword(users['main']['password'], password)
         except BadHash:
-            flash('Error checking password.')
+            flash('error checking password. try again...')
             return redirect('/login.html')
         if ph_hash:
             session['logged_in'] = 'True'
@@ -176,14 +193,12 @@ def login_user_post(username: str, password: str):
             save_user()
             return redirect('/irc/proxies.html')
         else:
-            flash('Bad password!', category='error')
+            flash('bad password!', category='error')
             return redirect('/login.html')
     except (ValueError, KeyError, FileNotFoundError):
-        flash("Unknown UserName.", category="error")
+        flash("unknown UserName.", category="error")
         return redirect("/login.html")
 
-class NoSuchUser(BaseException):
-    pass
 
 def register_user_post(username: str, passwd1: str, passwd2: str, power = 'normal'):
     password1: str = strip_html(passwd1)
@@ -191,14 +206,11 @@ def register_user_post(username: str, passwd1: str, passwd2: str, power = 'norma
     username: str = strip_html(username)
     if username[1] or password1[1] or password2[1]:
         if username[1]:
-            flash(f'Not a valid UserName {username[0]}.')
+            flash(f'not a valid UserName.')
         if password1[1] or password2[1]:
-            flash('Not a valid Password.')
+            flash('Password must contain alphabetic and numeric characters only.', category='error')
         return redirect('/register.html')
     username_low: str = username[0].lower()
-    if session['logged_in'] == 'True':
-        flash(f"Already logged-in with: {session['username']}", category='error')
-        return redirect('/irc/proxies.html')
     clear_session()
     session['username'] = username[0]
     session['logged_in'] = 'False'

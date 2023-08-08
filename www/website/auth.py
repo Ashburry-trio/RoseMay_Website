@@ -7,7 +7,7 @@ from flask import session
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
 import os
-from . import login_user_post, register_user_post, save_user, load_users_ini
+from . import login_user_post, register_user_post, save_user, load_users_ini, checkAlnum
 
 @auth.route("/proxies/", methods=["POST", "GET"])
 @auth.route("/proxy/", methods=["POST", "GET"])
@@ -26,7 +26,7 @@ def irc_proxies():
             return render_template('proxies.html', bnc_list=proxy_list, passcode=users['main']['password'])
     return render_template('proxy-login.html')
 
-
+passcodes = {}
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
@@ -41,10 +41,10 @@ def login():
         passw = passw.strip()
         if not passw: passw = ''
         if not username: username = ''
-        if not username.isalpha() or not passw.isalpha():
-            flash('You must use alphabetic characters only.', category='error')
-        elif not passw or not username:
+        if not passw or not username:
             flash('UserName or password fields are blank?', category='error')
+        elif not checkAlnum(username) or not checkAlnum(passw):
+            flash("UserName and Password fields must be alphanumeric only.)
         else:
             return login_user_post(username, passw)
     return render_template("login.html")
@@ -72,12 +72,16 @@ def register():
         username: str = request.form.get('username')
         pass1: str = request.form.get('password1')
         pass2: str = request.form.get('password2')
-        if not username.isalpha() or not pass1.isalpha() or not pass2.isalpha():
-            flash('You must use alphabetic characters only.', category='error')
+        baditem: bool = False
+        gooditem = checkAlnum(username)
+        if gooditem == True
+            gooditem = checkAlnum(pass1)
+
+        if gooditem == True:
+            gooditem = checkAlnum(pass2)
+
+        if not gooditem:
+            flash('You must use alphabetic and digit characters only.', category='error')
+            return render_template("register.html")
         else:
             return register_user_post(username, pass1, pass2)
-    return render_template("register.html")
-
-
-
-
