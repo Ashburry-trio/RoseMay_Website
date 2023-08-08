@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template
 
-from flask import request, flash, redirect, url_for
+from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
 
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
-import os
 from . import login_user_post, register_user_post, save_user, load_users_ini, checkAlnum
 
 @auth.route("/proxies/", methods=["POST", "GET"])
@@ -23,7 +22,7 @@ def irc_proxies():
             if not users.has_section('proxy'):
                 users['proxy'] = {}
             proxy_list = users['proxy']
-            return render_template('proxies.html', bnc_list=proxy_list, passcode=users['main']['password'])
+            return render_template('proxies.html', bnc_list=proxy_list, passcode='password')
     return render_template('proxy-login.html')
 
 passcodes = {}
@@ -32,7 +31,7 @@ passcodes = {}
 def login():
     if 'logged_in' in session.keys() and session['logged_in'] == 'True':
         flash(f"Already logged-in with: {session['username']}", category='error')
-        return redirect('/proxies.html')
+        return redirect('/irc/proxies.html')
     if request.method == "POST":
         # record the user name
         username = request.form.get("username")
@@ -44,7 +43,7 @@ def login():
         if not passw or not username:
             flash('UserName or password fields are blank?', category='error')
         elif not checkAlnum(username) or not checkAlnum(passw):
-            flash("UserName and Password fields must be alphanumeric only.)
+            flash("UserName and Password fields must be alphanumeric only.", category='error')
         else:
             return login_user_post(username, passw)
     return render_template("login.html")
@@ -72,14 +71,12 @@ def register():
         username: str = request.form.get('username')
         pass1: str = request.form.get('password1')
         pass2: str = request.form.get('password2')
-        baditem: bool = False
+        gooditem: bool = True
         gooditem = checkAlnum(username)
-        if gooditem == True
+        if gooditem == True:
             gooditem = checkAlnum(pass1)
-
         if gooditem == True:
             gooditem = checkAlnum(pass2)
-
         if not gooditem:
             flash('You must use alphabetic and digit characters only.', category='error')
             return render_template("register.html")

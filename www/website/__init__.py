@@ -8,8 +8,8 @@ from shutil import copytree
 from configparser import ConfigParser
 from os import path, rename
 from os.path import isdir
-import argon2
 import flask_argon2
+
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '../app')
 

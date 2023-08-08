@@ -1,4 +1,0 @@
-How to zip the folders
-
-zip -r msl -u website_and_proxy/* www/* :-x *pycache* .*
-
