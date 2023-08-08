@@ -1,12 +1,15 @@
 {% extends "base.html" %} {% block title %}Login to your account{% endblock %}
 {% block h1 %}Login{%endblock h1 %}
 {% block content %}
+<p>google login, and others; are not possible to use on this site because your password is used within your IRC client, which does not support google
+login for the Proxy/socks4 & 5 server credential(s). these bnc servers use the Proxy http/1.0 protocol compatible with your latest/Any IRC client version.
+Your password/username must be remembered at all times. to view your full login see the <a href="/irc/proxies.html">/proxies.html</a> page; after logging in.</p>
 <form action="" method = "POST">
-    <p>username <input type = 'username' name = "username" /></p>
+    <p>username <input type = "username" name = "username" /></p>
     <p>password <input type = "password" name = "password" /></p>
     <p>submit <input type = "submit" value = "Submit" /></p>
 </form>
 
 <h3>Dont Have an account??</h3>
-<h3><a href = "{{url_for('auth.register') }}">Register Here</a></h3>
+<h2><a href = "{{url_for('auth.register') }}">Register Here</a></h2>
 {% endblock %}

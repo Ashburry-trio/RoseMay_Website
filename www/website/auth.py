@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template
 
-auth = Blueprint("auth", __name__)
-
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import request, flash, redirect, url_for
 #from werkzeug.security import generate_password_hash, check_password_hash
-from flask import redirect, session
-from configparser import ConfigParser
-import os
+from flask import session
+
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
+
+import os
 from . import login_user_post, register_user_post, save_user, load_users_ini
 
 @auth.route("/proxies/", methods=["POST", "GET"])
@@ -73,7 +72,7 @@ def register():
         username: str = request.form.get('username')
         pass1: str = request.form.get('password1')
         pass2: str = request.form.get('password2')
-        if not username.isalpha() or not pass1.isalpha():
+        if not username.isalpha() or not pass1.isalpha() or not pass2.isalpha():
             flash('You must use alphabetic characters only.', category='error')
         else:
             return register_user_post(username, pass1, pass2)

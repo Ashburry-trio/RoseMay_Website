@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% block css %}{% endblock css %}
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -15,8 +16,8 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" type="text/css" href="/static/css/normal_index.css" />
-    <title>{% block title %}Home{% endblock %}</title>
-  <meta name="description" content="{% block desc %}Proxy server, mg-script for mIRC & Adiirc, and XDCC search and copy for your IRC clients. Custom page URLs. Free, open source, zero-bsd.  Find out more...{% endblock desc %}" />
+    <title>{% block title %}Official IRC Proxy and Machine-Gun msl script named Bauderr, web-site with simple Casino and Xdcc-Search{% endblock %}</title>
+  <meta name="description" content="{% block desc %}Proxy server, mg-script for mIRC & Adiirc, XDCC search, Casino. Custom page URLs. Free, open source, zero-bsd. Find out more...{% endblock desc %}" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,6 +41,7 @@
           <a class="nav-item nav-link" id="xdccsearch" href="/search/xdcc.html" title="modern XDCC search engine">xdcc search</a>
           <a class="nav-item nav-link" id="official"
              target="_new" href="/download.html" title="Machine Gun mSL script download">machine-gun</a>
+            <a class="nav-item nav-link" id="casino" href="/casino/games.html">Casino</a>
             {% if session.logged_in == 'True' %}
           <a class="nav-item nav-link" id="logout" href="/logout.html" title="Log-out of this account">logout</a>
           {% else %}

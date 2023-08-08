@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Real Casino, basic games, fair pay-out, also play on IRC{% endblock title %}
+{% block desc %}Ascii-art Casino, basic games, Play on IRC. Find out more...{% endblock desc %}
+{% block content %}
+{% block h1 %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes</a> you can earn!{% endblock h1 %}
+<hr />
+<p><a href="/casino/bank.html">Your Banker</a> - You have <b>{{ cash }}</b> to play-in. Visit <u><strong>18</strong></u> casino pages and unlock <a href="/casino/locked/games.html">these 2 games</a>.</p>
+<center>
+<h1><u>Fox-slots</u></h1>
+<h3><a href="/casino/foxyglove/sexist.html">FoxGlove drive match-up-a <u>slot</u></a></h3><p>(start: $2) - &nbsp;<a href="/casino/rules/matchup.html">how-to win</a></p>
+<h3><a href="/casino/foxglove/dineout.html">FoxGlove <u>dine</u>-out or shud-up</a></h3><p>(start: $1) - &nbsp;<a href="/casino/rules/dineout.html">how-to win</a></p>
+<h1><br /><u>Dice-roll-out</u></h1>
+<h3><a href="/casino/dice/smoke5.html">smoke'n <strong><u>2</u></strong> rolls (singles to 5 dies)</a></h3><p>(start: 5 cents) - &nbsp;<a href="/casino/rules/smoke2rolls.html">how-to win</a></p>
+<h3><a href="/casino/dice/yahtzee.html"><u>yahtzee</u> roll-play</a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/yahtzee.html">how-to win</a></p>
+<h1><br /><u>Cards-compete</u></h1>
+<h3><a href="/casino/cards/21.html">21 + <u>blackjack</u></a></h3><p>(start: 25 cents <b>CLOSED</b>) - &nbsp;<a href="/casino/rules/blackjack.html">how-to win</a></p>
+<h3><a href="/casino/cards/war.html">52 card <u>war</u></a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/war.html">how-to win</a></p>
+<h1><br /><u>Lottos-fair 7/5</u></h1>
+<h3><a href="/casino/lotto/9numbers.html"><strong>9</strong> - <u>number</u></a></h3><p>(start: 20 cents) - &nbsp;<a href="/casino/rules/9numbers.html">how-to win</a></p>
+<h3><a href="/casino/lotto/5numbers.html"><strong><u>5</u></strong> - number</a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/5numbers.html">how-to win</a></p>
+<div><br /></div>
+</center>
+{% endblock content %}
+

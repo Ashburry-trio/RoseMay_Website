@@ -44,3 +44,4 @@ def security():
 @views.route('/download/', methods=['GET'])
 def download_msl():
     return render_template('download.html')
+

@@ -1,4 +1,0 @@
-how to zip this dir:
-
-zip -r wp .
-
