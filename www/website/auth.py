@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, make_response
 
 from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,7 +6,7 @@ from flask import session
 
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
-from . import login_user_post, register_user_post, save_user, load_users_ini, checkAlnum
+from . import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum
 
 @auth.route("/proxies/", methods=["POST", "GET"])
 @auth.route("/proxy/", methods=["POST", "GET"])
@@ -30,23 +30,25 @@ passcodes = {}
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
     if 'logged_in' in session.keys() and session['logged_in'] == 'True':
-        flash(f"Already logged-in with: {session['username']}", category='error')
-        return redirect('/irc/proxies.html')
+        session['logged_in'] = False
+        session['username'] = None
     if request.method == "POST":
         # record the user name
         username = request.form.get("username")
         passw = request.form.get("password")
-        username = username.strip()
-        passw = passw.strip()
         if not passw: passw = ''
         if not username: username = ''
-        if not passw or not username:
+        username = strip_html(username)
+        passw = strip_html(passw)
+        if not passw[0] or not username[0]:
             flash('UserName or password fields are blank?', category='error')
-        elif not checkAlnum(username) or not checkAlnum(passw):
+            return make_response(render_template("login.html"), 401)
+        elif username[1] or passw[1]:
             flash("UserName and Password fields must be alphanumeric only.", category='error')
+            return make_response(render_template("login.html"), 401)
         else:
-            return login_user_post(username, passw)
-    return render_template("login.html")
+            return login_user_post(username[0], passw[0])
+    return make_response(render_template("login.html"), 401)
 
 
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from flask import session, redirect, flash
+from flask import session, redirect, flash, make_response, render_template
 from time import time as timesecs
 from shutil import copytree
 from configparser import ConfigParser
@@ -194,10 +194,10 @@ def login_user_post(username: str, password: str):
             return redirect('/irc/proxies.html')
         else:
             flash('bad password!', category='error')
-            return redirect('/login.html')
+            return make_response(render_template('/login.html'), 401)
     except (ValueError, KeyError, FileNotFoundError):
         flash("unknown UserName.", category="error")
-        return redirect("/login.html")
+        return make_response(render_template("/login.html"), 401)
 
 
 def register_user_post(username: str, passwd1: str, passwd2: str, power = 'normal'):
@@ -267,7 +267,7 @@ def register_user_post(username: str, passwd1: str, passwd2: str, power = 'norma
                     password_secret = gph(password1[0])
                 except BadHash:
                     flash("Invalid Password.", category='error')
-                    return redirect('/register.html')
+                    return make_response(render_template('/register.html'), 401)
                 session['logged_in'] = 'True'
                 session['power'] = power
                 src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
@@ -286,7 +286,7 @@ def register_user_post(username: str, passwd1: str, passwd2: str, power = 'norma
                 return redirect('/irc/proxies.html')
         clear_session()
         session['logged_in'] = 'False'
-        return redirect('/register.html')
+        return make_response(render_template('/register.html'), 401)
 
 
 def save_casino_user(username: str | None = None) -> None:

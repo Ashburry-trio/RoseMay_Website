@@ -30,7 +30,7 @@ app.secret_key = key or "asdf2348adhf234jkhsdf87234jbsvdh1234h2h3jkk5"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 250
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=10)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=10)
 Session(app)
 app.config['TIME_COST'] = 3
 app.config['SALT_LEN'] = 8
