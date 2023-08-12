@@ -2,12 +2,28 @@ from flask import (
     Blueprint, render_template, request, flash, make_response
     )
 from flask import redirect, session
-
+from time import time as secstime
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
+banned = {}
+@views.route('/.well-known/', methods=['GET'])
+def well_known_trap():
+    # 429 = too many requests
+    banned[request.environ['REMOTE_ADDR']] = secstime()
+    return make_response(render_template('banned.html'), 429)
+def check_banned():
+    if request.environ['REMOTE_ADDR'] in banned.keys():
+        if secstime() - banned[request.environ['REMOTE_ADDR']] > 5000:
+            del banned[request.environ['REMOTE_ADDR']]
+            return False
+        else:
+            return True
+    else:
+        return False
 
-@views.route('/', methods=['GET', 'POST'])
+@views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET', 'POST'])
 def index_home():
+    check_banned()
     return render_template('index.html')
 
 

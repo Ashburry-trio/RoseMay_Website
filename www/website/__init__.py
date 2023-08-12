@@ -45,15 +45,13 @@ class NoSuchUser(BaseException):
 def gph(secret: str):
     try:
         return flask_argon2.generate_password_hash(secret)
-    except:
+    except BaseException:
         raise BadHash
 
 def checkPassword(hash, secret):
-    if not users:
-        return False
     try:
         verify = flask_argon2.check_password_hash(hash, secret)
-    except:
+    except BaseException:
         raise BadHash
     return verify
 
@@ -139,7 +137,6 @@ def load_casino_user(username: str | None = None):
     casino_user.read(casino_file_name)
     return casino_user
 
-from time import time as timesecs
 
 def load_casino_app():
     casino_app.read(casino_file)
@@ -178,38 +175,38 @@ def login_user_post(username: str, password: str):
             flash("Not a valid UserName or Password.")
             return redirect('/login.html')
         username_low: str = username[0].lower()
-        password = password[0]
         load_users_ini(username_low)
         session['logged_in'] = 'False'
         try:
-            ph_hash = checkPassword(users['main']['password'], password)
+            ph_hash = checkPassword(users['main']['password'], password[0])
         except BadHash:
             flash('error checking password. try again...')
-            return redirect('/login.html')
+            return make_response(redirect('/login.html'), 401)
         if ph_hash:
             session['logged_in'] = 'True'
-            session['username'] = users['main']['username']
-            session['power'] = users['main']['power'] or 'normal'
+            session['username'] = str(users['main']['username'])
+            session['password'] = str(users['main']['password'])
+            session['power'] = str(users['main']['power']) or 'normal'
             save_user()
+            flash(f'you have logged-in with {username[0]} : {password[0]}', category='success')
             return redirect('/irc/proxies.html')
         else:
-            flash('bad password!', category='error')
-            return make_response(render_template('/login.html'), 401)
+            flash(f'bad password! {password[0]}', category='error')
+            return make_response(render_template('login.html'), 401)
     except (ValueError, KeyError, FileNotFoundError):
         flash("unknown UserName.", category="error")
-        return make_response(render_template("/login.html"), 401)
+        return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd1: str, passwd2: str, power = 'normal'):
-    password1: str = strip_html(passwd1)
-    password2: str = strip_html(passwd2)
-    username: str = strip_html(username)
-    if username[1] or password1[1] or password2[1]:
+def register_user_post(username: str, passwd: str, power = 'normal'):
+    password: list[str, bool] = strip_html(passwd)
+    username: list[str, bool] = strip_html(username)
+    if username[1] or password[1]:
         if username[1]:
-            flash(f'not a valid UserName.')
-        if password1[1] or password2[1]:
-            flash('Password must contain alphabetic and numeric characters only.', category='error')
-        return redirect('/register.html')
+            flash('not a valid UserName, it must be alphabetic and digits only.')
+        if password[1]:
+            flash('Password MUST contain alphabetic and digit characters only.', category='error')
+        return render_template('register.html')
     username_low: str = username[0].lower()
     clear_session()
     session['username'] = username[0]
@@ -221,53 +218,46 @@ def register_user_post(username: str, passwd1: str, passwd2: str, power = 'norma
         if not users.has_section('main'):
             raise NoSuchUser
         try:
-            ph_hash = checkPassword(users['main']['password'], password1[0])
+            ph_hash = checkPassword(users['main']['password'], password[0])
         except BadHash:
-            flash('Error checking password', category='error')
-            return redirect('/register.html')
+            flash('error checking password. try a different password.', category='error')
+            return make_response(render_template('register.html'), 401)
         if ph_hash:
             session['password'] = users['main']['password']
-            session['username'] = users['main']['username']
+            session['username'] = username[0]
             session['logged_in'] = 'True'
             save_user()
-            flash(f"You just logged-in with: {session['username']} : {password}", category='error')
-            return redirect('/irc/proxies.html')
+            flash(f"you just logged-in with {username[0]} : {password[0]}", category='success')
+            return make_response(redirect('/irc/proxies.html'), 307)
         else:
             flash('UserName is taken, try again or try to log-in...', category='error')
             clear_session()
             session['logged_in'] = 'False'
-            return redirect('/register.html')
-    except (KeyError, ValueError, FileNotFoundError, BadHash, NoSuchUser):
-        username = username[0]
-        if not username:
-            flash("Missing UserName in form.", category='error')
-        if '.' in username or ':' in username or '@' in username or ';' in username:
-            flash("The period or dot (.) the full/semi-colons (: ;) nor the at-sign (@) MAY NOT be in UserName. They are reserved.", category="error")
-        if users.has_section(username):
-            flash('UserName already exists.', category='error')
-        elif 'admin' in username:
-            flash("UserName MUST NOT contain the word 'Admin'", category='error')
-        elif username  == 'username':
-            flash("Bad choice of UserName", category='error')
-        elif len(username) < 5 or len(username) > 15:
+            return render_template('register.html')
+    except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
+        if not username_low:
+            flash("i am missing the UserName to create.", category='error')
+        elif 'admin' in username_low:
+            flash("UserName MUST NOT contain the word 'Admin'.", category='error')
+        elif username_low  == 'username':
+            flash("bad choice of UserName!", category='error')
+        elif len(username_low) < 5 or len(username_low) > 15:
             flash("UserName MUST NOT have more than 15 nor less-than 5 characters.", category="error")
-            return redirect('/register.html')
-        elif len(password1[0]) < 5:
-            flash('Password must be at least 5 characters.', category='error')
-        elif len(password1[0]) > 15:
-            flash('Password must be, at most, 15 characters.', category='error')
-        elif not password1[0] or not password2[0]:
-            flash("You missed one of the password entry fields.", category='error')
-        elif password1[0] != password2[0]:
-            flash('Passwords don\'t match.', category='error')
+            return make_template('register.html')
+        elif not password[0]:
+            flash("you MUST enter a Password you can remember.", category='error')
+        elif len(password[0]) < 5:
+            flash('Password must be at-least 5 characters.', category='error')
+        elif len(password[0]) > 15:
+            flash('Password must be, at-most, 15 characters.', category='error')
         else:
             try:
-                session["username"] = username
+                session["username"] = username[0]
                 try:
-                    password_secret = gph(password1[0])
+                    password_secret = gph(password[0])
                 except BadHash:
-                    flash("Invalid Password.", category='error')
-                    return make_response(render_template('/register.html'), 401)
+                    flash("invalid Password.", category='error')
+                    return make_response(render_template('register.html'), 401)
                 session['logged_in'] = 'True'
                 session['power'] = power
                 src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
@@ -278,15 +268,13 @@ def register_user_post(username: str, passwd1: str, passwd2: str, power = 'norma
                 load_users_ini(username_low)
                 session['password'] = password_secret
                 save_user()
-                flash(f"UserName {username} was created...")
-                return redirect('/proxies.html')
+                flash(f"UserName {username[0]} was created with password {password[0]}...")
+                return make_response(redirect('/irc/proxies.html'), 307)
             except (FileExistsError,):
-                load_users_ini(username_low)
-                save_user()
-                return redirect('/irc/proxies.html')
+                pass
         clear_session()
         session['logged_in'] = 'False'
-        return make_response(render_template('/register.html'), 401)
+        return make_response(render_template('register.html'), 401)
 
 
 def save_casino_user(username: str | None = None) -> None:
@@ -320,8 +308,6 @@ def save_user() -> None:
         for opt, val in session.items():
             opt = str(opt)
             val = str(val)
-            opt = (opt)[0]
-            val = val
             if opt and val and not opt.startswith('_'):
                 opt = opt.lower()
                 users['main'][opt] = val

@@ -47,19 +47,34 @@ def casino_home():
     update_today()
     load_stash()
     casino_user = load_casino_user()
-    cash = '$' + str(casino_user['main']['cash-in']) + ' CAD'
+    if casino_user == False:
+        cash = 'to Log-in'
+    else:
+        cash = '$' + str(casino_user['main']['cash-in']) + ' CAD'
     return render_template('/casino/index.html', stash=stash[1], cash=cash)
 
+@casino.route('/casino/prizes.html', methods=['GET'])
+@casino.route('/casino/prizes/', methods=['GET'])
+@casino.route('/casino/prizes/index.html', methods=['GET'])
+def peak_prizes():
+    try:
+        load_stash()
+        update_today()
+        return render_template('/casino/prizes.html', stash=stash[1])
+    except BaseException:
+        return
 
-@casino.route('/casino/locked/games.html', methods=['GET', 'POST'])
+@casino.route('/casino/locked/index.html', methods=['GET'])
+@casino.route('/casino/locked/', methods=['GET'])
+@casino.route('/casino/locked/games.html', methods=['GET'])
 def locked_games():
     try:
         load_stash()
         update_today()
         if 'username' in session.keys():
             casino_user = load_casino_user()
-            pages = 18 - int(casino_user['main']['pages-visted'])
-            if casino_user['main']['visited-18-pages'] == 'no':
+            pages = 9 - int(casino_user['main']['pages-visted'])
+            if casino_user['main']['visited-9-pages'] != 'yes':
                 return render_template('/casino/locked.html', stash=stash[1], pages_count=pages)
             else:
                 return render_template('/casino/unlocked.html', stash=stash[1])

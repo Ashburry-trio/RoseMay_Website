@@ -20,9 +20,9 @@ def update_today():
     casino_user = load_casino_user()
     if not casino_user:
         return
-    if casino_user['main']['visited-18-pages'] == 'no':
+    if casino_user['main']['visited-9-pages'] == 'no':
         return
-    str_year = casino_user['main']['visited-18-pages']
+    str_year = casino_user['main']['visited-9-pages']
     if this_year - str_year > 0:
-        casino_user['main']['visited-18-pages'] = 'no'
+        casino_user['main']['visited-9-pages'] = 'no'
         save_casino_user()

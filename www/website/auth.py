@@ -3,10 +3,26 @@ from flask import Blueprint, render_template, make_response
 from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
-
+from os import path
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
 from . import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum
+
+@auth.route("/irc/script.html", methods=["POST", "GET"])
+@auth.route("/irc/scripts.html", methods=["POST", "GET"])
+@auth.route("/script/", methods=["POST", "GET"])
+@auth.route("/scripts/", methods=["POST", "GET"])
+@auth.route("/script.html", methods=["POST", "GET"])
+@auth.route("/scripts.html", methods=["POST", "GET"])
+def proxy_scripts():
+    if 'logged_in' in session.keys():
+        if session['logged_in'] != 'True':
+            return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
+        else:
+            return render_template(path.join('scripts', 'scripts.html'))
+    else:
+        return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
+
 
 @auth.route("/proxies/", methods=["POST", "GET"])
 @auth.route("/proxy/", methods=["POST", "GET"])
@@ -15,7 +31,7 @@ from . import login_user_post, register_user_post, save_user, load_users_ini, st
 @auth.route("/proxy.html", methods=["POST", "GET"])
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
-    if 'logged_in' in session:
+    if 'logged_in' in session.keys():
         if session['logged_in'] == 'True':
             proxy_list: dict[str | None, str | None]
             users = load_users_ini(session['username'])
@@ -55,32 +71,30 @@ def login():
 @auth.route('/logout/')
 @auth.route('/logout.html')
 def logout():
-    if 'logged_in' in session.keys() and session['logged_in'] != 'True':
+    if ('logged_in' in session.keys() and session['logged_in'] != 'True') or 'logged_in' not in session.keys():
         flash("You ARE NOT logged-in.", category='error')
     else:
-        flash("You have logged-out successfully!", category='success')
+        flash("You have signed-out successfully!", category='success')
     session['logged_in'] = 'False'
     if 'username' in session.keys():
         save_user()
-    return redirect('/index.html')
+    return make_response(redirect('/index.html'), 307)
 
-
+@auth.route('/register/index.html', methods=['GET', 'POST'])
 @auth.route('/register/', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         session['logged_in'] = 'False'
         username: str = request.form.get('username')
-        pass1: str = request.form.get('password1')
-        pass2: str = request.form.get('password2')
+        passwd: str = request.form.get('password')
         gooditem: bool = True
         gooditem = checkAlnum(username)
         if gooditem == True:
-            gooditem = checkAlnum(pass1)
-        if gooditem == True:
-            gooditem = checkAlnum(pass2)
+            gooditem = checkAlnum(passwd)
         if not gooditem:
-            flash('You must use alphabetic and digit characters only.', category='error')
+            flash('you must use alphabetic and digit characters only.', category='error')
             return render_template("register.html")
         else:
-            return register_user_post(username, pass1, pass2)
+            return register_user_post(username, passwd)
+    return render_template("register.html")

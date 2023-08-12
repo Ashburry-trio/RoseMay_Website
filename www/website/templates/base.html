@@ -33,9 +33,9 @@
         <div class="navbar-nav">
          <a class="nav-item nav-link" id="home" href="/index.html" title="to the home page on this server">home</a>
           <a class="nav-item nav-link" id="proxies" href="/irc/proxies.html" title="list of available proxy servers">proxies</a>
-          <a class="nav-item nav-link" id="settings" href="/admin/bnc-settings.html" title="settings for bounce servers">settings</a>
+          <a class="nav-item nav-link" id="settings" href="/user/userpage.html" title="your own personal account-holder pages">user page</a>
             {% if session.logged_in == 'True' %}
-            {% if session.type_of_acc == 'admin' %}
+            {% if session.power == 'admin' %}
             <a class="nav-item nav-link" id="admin" href="/admin/admin-settings.html" title="Administrators only">admin</a>
           {% endif %}{% endif %}
           <a class="nav-item nav-link" id="xdccsearch" href="/search/xdcc.html" title="modern XDCC search engine">xdcc search</a>
@@ -86,5 +86,7 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+
   </body>
 </html>
