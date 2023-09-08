@@ -8,6 +8,7 @@ auth = Blueprint('auth', __name__, template_folder='templates', static_folder='s
 
 from . import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum
 
+
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
 @auth.route("/script/", methods=["POST", "GET"])

@@ -39,7 +39,6 @@ def apply_stash(amount: str):
     stash[0] = '$' + str(stash[1]) + ' CAD'
 
 @casino.route('/casino/', methods=['GET', 'POST'])
-@casino.route('/casino.html', methods=['GET', 'POST'])
 @casino.route('/casino/index.html', methods=['GET', 'POST'])
 @casino.route('/casino/casino.html', methods=['GET', 'POST'])
 @casino.route('/casino/games.html', methods=['GET', 'POST'])

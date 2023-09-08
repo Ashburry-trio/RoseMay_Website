@@ -188,7 +188,7 @@ def login_user_post(username: str, password: str):
             session['password'] = str(users['main']['password'])
             session['power'] = str(users['main']['power']) or 'normal'
             save_user()
-            flash(f'you have logged-in with {username[0]} : {password[0]}', category='success')
+            flash(f'you have logged-in with {username[0]} : {password[0]}', category='error')
             return redirect('/irc/proxies.html')
         else:
             flash(f'bad password! {password[0]}', category='error')

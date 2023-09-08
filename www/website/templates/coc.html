@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
-{% block title %}Code of Conduct - You agree to this coc if you use these applications, website and website links{% endblock title %}
-{% block h1 %}Code of Conduct{% endblock h1 %}
+{% extends 'base2.html' %}
+{% block title %}Code of Conduct - you agree to this code if you use these applications, website and website links{% endblock title %}
+{% block h1 %}code of conduct{% endblock h1 %}
 {% block content %}
 <pre>
 Ashburry's words first:
@@ -9,9 +9,11 @@ I ask everyone to follow this code of conduct's acceptable beviour policy, typed
 you to read. I also ask before reading this plain Code of Conduct to read this short page about
 <a href="http://www.shakesville.com/2011/12/harmful-communication-part-one-intent.html">harmful communication</a> and
 before reading that read this page about <a href="https://blog.aurynn.com/2015/12/16-contempt-culture">contempt culture</a>
-with fine examples of programming languages. I hope nobody feels I worngly chose Python3 to program my web-server and proxy-server,
-if so, you need to read contempt culture. Because Python3 rocks, although I am missing the shell coding for linux to set-up a venv,
-and to open the venv before running the code. Thankfully there is no PIP installation that would probably most likely break your linux OS.
+with fine examples of programming languages. I hope nobody feels i wrongly chose Python3 to program my web-server and proxy-server,
+if so, you need to read contempt culture. Because Python3 rocks, although i am missing the shell coding for linux to set-up a venv,
+and to <em>activate</em> the venv then run the <em>trio-ircproxy.py</em> code. if you use Linux please create a venv via
+<b>python3 -m venv ./trio-ircproxy/venv</b> and activate the venv and then run <b>python ./trio-ircproxy/trio-ircproxy.py</b>
+to start the app. soon you won't have to worry about creating your own proxy-server because i will have them hosted on a remote VPS.
 Anyway, off-topic, please read those two links.
 
 Contributor Covenant Code of Conduct
@@ -95,11 +97,12 @@ o  Consequence: A permanent ban from any sort of public interaction within the c
 
 Attribution
 This Code of Conduct is adapted from the Contributor Covenant, version 2.0, available
-at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
+at: https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
 Community Impact Guidelines were inspired by Mozilla's code of conduct enforcement ladder.
-For answers to common questions about this code of conduct, see the FAQ at
+For answers to common questions about this code of conduct, see the FAQ at:
 https://www.contributor-covenant.org/faq.
-Translations are available at <a href="https://www.contributor-covenant.org/translations">https://www.contributor-covenant.org/translations</a>.
+Translations are available at: https://www.contributor-covenant.org/translations
+
+o end of document.
 </pre>
-<ul><li>end of document.</li></ul>
 {% endblock content %}
