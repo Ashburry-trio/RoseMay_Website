@@ -809,9 +809,9 @@ pre[data-line] {
 	background: -webkit-linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 	background: -o-linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 	background: linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
-	
+
 	pointer-events: none;
-	
+
 	line-height: inherit;
 	white-space: pre;
 }
@@ -833,7 +833,7 @@ pre[data-line] {
 		text-shadow: none;
 		box-shadow: 0 1px white;
 	}
-	
+
 	.line-highlight[data-end]:after {
 		content: attr(data-end);
 		top: auto;
@@ -884,11 +884,12 @@ pre.line-numbers > code {
 }
 </style>
 {% endblock head %}
+{% block h1 %}Security Policy.md{% endblock h1 %}
 {% block content %}
-<body><div class='markdown-body'><h1><a name="security-policy" class="anchor" aria-hidden="true" href="#security-policy"><span class="octicon octicon-link"></span></a>Security Policy</h1><h2><a name="supported-versions" class="anchor" aria-hidden="true" href="#supported-versions"><span class="octicon octicon-link"></span></a>Supported Versions</h2><p>Right now there is no released versions, however if you find
-a security vulnerability then it will be assumed to be 
+<h2><a name="supported-versions" class="anchor" aria-hidden="true" href="#supported-versions"><span class="octicon octicon-link"></span></a>Supported Versions</h2><p>Right now there is no released versions, however if you find
+a security vulnerability then it will be assumed to be
 in either mIRC Script (Machine Gun script named Bauderr) or proxy-server
-(Trio-ircproxy) or web-server (named RoseMay) all under one version (11.01.15)</p>
+(Trio-ircproxy.py) or web-server (named RoseMay) all under one version (PEACE)</p>
 <table>
 <thead>
 <tr>
@@ -898,12 +899,12 @@ in either mIRC Script (Machine Gun script named Bauderr) or proxy-server
 </thead>
 <tbody>
 <tr>
-<td>11.01.15</td>
+<td>PEACE</td>
 <td>:white_check_mark:</td>
 </tr>
 <tr>
-<td>&gt;= 11.01.19</td>
-<td>:x:</td>
+<td>&gt;= OTHERS</td>
+<td>&nbsp; &nbsp; :x:</td>
 </tr>
 </tbody>
 </table>
@@ -915,15 +916,16 @@ in the channel.</p>
 <p>If your reported vulnerability is received I will create an Issue at
 <a href="https://github.com/ashburry-chat-irc/trio-ircproxy/issues">https://github.com/ashburry-chat-irc/trio-ircproxy/issues</a> as soon as
 it is received. This new Issue should be created within 24hrs of the
-report. If you leave an <strong><em>email address</em></strong> or contact <strong><em>nickname</em></strong> on <strong><em>IRC</em></strong>\
+report. If you leave an <strong><em>email address</em></strong> or contact <strong><em>nickname</em></strong> on <strong><em>IRC</em></strong>
 I will message you back with a statement stating the vulnerability has
 been reported successfully, and is being investiaged, and will be fixed in
 the next version (and maybe not fixed).</p>
 <p>Vulnerabilities in the irc clients mIRC and Adiirc can also be protected against
-maliicious messages by filtering incomming messages from the irc-server to the 
+maliicious messages by filtering incomming messages from the irc-server to the
 proxy-server (filter here) to the irc-client. One exploit is being protected against
 by filtering binary data in the irc-protocol text (not the message-text).</p>
-<ul>
-<li>end of document.</li>
-</ul></div>
+<p>
+o &nbsp; end of document.
+</p>
+</div>
 {% endblock content %}

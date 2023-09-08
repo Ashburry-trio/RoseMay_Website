@@ -10,15 +10,51 @@ def well_known_trap():
     # 429 = too many requests
     banned[request.environ['REMOTE_ADDR']] = secstime()
     return make_response(render_template('banned.html'), 429)
+
 def check_banned():
+    baned_for: float
+    banned[request.environ['REMOTE_ADDR']] = 3000
     if request.environ['REMOTE_ADDR'] in banned.keys():
-        if secstime() - banned[request.environ['REMOTE_ADDR']] > 5000:
+        banned_for = secstime() - banned[request.environ['REMOTE_ADDR']]
+        if banned_for > 5000:
             del banned[request.environ['REMOTE_ADDR']]
             return False
         else:
-            return True
+            return(False)
     else:
         return False
+
+@views.route('/test2.html', methods=['GET'])
+def test2():
+    return render_template('test2.html')
+
+@views.route('/navbar.html', methods=['GET'])
+def navbar():
+    return render_template('navbar.html')
+
+@views.route('/base2.html', methods=['GET'])
+def base2():
+    return render_template('base2.html')
+
+@views.route('/static/css/normal_index.css', methods=['GET'])
+def cs_norm():
+    return render_template('/static/ccs/xdcc-search.html')
+
+@views.route('/search/xdcc.html', methods=['GET'])
+@views.route('/search/xdcc/', methods=['GET'])
+@views.route('/search/', methods=['GET'])
+def xdcc_search():
+    return render_template('xdcc-search.html')
+
+
+
+@views.route('/hosted.html', methods=['GET'])
+@views.route('/hosted/', methods=['GET'])
+def hosted_info():
+    if (check_banned()):
+        return render_template('banned.tzt',)
+    else:
+        return render_template('hosted.html')
 
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET', 'POST'])

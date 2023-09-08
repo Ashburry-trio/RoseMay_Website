@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Already logged-out session{% endblock title %}
-{% block h1 %}Already Logged-Out{% endblock h1 %}
+{% block title %}already signed-out session{% endblock title %}
+{% block h1 %}already signed-out{% endblock h1 %}
 {% block content %}
 <p>
-    You are not logged in as an authenticated user. Please <a href="/admin/login.htm">log-in</a>
-    or <a href="/admin/signup.htm">sign-up</a>. If you forgot your password try the
+    you are not signed-in as an authenticated user. <a href="/admin/login.htm">please sign-in</a>
+    or <a href="/register.htm">create an account</a>. if you forgot your password try the
     <a href="/admin/password-reset.htm">password reset page</a>.
 </p>
 {% endblock content %}

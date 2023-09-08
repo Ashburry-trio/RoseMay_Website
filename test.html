@@ -1,0 +1,166 @@
+
+<html>
+<head>
+<style>
+<style>
+/* Use CSS to style the body element */
+body {
+  /* start of background */
+  /* Use the background-image property to set the image as the background */
+  background-image: url("static/background.jpg");
+
+  /* Use the background-size property to cover the entire element with the image */
+  background-size: cover;
+
+  /* Use the background-position property to center the image */
+  background-position: center;
+
+  /* Use the background-repeat property to prevent the image from repeating */
+  background-repeat: no-repeat;
+}
+  /* End of background */
+/* Basic styles for the navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  height: 60px;
+}
+
+/* Style the image as the toggle button */
+.navbar img {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  margin-left: 10px;
+}
+
+/* Rotate the image when it is clicked */
+.navbar img.active {
+  transform: rotate(180deg);
+}
+
+/* Style the menu items as a list */
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style each menu item as a link */
+.navbar ul li a {
+  display: block;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+/* Hide the menu items by default */
+.navbar ul {
+  display: none;
+}
+
+/* Show the menu items when the image is clicked */
+.navbar img.active + ul {
+  display: block;
+}
+
+/* Slide down the menu items with a transition */
+.navbar ul {
+  transition: max-height 0.5s ease-in-out;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.navbar img.active + ul {
+  max-height: 300px; /* adjust this value according to the number of links */
+}
+
+/* Use media queries to change the layout on larger screens */
+@media (min-width: 768px) {
+
+  /* Show the menu items by default on larger screens */
+  .navbar ul {
+    display: flex; /* use flexbox for horizontal alignment */
+    max-height: none; /* remove the max-height restriction */
+    transition: none; /* remove the transition effect */
+    margin-left: auto; /* align the links to the right */
+    margin-right: 10px; /* add some space to the right */
+    height: inherit; /* make sure the links have the same height as the navbar */
+    align-items: center; /* center the links vertically */
+
+    /* Add some space between each link */
+    .navbar ul li + li {
+      margin-left: 10px;
+    }
+
+    /* Remove any padding from each link */
+    .navbar ul li a {
+      padding: 0;
+    }
+
+    /* Add some padding to each link on hover */
+    .navbar ul li a:hover {
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: #555; /* add some color on hover */
+    }
+
+    /* Add some border-radius to each link on hover */
+    .navbar ul li a:hover {
+      border-radius: 10px; /* add some rounded corners on hover */
+    }
+
+    /* Add some box-shadow to each link on hover */
+    .navbar ul li a:hover {
+      box-shadow: inset -2px -2px #111, inset -2px -2px #111, inset -2px -2px #111, inset -2px -2px #111; /* add some shadow on hover */
+    }
+
+    /* Add some text-shadow to each link on hover */
+    .navbar ul li a:hover {
+      text-shadow: -1px -1px #111, -1px -1px #111, -1px -1px #111, -1px -1px #111; /* add some shadow on hover */
+    }
+
+    /* Add some transition effect to each link on hover */
+    .navbar ul li a:hover {
+      transition: all 0.3s ease-in-out; /* add some smoothness on hover */
+    }
+  }
+
+  /* Hide the image on larger screens */
+  .navbar img {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="navbar">
+
+  <!-- The image that acts as a toggle button -->
+  <img src="image.png" alt="Toggle menu" id="navbar-toggle">
+
+  <!-- The menu items -->
+  <ul id="navbar-menu">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</div>
+
+<script>
+// Get the image and the menu elements
+var navbarToggle = document.getElementById("navbar-toggle");
+var navbarMenu = document.getElementById("navbar-menu");
+
+// Add a click event listener to the image
+navbarToggle.addEventListener("click", function() {
+
+  // Toggle the active class on the image
+  navbarToggle.classList.toggle("active");
+
+});
+</script>
+</body>
+</html>

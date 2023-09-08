@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Real Casino, basic games, fair pay-out, also play on IRC{% endblock title %}
-{% block desc %}Ascii-art Casino, basic games, Play on IRC. Find out more...{% endblock desc %}
+{% block title %}real casino, basic games, fair pay-out, also play on IRC{% endblock title %}
+{% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
+{% block h1 %}secret games{% endblock h1 %}
 {% block content %}
-{% block h1 %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes</a> you can earn!{% endblock h1 %}
+<p>House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes</a> you can earn!</p>
 <hr />
-<p>The games on this page are locked until you visit at-least 9 casino pages. The hidden games have a "number 18 theme" to them. View some more, unique pages,
+<p>the games on this page are locked until you visit at-least 9 casino pages. the hidden games have a "number 18 theme" to them. view some more, unique pages,
 and the games will be unlocked, right here, until January First next year.</p>
 <p>Unique pages remaining to view: {{ pages_count }}</p>
 {% endblock content %}

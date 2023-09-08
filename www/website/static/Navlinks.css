@@ -1,0 +1,55 @@
+   /* Add styles for navigation links */
+/* Add styles for navigation links */
+#nav-links {
+  background-color: #333;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* make the background extend all the way across the top of the screen */
+}
+
+      #nav-links a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+      #nav-links a:hover {
+        background-color: #111;
+      }
+
+      /* Add styles for small screens */
+ @media screen and (max-width: 600px) {
+  #nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+  }
+
+  #dropdown-button {
+    display: block;
+    background-color: #333; /* blackish background */
+    color: white; /* white text */
+    border: none;
+    font-size: 24px;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+}
+
+      /* Add styles for large screens */
+      @media screen and (min-width: 600px) {
+        #nav-links {
+          display: flex;
+          position: static;
+          background-color: #333333; /* greyish black */
+          color: white; /* white text */
+        }
+
+        #dropdown-button {
+          display: none;
+        }
+      }
