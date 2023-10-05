@@ -40,14 +40,13 @@
 {% block desc %}A list of proxy servers, the mIRC/Adiirc command to use the proxy, and your passcode.{% endblock desc %}
 {% block h1 %}Your Proxy-Servers{% endblock h1 %}
 {% block content %}
-<p>Below this paragraph is a list of proxy-servers you may use with <em>only</em> your <abbr title="Internet Relay Chat">IRC</abbr> clients with your secret username and password.
-It is recommended to use the <abbr title="mg-script">Machine-Gun</abbr> <abbr title="mIRC scripting language">mSL script</abbr> with either
-<a href="https://www.mirc.com/get.html" target="_blank">mIRC</a> (costs $20) or
-<a href="https://adiirc.com/download.php" target="_blank">Adiirc</a> (FREE) <abbr title='IRC'>Internet Relay Chat</abbr> clients.
-However, you do not need to use any special script nor IRC client to take advantage of all the features there are to offer by the
-proxy-servers alone. This proxy-service is similar to <a href="https://wiki.znc.in/ZNC">ZNC bounce-service</a>, found on many IRC-networks for free.</p>
-<p>
-<hr />
+<p>Use the provided proxy servers with your secret username and password on your <abbr title='Internet Relay Chat'>IRC</abbr> clients.
+While the Machine-Gun <abbr title="m-I-R-C scripting language">mSL script</abbr> is suggested with
+<a href="https://www.mirc.com/get.html" target="_blank" title="link to mIRC.com web-site">mIRC</a> ($20) or
+<a href="https://adiirc.com/download.php" target="_blank" title="link to A.d.i.i.r.c.com website">Adiirc</a>
+(FREE), you can access all proxy-server features without any specific script or client. This service is comparable to the free
+<a href="https://wiki.znc.in/ZNC">ZNC bounce-service</a> found on numerous <abbr title='Internet Relay Chat'>IRC</abbr> networks.</p>
+<p><hr />
 {% if bnc_list|length == 0 %}
 <h4>No proxies available.</h4>
 {% else %}
