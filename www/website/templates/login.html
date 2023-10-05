@@ -35,13 +35,13 @@
           {% endif %}
 {% endblock linklist %}
 
-{% block h1 %}sign-in to your account{% endblock h1 %}
+{% block h1 %}sign-in to your mSLscript account{% endblock h1 %}
 {% block content %}
-<p>google login, and others; are not possible to use on this site because your password is used within your IRC client, which does not support google
-login for the proxy-server credentials. your username/password must be remembered at all times. your password will be encrypted on this disk; and can only be changed and removed after creation.</p>
+<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored encrypted on our disk.
+Only password changes and deletions are possible, not recovery. So, remember your password!</p>
 <form action="/login.html" method="POST">
     <p>username <input type="username" name="username" /></p>
-    <p>password <input type="password" name="password" /></p>
+    <p>password <input type="text" name="password" /></p>
     <p>sign-in <input type="submit" value="sign-in" /></p>
 </form>
 
