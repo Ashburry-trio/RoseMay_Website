@@ -37,12 +37,13 @@
 
 {% block h1 %}create an account{% endblock h1 %}
 {% block content %}
+<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored encrypted on our disk.
+Only password changes and deletions are possible, not recovery. So, remember your password!</p>
 <form action="/register.html" method = "POST">
     <p>username <input type="text" name="username" /></p>
-    <p>password <input type="password" name="password" /></p>
+    <p>password <input type="text" name="password" /></p>
     <p>register <input type="submit" value="create new" /></p>
 </form>
-
 <h3>already have an account?</h3>
 <h4><a href="/login.html" title="click this link to go to the sign-in page">click here to <u><strong>sign-in</strong></u>.</a></h4>
 {% endblock %}
