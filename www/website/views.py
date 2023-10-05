@@ -28,23 +28,7 @@ def check_banned():
 def test2():
     return render_template('test2.html')
 
-@views.route('/navbar.html', methods=['GET'])
-def navbar():
-    return render_template('navbar.html')
 
-@views.route('/base2.html', methods=['GET'])
-def base2():
-    return render_template('base2.html')
-
-@views.route('/static/css/normal_index.css', methods=['GET'])
-def cs_norm():
-    return render_template('/static/ccs/xdcc-search.html')
-
-@views.route('/search/xdcc.html', methods=['GET'])
-@views.route('/search/xdcc/', methods=['GET'])
-@views.route('/search/', methods=['GET'])
-def xdcc_search():
-    return render_template('xdcc-search.html')
 
 
 
@@ -52,15 +36,10 @@ def xdcc_search():
 @views.route('/hosted/', methods=['GET'])
 def hosted_info():
     if (check_banned()):
-        return render_template('banned.tzt',)
+        return render_template('banned.txt')
     else:
         return render_template('hosted.html')
 
-@views.route('/', methods=['GET'])
-@views.route('/index.html', methods=['GET', 'POST'])
-def index_home():
-    check_banned()
-    return render_template('index.html')
 
 
 @views.route('/license/zero-bsd.html', methods=['GET'])

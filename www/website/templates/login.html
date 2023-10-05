@@ -1,4 +1,40 @@
-{% extends "base2.html" %} {% block title %}Login to your account{% endblock %}
+{% extends "base_fixednav.html" %} {% block title %}Login to your account{% endblock %}
+{% block linklist %}
+         {% if session.logged_in == 'True' %}
+        <li class="nav-item">
+            <a class="nav-link" href="/index.html">home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/irc/proxies.html">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout.html">sign-out</a>
+          </li>
+         {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="/index.html">home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">proxies</a>
+         </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register.html">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login.html">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
+          </li>
+          {% endif %}
+{% endblock linklist %}
+
 {% block h1 %}sign-in to your account{% endblock h1 %}
 {% block content %}
 <p>google login, and others; are not possible to use on this site because your password is used within your IRC client, which does not support google
@@ -11,4 +47,4 @@ login for the proxy-server credentials. your username/password must be remembere
 
 <h3>don't have an account??</h3>
 <h4><a href = "/register.html" title="click this link to create an account at www.mslscript.com">click here to <u><strong>create</strong></u> an account.</a></h4>
-{% endblock %}
+{% endblock content %}

@@ -1,8 +1,44 @@
-{% extends 'base2.html' %}
-{% block title %}Proxy service coverage{% endblock title %}
-{% block desc %}A list of proxy servers, the mIRC command to use the proxy, and your passcode.{% endblock desc %}
-{% block h1 %}<P>your proxy-servers</P>{% endblock h1 %}
+{% extends 'base_fixednav.html' %}
+{% block linklist %}
 
+         {% if session.logged_in == 'True' %}
+         <li class="nav-item">
+            <a class="nav-link" href="/index.html">home</a>
+          </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/irc/proxies.html">proxies</a>
+         </li>
+
+         <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout.html">sign-out</a>
+          </li>
+         {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="/index.html">home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">proxies</a>
+         </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register.html">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login.html">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
+          </li>
+          {% endif %}
+{% endblock linklist %}
+{% block title %}Proxy service coverage{% endblock title %}
+{% block desc %}A list of proxy servers, the mIRC/Adiirc command to use the proxy, and your passcode.{% endblock desc %}
+{% block h1 %}Your Proxy-Servers{% endblock h1 %}
 {% block content %}
 <p>below this paragraph is a list of proxy-servers you may use with <em>only</em> your <abbr title="Internet Relay Chat">IRC</abbr> clients with your secret username and password.
 it is recommended to use the <abbr title="mg-script">Machine-Gun</abbr> <abbr title="mIRC scripting language">mSL script</abbr> with either
