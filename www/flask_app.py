@@ -43,9 +43,10 @@ crypt_app = Argon2(app)
 
 from website.views import views
 from website.auth import auth
-
+from website.navfix import navfix
 app.register_blueprint(views, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
+app.register_blueprint(navfix, url_prefix='/')
 from website.casino import casino
 app.register_blueprint(casino, url_prefix='/')
 

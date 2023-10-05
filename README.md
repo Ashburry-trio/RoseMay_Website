@@ -40,12 +40,11 @@ away online game passes in my casino where my friends can spend their money,
 receive entertainment and real income and wealth. With lots of great prizes to
 be won, the simple yet effective casino may make enough money to host 16 vCPUs,
 that’s \$360 USD/month, I will need some help to pay for this. I am willing to
-pay \$200 CAD/month for 8 vCPUs which should host at-least 40 connections but it
-will be a little slow I’m sure. Plus I need one connection to www.mslscript.com.
-For \$10 USD a month I can put your proxy server on an exclusive vCPU where
-there is very little or zero traffic and enable DCC Accept forwarding with a 2nd
-back-up proxy server host-name; why share your bandwidth with other users?
+pay \$200 CAD/month for 8 vCPUs which should host at-least 400 connections but it
+may be a little slow - i don't know. Plus I need at-least one connection to 
+www.mslscript.com. For $10 USD a month I can put your proxy-servers on an 
+exclusive vCPU where there is zero traffic, you may also choose a proxy server
+as a prize in the casino. Have a nice day, Ive got to continue my coding.
 
  
-
 o End of Document.

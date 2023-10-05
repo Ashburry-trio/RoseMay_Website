@@ -147,17 +147,13 @@ def save_casino_app():
         casino_app.write(fp, space_around_delimiters=True)
     casino_last_update[0] = int(timesecs())
 
-def load_users_ini(username: str | None = None):
-    if not username:
-        if 'username' in session.keys():
-            username = session['username']
-        else:
-            return False
+def load_users_ini(username: str):
     username_low: str = strip_html(username.lower())
     del username
-    if username_low[1]:
+    if username_low[1] or not username_low[0]:
         raise ValueError('Not a valid UserName.')
     set_paths(username_low[0])
+    users.clear()
     users.read(user_file[0])
     return users
 
@@ -169,26 +165,29 @@ def load_users_ini(username: str | None = None):
 
 def login_user_post(username: str, password: str):
     try:
+        session['logged_in'] = 'False'
         username = strip_html(username)
         password = strip_html(password)
         if username[1] or password[1]:
-            flash("Not a valid UserName or Password.")
+            flash("not a valid UserName.")
             return redirect('/login.html')
         username_low: str = username[0].lower()
         load_users_ini(username_low)
-        session['logged_in'] = 'False'
+        if not 'main' in users.keys() or not 'password' in users['main'].keys():
+            flash("unknown UserName.", category="error")
+            return make_response(render_template("login.html"), 401)
         try:
             ph_hash = checkPassword(users['main']['password'], password[0])
         except BadHash:
             flash('error checking password. try again...')
-            return make_response(redirect('/login.html'), 401)
+            return make_response(render_template('login.html'), 401)
         if ph_hash:
             session['logged_in'] = 'True'
             session['username'] = str(users['main']['username'])
             session['password'] = str(users['main']['password'])
             session['power'] = str(users['main']['power']) or 'normal'
             save_user()
-            flash(f'you have logged-in with {username[0]} : {password[0]}', category='error')
+            flash(f'you have logged-in with {username[0]} : {password[0]}', category='success')
             return redirect('/irc/proxies.html')
         else:
             flash(f'bad password! {password[0]}', category='error')
@@ -207,7 +206,7 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
         if password[1]:
             flash('Password MUST contain alphabetic and digit characters only.', category='error')
         return render_template('register.html')
-    username_low: str = username[0].lower()
+    username_low: str = str(username[0]).lower()
     clear_session()
     session['username'] = username[0]
     session['logged_in'] = 'False'

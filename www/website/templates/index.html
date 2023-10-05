@@ -1,51 +1,46 @@
-{% extends 'base.html' %}
-{% block title %}XDCC search, proxy server, mIRC Adiirc mSL script, Python IRC{% endblock title %}
-{% block desc %}Xdcc Search, custom URLs, mSL script Machine-Gun named Bauderr, hosted Python IRC proxy service. open source, zero-bsd. FInd out more...{% endblock desc %}
-{% block h1 %}mslscript.com Front Page to Proxy Service{% endblock h1 %}{% block content %}
-<hr />
-<p><a href="https://pot420.shop" target="_new">Pot420.shop</a> +- Single ounces of AAAA quality cannabis for $80, and there are edibles.
-Selling one ounce a month pays for our basic web-hosting bill every month. Available in Canada, British Columbia, shipping anywhere in the world.
-<br />Send a text message to 778-655-8060 in Canada, BC.</p>
-<p><a href="https://www.youtube.com/watch?v=YgBKBvwbKSk" target="malign20">Fuck them all I'll be Outlaw'd</a>
-<br /><a href="https://www.youtube.com/watch?v=UePtoxDhJSw target="yellow">Black and Yellow</a></p>
-<p title="downloading with Internet Relay Chat client"><h5 class="oneline"><span class="ooo">o &nbsp;</span>
-    <a href="/search/xdcc.html">XDCC search</a></h5> - download movies, television, applications, games, ebooks,
-audio, anime. View your XDCC Search bot (and site) status and options.</p>
-<p title="listing of vhost/proxy servers network"><h5 class="oneline"><span class="ooo">o &nbsp;</span>
-    <a href="/proxies.html">Proxy Servers Hostnames</a></h5> - view the selection of hostnames (or IP addresses) to use for your proxy account.</p>
-<hr />
-<p title="Administrator functions"><h5 class="oneline"><span class="ooo">o &nbsp;</span>
-    <a href="/admin-settings.html">Admin Stage</a></h5> - administration settings, web-server to proxy-server networking.</p>
+{% extends 'base_fixednav.html' %}
 
-<p title="log-in to this website and use the web-server as a stage for advanced script usage"><h5 class="oneline">
-    <span class="ooo">o &nbsp;</span><a href="/irc/script.html">Machine-Gun Script</a></h5> - turn scripts on/off,
-    apply settings changes, front-end to M-G (Bauderr) script for non-mSL-able clients.</p>
-<hr />
-<p title="trio-ircproxy.py assistive web-server"><h6 class="oneline">
-    <span class="ooo">o &nbsp;</span><a href="/index.html">home</a></h6> - you are here now.</p>
-<p title="Trio-ircproxy.py proxy and website hosting"><h6 class="oneline">
-    <span class="ooo">o &nbsp;</span><a href="/hosted.html">hosted</a></h6> - a glance at where our python apps are hosted.</p>
-<hr />
-<p title="the code of conduct for anyone using or supplying this application">
-<h6 class="oneline"><span class="ooo">o &nbsp;</span><a href="/code_of_conduct.html">Code of Conduct</a></h6> - i require
-that you behave as outlined in the code-of-conduct while using this web-server and applications available here.</p>
-<p title="the copyright notice, which you must include when re-distributing the software.">
-<h6 class="oneline"><span class="ooo">o &nbsp;</span><a href="/zero-bsd.html">Copyright Licence</a></h6> - copyright
-notice for all content, including this web-server, and applications available here.</p>
-<p title="the contributing.md file which states who and how to contribute to the Trio-ircproxy projects.">
-<h6 class="oneline"><span class="ooo">o &nbsp;</span><a href="/contributing.html">Contributing.md</a></h6> - if you want
-to learn who has contributed, or how you may contribute, to the Trio-ircproxy.py projects.</p>
-<p title="the security.md file which states how to report a vulnerability in the Trio-ircproxy application projects.">
-<h6 class="oneline"><span class="ooo">o &nbsp;</span><a href="/security.html">Security Policy.md</a></h6> - learn how to
-report security vulnerabilities in the Trio-ircproxy & mg-script projects.</p>
-<hr />
-<p title="Machine Gun mSL script named Bauderr">
-<h5 class="oneline"><span class="ooo">o &nbsp;</span><a href="/download.html">Download MG mSL
-    script </a></h5> - Not ready for download, Proxy-server currently runs on Python v10.0+ in a virtual-env. Host your own Proxy Server.</p>
+<!-- Begin page content -->
+    {% block h1 %}Welcome to mSLscript.com{% endblock h1 %}
+    {% block lead %}Your Gateway to a World of Exciting Python Applications{% endblock lead %}
+{% block content %}
+<p class="h5" alt="at mslscript.com we pride ourselves on providing a variety of python applications blended with mIRC SCripting Language"><small>
+At mslscript.com, we pride ourselves on providing a platform that hosts a variety of innovative Python applications blended with mIRC Scripting Language.
+Our unique blend of creativity and technology ensures an experience like no other. Join us on this exciting journey as we
+explore the endless possibilities of programming and script application development.
+</small></p>
+<h2><a href="/irc/proxies.html">Discover the Power of our Python Apps</a></h2>
+<p class="h5"><small>
+At mslscript.com, we don't just offer mere applications - we offer a gateway to a world of possibilities.
+Take a glance at where our Python apps are hosted and witness the magic unfold. Our state-of-the-art servers and
+cutting-edge technology guarantee a seamless experience that will surpass your expectations.
+</small></p>
+<h2><a href="/coc.html">Code of Conduct<small class="text-body-secondary"> - Your Ticket to a Respectful Community</small></a></h2>
+<p class="h5"><small>
+We take pride in maintaining a respectful community and expect all users to abide by our Code of Conduct.
+By adhering to these guidelines, you contribute to creating a safe and inclusive environment for all.
+Let's build a community that fosters collaboration and mutual respect.
+</small></p>
+<h2><a href="/zero-bsd.html">Copyright Licence<small class="text-body-secondary"> - Protecting and Celebrating Intellectual Property</small></a></h2>
+<p class="h5"><small>
+At mslscript.com, we value the importance of intellectual property rights. Our Copyright License ensures that our content and web-server are protected.
+We encourage creativity and innovation and appreciate the contributions that make our platform thrive.
+</small></p>
 
-<p title="email the author">contact the author, by email, at
-    <a href="mailto:Ashburry_UnderNet@outlook.com">Ashburry_UnderNet@outlook.com</a> - for any concerns and questions
-    regarding the Python apps, mSL script, web-server, documentation, irc channel and its guests and administrators --
-    and if you would like to help with the project and its <a href="irc://irc.undernet.org:6667/5ioE/">irc channel
-        (Undernet \ #5ioE)</a>.</p>
+<h2><a href="/contributing.html">Contributing to Trio-ircproxy.py Projects<small class="text-body-secondary"> - Join the Forces of Collaboration</small></a></h2>
+<p class="h5"><small>
+Are you passionate about contributing to open-source projects? Look no further! Discover how you can be part of the <code class="small">Trio-ircproxy.py</code>
+projects and learn from the talented individuals who have already contributed. Find out how you can make a difference and
+leave your mark on the world of Python and mSL script development.
+</small></p>
+<h2><a href="/download.html">Download MG mSL Script<small class="text-body-secondary"> - Empowering Python Awesomeness</small></a></h2>
+<p class="h5"><small>
+Ready to take your Python skills to the next level? Explore our MG mSL script - the gateway to a realm of limitless possibilities.
+Connect with our friendly support team, ask questions, and dig deeper into the vast potential of our Python applications, web-server
+, documentation, IRC channel, and the talented individuals who bring them to life.
+</small></p><p class="h5"><small>
+Join us at www.mslscript.com and unlock the hidden potential of Python programming. Experience a website like no other, engage with our thriving
+community, and embark on a journey of creativity, collaboration, and discovery.
+</small></p>
 {% endblock content %}
+

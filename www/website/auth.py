@@ -46,8 +46,8 @@ passcodes = {}
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
-    if 'logged_in' in session.keys() and session['logged_in'] == 'True':
-        session['logged_in'] = False
+    if 'logged_in' in session.keys() and session['logged_in'] != 'False':
+        session['logged_in'] = 'False'
         session['username'] = None
     if request.method == "POST":
         # record the user name
