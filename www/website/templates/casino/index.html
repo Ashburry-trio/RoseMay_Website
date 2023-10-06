@@ -10,7 +10,7 @@
             <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
          </li>
          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+            <a class="nav-link active" aria-current="page" href="#">casino</a>
          </li>
          <li class="nav-item">
             <a class="nav-link" href="/irc/proxies.html">proxies</a>
@@ -29,7 +29,7 @@
             <a class="nav-link" href="/user/nobody.html">user-pages</a>
          </li>
          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+            <a class="nav-link active" aria-current="page" href="#">casino</a>
          </li>
          <li class="nav-item">
             <a class="nav-link disabled" href="#">proxies</a>
@@ -46,11 +46,11 @@
           {% endif %}
 {% endblock linklist %}
 {% block h1 %}The Casino Games{% endblock h1 %}
-{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes*</a> you can earn!{% endblock lead %}
+{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html" alt="list of prizes you can choose from.">prizes*</a> you can earn!{% endblock lead %}
 {% block content %}
 <hr /><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br />
-{% if remaining_pages <= 0 %}
-Visit <u><strong>{{ str(remaining_pages)|safe or '9' }}</strong></u> hidden pages left to visit before unlocking <a href="/casino/locked/games.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
+{% if remaining_pages > 0 %}
+You have <u><strong>{{ remaining_pages or 9 }}</strong></u> hidden pages left to visit before unlocking <a href="/casino/locked/games.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
 {% else %}
 You have unlocked <a href="/casino/locked/games.html" alt="Two secret games.">these 2 secret games</a>!
 {% endif %}

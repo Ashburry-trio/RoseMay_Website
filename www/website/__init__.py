@@ -9,7 +9,7 @@ from configparser import ConfigParser
 from os import path, rename
 from os.path import isdir
 import flask_argon2
-from reload import reload
+#from .reload import reload
 
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '../app')
@@ -25,6 +25,7 @@ user_file: list[str | None] = [None]
 
 banned = {}
 pages_counted = {}
+pass_type: list[str] = ['']
 
 def checkAlnum(word: str):
     if not word:
@@ -52,10 +53,13 @@ def check_banned(site):
     else:
         pages_counted[request.environ['REMOTE_ADDR']]['count'] += 1
         if pages_counted[request.environ['REMOTE_ADDR']]['count'] >= 5:
-            if pages_counted[request.environ['REMOTE_ADDR']]['time'] - secstime() <= 8:
+            secs_pages = secstime() - pages_counted[request.environ['REMOTE_ADDR']]['time']
+            if secs_pages >= 1:
                 return make_banned()
             else:
-                pass
+                if secs_pages <= 0:
+                    del pages_counted[request.environ['REMOTE_ADDR']]
+
     if request.environ['REMOTE_ADDR'] in banned.keys():
         banned_for = banned[request.environ['REMOTE_ADDR']] - secstime()
         if banned_for <= 0:
@@ -252,11 +256,12 @@ def login_user_post(username: str, password: str):
 def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
     clear_session()
     users.clear()
+    global pass_type
     if passtype == 'text':
-        del pass_type[0]
+        pass_type.pop()
         pass_type.append('text')
     else:
-        del pass_type[0]
+        pass_type.pop()
         pass_type.append('password')
         passtype = 'password'
     password_strip: list[str, bool] = strip_html(passwd)
@@ -332,7 +337,7 @@ def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
             session['logged_in'] = 'True'
             save_user()
             flash(f"UserName '{username_strip[0]}' was just created...")
-            reload()
+            # reload()
             return redirect('/irc/proxies.html', code='307')
         return make_response(render_template('register.html', passtype=passtype), 401)
 
