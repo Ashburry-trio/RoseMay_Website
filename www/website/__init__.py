@@ -249,18 +249,25 @@ def login_user_post(username: str, password: str):
         return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd: str, pass_type, power = 'normal'):
+def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
     clear_session()
     users.clear()
+    if passtype == 'text':
+        del pass_type[0]
+        pass_type.append('text')
+    else:
+        del pass_type[0]
+        pass_type.append('password')
+        passtype = 'password'
     password_strip: list[str, bool] = strip_html(passwd)
     username_strip: list[str, bool] = strip_html(username)
     del passwd, username
     if username_strip[1] or password_strip[1]:
         if username_strip[1]:
             flash('not a valid UserName, it must be alphabetic and digits only.')
-        if password_strip[1]:
+        elif password_strip[1]:
             flash('Password MUST contain alphabetic and digit characters only.', category='error')
-        return render_template('register.html', pass_type=pass_type)
+        return make_response(render_template('register.html', passtype=passtype), 401)
     username_low: str = str(username_strip[0]).lower()
     load_users_ini(username_low)
     if pass_type != 'password':
@@ -271,17 +278,16 @@ def register_user_post(username: str, passwd: str, pass_type, power = 'normal'):
     try:
         # User already exists and they know the password
         # load_users_ini(username_low)
-        if not users.has_section('main'):
-            raise NoSuchUser
+        session['logged_in'] = 'False'
+        session['username'] = users['main']['username']
         try:
             ph_hash = checkPassword(users['main']['password'], password_strip[0])
         except BadHash:
             flash('error checking password. try a different password.', category='error')
-            return make_response(render_template('register.html', pass_type=pass_type), 401)
-
+            return make_response(render_template('register.html', passtype=passtype), 401)
         if ph_hash:
             session['password'] = users['main']['password']
-            session['_password_plain'] = password_strip[0]
+            session['_password_plain'] = password_strip[0] if passtype == 'text' else 'password'
             session['username'] = username_strip[0]
             session['power'] = power
             session['logged_in'] = 'True'
@@ -292,33 +298,27 @@ def register_user_post(username: str, passwd: str, pass_type, power = 'normal'):
             flash('UserName is taken, try again...', category='error')
             clear_session()
             session['logged_in'] = 'False'
-            return render_template('register.html', pass_type=pass_type)
+            return make_response(render_template('register.html', passtype=passtype), 401)
     except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
         if not username_low:
-            flash("i am missing the UserName to create.", category='error')
+            flash("You are missing the UserName to create.", category='error')
         elif 'admin' in username_low:
             flash("UserName MUST NOT contain the word 'Admin'.", category='error')
         elif username_low  == 'username':
             flash("bad choice of UserName!", category='error')
-            return make_response(render_template('register.html', pass_type=pass_type), 401)
         elif not password_strip[0]:
             flash("you MUST enter a Password you can remember.", category='error')
-            return make_response(render_template('register.html', pass_type=pass_type), 401)
         elif len(password_strip[0]) < 5:
             flash('Password must be at-least 5 characters.', category='error')
-            return make_response(render_template('register.html', pass_type=pass_type), 401)
         elif len(password_strip[0]) > 15:
             flash('Password must be, at-most, 15 characters.', category='error')
-            return make_response(render_template('register.html', pass_type=pass_type), 401)
         else:
             session["username"] = username_strip[0]
             try:
                 password_secret = gph(password_strip[0])
             except BadHash:
                 flash("invalid Password.", category='error')
-                return make_response(render_template('register.html', pass_type=pass_type), 401)
-            session['logged_in'] = 'True'
-            session['power'] = power
+                return make_response(render_template('register.html', passtype=passtype), 401)
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             src_file = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low}", 'default_user.ini')
             set_paths(username_low)
@@ -326,10 +326,15 @@ def register_user_post(username: str, passwd: str, pass_type, power = 'normal'):
             rename(src_file, user_file[0])
             load_users_ini(username_low)
             session['password'] = password_secret
+            session['_password_plain'] = password_strip[0] if passtype == 'text' else 'password'
+            session['username'] = username_strip[0]
+            session['power'] = power
+            session['logged_in'] = 'True'
             save_user()
             flash(f"UserName '{username_strip[0]}' was just created...")
             reload()
             return redirect('/irc/proxies.html', code='307')
+        return make_response(render_template('register.html', passtype=passtype), 401)
 
 def save_casino_user(username: str | None = None) -> None:
     if not casino_user:
