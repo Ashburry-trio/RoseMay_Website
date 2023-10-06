@@ -52,7 +52,7 @@ def check_banned(site):
         pages_counted[request.environ['REMOTE_ADDR']]['time'] = secstime() + 9
     else:
         pages_counted[request.environ['REMOTE_ADDR']]['count'] += 1
-        if pages_counted[request.environ['REMOTE_ADDR']]['count'] >= 5:
+        if pages_counted[request.environ['REMOTE_ADDR']]['count'] >= 8:
             secs_pages = secstime() - pages_counted[request.environ['REMOTE_ADDR']]['time']
             if secs_pages >= 1:
                 return make_banned()
