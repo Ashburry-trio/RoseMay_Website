@@ -5,10 +5,15 @@
          <li class="nav-item">
             <a class="nav-link" href="/index.html">home</a>
           </li>
-         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/irc/proxies.html">proxies</a>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/{{ session.username }}">user-page</a>
          </li>
-
+         <li class="nav-item">
+            <a class="nav-link" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">proxies</a>
+         </li>
          <li class="nav-item">
             <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
           </li>
@@ -22,6 +27,12 @@
          <li class="nav-item">
             <a class="nav-link" href="/index.html">home</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/nobody.html">user-pages</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/casino/games.html">casino</a>
+         </li>
           <li class="nav-item">
             <a class="nav-link disabled" aria-disabled="true" href="#">proxies</a>
          </li>
@@ -45,7 +56,8 @@ While the Machine-Gun <abbr title="m-I-R-C scripting language">mSL script</abbr>
 <a href="https://www.mirc.com/get.html" target="_blank" title="link to mIRC.com web-site">mIRC</a> ($20) or
 <a href="https://adiirc.com/download.php" target="_blank" title="link to A.d.i.i.r.c.com website">Adiirc</a>
 (FREE), you can access all proxy-server features without any specific script or client. This service is comparable to the free
-<a href="https://wiki.znc.in/ZNC">ZNC bounce-service</a> found on numerous <abbr title='Internet Relay Chat'>IRC</abbr> networks.</p>
+<a href="https://wiki.znc.in/ZNC" alt="complex insutrctions on how to host ZNC server on your VPS">ZNC bounce-service</a> found
+on numerous <abbr title='Internet Relay Chat'>IRC</abbr> networks.</p>
 <p><hr />
 {% if bnc_list|length == 0 %}
 <h4>No proxies available.</h4>
@@ -55,16 +67,13 @@ While the Machine-Gun <abbr title="m-I-R-C scripting language">mSL script</abbr>
 {% for host, desc in bnc_list.items() %}
 {% if count.append(count.pop() + 1) %}{% endif %}
     <p>{% print(count[0]) %}. host: {{ host }}
-        &nbsp; {{ desc }}<br />/proxy -mP-d on {{ host }}&nbsp;
-        {{ session.username }}<a href="/client-name.html" name="_new"><em>@unique-client-name</em></a> &nbsp; {{ passcode }}</p>
+        &nbsp; {{ desc }}<br />/proxy -mP-d on {{ host }}
+        {{ session.username }}<a href="/client-name-info.html" alt="information about how to use client-names in your UserName for proxy-server logins" name="_blank"><em>@unique-client-name</em></a> {{ passcode }}</p>
 {% endfor %}
 {% endif %}
-
-
-<h6>ofc none of these proxy-servers work; that is because there are no IPs or Hostnames to remote destinations. And unless you are running trio-ircproxy.py then none of the proxy-servers will work.</h6>
-<h5>Trio-ircproxy.py is not even close to being complete; I am still struggling with this website named RoseMay version PEACE, get it at
-<a href="https://github.com/ashburry-chat-irc/mslscript.com" title="link to an open-source web-site which you may change and use for your own purpose, or mine.">github.com<a/>.</h5>
-
+<h5>Ofc none of these proxy-servers work; that is because there are no IPs or Hostnames to remote destinations. And unless you are running trio-ircproxy.py then none of the proxy-servers will work.</h5>
+<h6>Trio-ircProxy.py is not even close to being complete; I am still struggling with this website (named RoseMay version PEACE-3 apps in total). Get this website at
+<a href="https://github.com/ashburry-chat-irc/mslscript.com" name="_blank" alt="link to an open-source web-site which you may change and use for your own purpose, or mine.">github.com<a/> and host on <a href="https://www.pythonanywhere.com/" name="_blank" alt="link to PythonAnywhere.com where you can host a Python web-server (and more) and even hire a teacher.">PythonAnywhere.com</a>.</h6>
 <br />
 o &nbsp; end of document.
 </p>

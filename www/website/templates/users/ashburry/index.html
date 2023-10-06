@@ -1,6 +1,7 @@
+
 {% extends 'base_fixednav.html' %}
-{% block title %}Everyone with a page{% endblock title %}
-{% block desc %}User-pages of mslscript.com. Listing of (customized) IRC room pages.{% endblock desc %}
+{% block title %}Custom Page Title{% endblock title %}
+{% block desc %}Custom page description{% endblock desc %}
 {% block linklist %}
           <li class="nav-item">
             <a class="nav-link" href="/">home</a>
@@ -9,7 +10,7 @@
          <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/user/{{ session.username }}/">user-page</a>
          </li>
-        <li class="nav-item">
+         <li class="nav-item">
             <a class="nav-link" href="/casino/games.html">casino</a>
          </li>
          <li class="nav-item">
@@ -45,16 +46,8 @@
           </li>
           {% endif %}
 {% endblock linklist %}
-{% block h1 %}Select a User-Page{% endblock h1 %}
-{% block lead %}Create your own user-page, and stay connected with others.
-{% if session.logged_in == 'True' and has_page == False %}
-Click <a href="/create/" alt="click this link to create your default username folder">here</a> to start your page.
-{% elif session.logged_in == 'True' and has_page == True %}
-View your page by clicking <a href="/user/{{ session.username }}" alt="link to your user-page">here</a>.
-{% else %}
-<a href="/login.html" alt="click here to sign-in to your account">Sign-in</a> then click the user-page link to create your page.
-{% endif %}
-{% endblock lead %}
+{% block h1 %}Welcome to {{ session.username }}'s Page!{% endblock h1 %}
+{% block lead %}View the entire list of <a href="/user/nobody.html" alt="listing of all user-pages">user-pages*</a>.{% endblock lead %}
 {% block content %}
-<p>page is nobody.html incomplete!</p>
+<p>Customized page contents!</p>
 {% endblock content %}
