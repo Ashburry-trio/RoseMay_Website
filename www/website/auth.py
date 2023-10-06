@@ -34,13 +34,13 @@ def proxy_scripts():
 def irc_proxies():
     if 'logged_in' in session.keys():
         if session['logged_in'] == 'True':
-            plain :str
+            plain: str
             proxy_list: dict[str | None, str | None]
             users = load_users_ini(session['username'])
             if not users.has_section('proxy'):
                 users['proxy'] = {}
             proxy_list = users['proxy']
-            if '_password_plain' in session.keys() and pass_type == 'text':
+            if '_password_plain' in session.keys():
                 plain = str(session['_password_plain'])
                 del session['_password_plain']
             else:
@@ -48,7 +48,6 @@ def irc_proxies():
             return check_banned(render_template('proxies.html', bnc_list=proxy_list, passcode=plain))
     return check_banned(render_template('proxy-login.html'))
 
-passcodes = {}
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
@@ -64,11 +63,9 @@ def login():
         username = strip_html(username)
         passw = strip_html(passw)
         if not passw[0] or not username[0]:
-            flash('UserName or password fields are blank?', category='error')
-            return check_banned(make_response(render_template("login.html"), 401))
+            flash('UserName or Password fields are blank?', category='error')
         elif username[1] or passw[1]:
             flash("UserName and Password fields must be alphanumeric only.", category='error')
-            return check_banned(make_response(render_template("login.html"), 401))
         else:
             return check_banned(login_user_post(username[0], passw[0]))
     return check_banned(make_response(render_template("login.html"), 401))
@@ -91,11 +88,11 @@ def logout():
 @auth.route('/register/', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
-    pass_type = request.args.get('code')
-    if not pass_type or pass_type != 'password':
-        pass_type = 'text'
+    passtype = request.args.get('code')
+    if passtype != 'password':
+        passtype = 'text'
     else:
-        pass_type = 'password'
+        passtype = 'password'
     if request.method == 'POST':
         session['logged_in'] = 'False'
         username: str = request.form.get('username')
@@ -106,8 +103,7 @@ def register():
             gooditem = checkAlnum(passwd)
         if not gooditem:
             flash('you must use alphabetic and digit characters only.', category='error')
-            return check_banned(render_template("register.html", pass_type=pass_type))
+            return check_banned(render_template("register.html", passtype=passtype))
         else:
-            return check_banned(register_user_post(username, passwd, pass_type))
-
-    return check_banned(render_template("register.html", pass_type=pass_type))
+            return check_banned(register_user_post(username, passwd, passtype))
+    return check_banned(render_template("register.html", passtype=passtype))
