@@ -11,7 +11,8 @@ from time import time as timesecs
 _dir = path.dirname(path.abspath(__file__))
 # if not _dir in syspath:
 #     syspath.append(_dir)
-from . import load_casino_user, save_casino_app, load_casino_app
+from website import load_casino_user, save_casino_app, load_casino_app
+from website import check_banned, make_banned
 from .date_func import update_today
 from decimal import Decimal
 casino = Blueprint('casino', __name__, template_folder='templates', static_folder='static')
@@ -47,10 +48,14 @@ def casino_home():
     load_stash()
     casino_user = load_casino_user()
     if casino_user == False:
-        cash = 'to Log-in'
+        cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+        prize_cash = 'unknown cash amount'
+        remaining_pages = '<em>unknown</em>'
     else:
-        cash = '$' + str(casino_user['main']['cash-in']) + ' CAD'
-    return render_template('/casino/index.html', stash=stash[1], cash=cash)
+        cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
+        prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
+        remaining_pages = int(casino_user['main']['remaining_pages'])
+    return check_banned(render_template('/casino/index.html', stash=stash[1], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages))
 
 @casino.route('/casino/prizes.html', methods=['GET'])
 @casino.route('/casino/prizes/', methods=['GET'])
@@ -59,7 +64,7 @@ def peak_prizes():
     try:
         load_stash()
         update_today()
-        return render_template('/casino/prizes.html', stash=stash[1])
+        return check_banned(render_template('/casino/prizes.html', stash=stash[1]))
     except BaseException:
         return
 
@@ -73,28 +78,11 @@ def locked_games():
         if 'username' in session.keys():
             casino_user = load_casino_user()
             pages = 9 - int(casino_user['main']['pages-visted'])
-            if casino_user['main']['visited-9-pages'] != 'yes':
-                return render_template('/casino/locked.html', stash=stash[1], pages_count=pages)
+            if int(casino_user['main']['remaining_pages']) > 0:
+                return check_banned(render_template('/casino/locked.html', stash=stash[1], pages_count=pages))
             else:
-                return render_template('/casino/unlocked.html', stash=stash[1])
+                return check_banned(render_template('/casino/unlocked.html', stash=stash[1]))
         flash('you must login to view the locked games')
-        return redirect('/login.html')
+        return check_banned(redirect('/login.html', code='307'))
     except KeyError:
-        return render_template('/casino/locked.html')
-
-class Table():
-    users = []
-    def __init__(self):
-        self.owner = session['username']
-        all_tables.append(self)
-
-
-@casino.route('/casino/blackjack/new_table.html', methods=['GET', 'POST'])
-def new_table():
-    nt = Table()
-    all_tables.append(nt)
-    return render_template('index.html', all_tables = all_tables,this_table = nt)
-
-
-class InvalidPlayers(Exception):
-    pass
+        return check_banned(render_template('/casino/locked.html'))

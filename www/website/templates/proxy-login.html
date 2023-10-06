@@ -1,9 +1,9 @@
-{% extends "base2.html" %} {% block title %}private proxy-server listing{% endblock title %}
-{% block desc %}you must be signed-in to view this page. registering is easy and free. see more...{% endblock desc %}
-{% block h1 %}proxy-service coverage{% endblock h1 %}
+{% extends "base_fixednav.html" %}{% block title %}Private Proxy-Server Listing{% endblock title %}
+{% block desc %}You must be signed-in to view your proxy-servers. Signing-up is easy and free. see more...{% endblock desc %}
+{% block h1 %}Proxy-Service Coverage - Login{% endblock h1 %}
+{% bock lead %}You <strong><em>must be</em></strong> logged-in to view this page.{% endblock lead %}
 {% block content %}
-<p>you must be signed-in to view this page. <a href="/login.html">LOG-IN HERE</a>.</p>
-<p>this page normally contains the proxy server host-names your username/password will work on. hosted by
-<a href="https://www.vultr.com/?ref=9433621" target="_new">www.vultr.com</a>, for professional VPS hosting
-with ddos mitigation on all proxy servers.</p>
+<p>You must be signed-in to view this page. <a href="/login.html" alt="The log-in page">LOG-IN HERE</a>.</p>
+<p>This page normally contains the proxy-server hostnames your username/password will work on. Since you are not logged-in
+there are no assigned proxy-servers to show you, yet.</p>
 {% endblock %}

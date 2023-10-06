@@ -1,22 +1,71 @@
-{% extends 'base.html' %}
+{% extends 'base_fixednav.html' %}
 {% block title %}casino, basic games, fair pay-out, also play on IRC!{% endblock title %}
 {% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
-{% block h1 %}the casino games{% endblock h1 %}
+{% block linklist %}
+          <li class="nav-item">
+            <a class="nav-link" href="/">home</a>
+          </li>
+         {% if session.logged_in == 'True' %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/irc/proxies.html">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout.html">sign-out</a>
+          </li>
+         {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/nobody.html">user-pages</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" href="#">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/register.html">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login.html">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
+          </li>
+          {% endif %}
+{% endblock linklist %}
+{% block h1 %}The Casino Games{% endblock h1 %}
+{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes*</a> you can earn!{% endblock lead %}
 {% block content %}
-<p>House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html">prizes</a> you can earn!
-<br /><a href="/casino/bank.html">Your Banker</a> - You have <b>{{ cash }}</b> to play-in. Visit <u><strong>9</strong></u> secret pages to unlock <a href="/casino/locked/games.html">these 2 games</a>.</p>
+<hr /><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br />
+{% if remaining_pages <= 0 %}
+Visit <u><strong>{{ str(remaining_pages)|safe or '9' }}</strong></u> hidden pages left to visit before unlocking <a href="/casino/locked/games.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
+{% else %}
+You have unlocked <a href="/casino/locked/games.html" alt="Two secret games.">these 2 secret games</a>!
+{% endif %}
 <center>
 <h1><u>Fox-slots</u></h1>
-<h3><a href="/casino/foxyglove/sexist.html">FoxGlove drive match-up-a <u>slot</u></a></h3><p>(start: $2) - &nbsp;<a href="/casino/rules/matchup.html">how-to win</a></p>
-<h3><a href="/casino/foxglove/dineout.html">FoxGlove <u>dine</u>-out or shud-up</a></h3><p>(start: $1) - &nbsp;<a href="/casino/rules/dineout.html">how-to win</a></p>
+<h3><a href="/casino/foxyglove/sexist.html">FoxGlove drive match-up-a <u>slot</u></a></h3><p>(start: $2) - &nbsp;<a href="/casino/rules/matchup.html">how-to win*</a></p>
+<h3><a href="/casino/foxglove/dineout.html">FoxGlove <u>dine</u>-out or shud-up</a></h3><p>(start: $1) - &nbsp;<a href="/casino/rules/dineout.html">how-to win*</a></p>
 <h1><br /><u>Dice-roll-out</u></h1>
-<h3><a href="/casino/dice/smoke5.html">smoke'n <strong><u>2</u></strong> rolls (singles to 5 dies)</a></h3><p>(start: 5 cents) - &nbsp;<a href="/casino/rules/smoke2rolls.html">how-to win</a></p>
+<h3><a href="/casino/dice/smoke5.html">smoke'n <strong><u>2</u></strong> rolls (singles to 5 dies)</a></h3><p>(start: 5 cents) - &nbsp;<a href="/casino/rules/smoke2rolls.html">how-to win*</a></p>
 <h3><a href="/casino/dice/yahtzee.html"><u>yahtzee</u> roll-play</a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/yahtzee.html">how-to win</a></p>
 <h1><br /><u>Cards-compete</u></h1>
 <h3><a href="/casino/cards/21.html">21 + <u>blackjack</u></a></h3><p>(start: 25 cents <b>CLOSED</b>) - &nbsp;<a href="/casino/rules/blackjack.html">how-to win</a></p>
-<h3><a href="/casino/cards/war.html">52 card <u>war</u></a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/war.html">how-to win</a></p>
+<h3><a href="/casino/cards/war.html">52 card <u>war*</u></a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/war.html">how-to win</a></p>
 <h1><br /><u>Lottos-fair 7/5</u></h1>
-<h3><a href="/casino/lotto/9numbers.html"><strong>9</strong> - <u>number</u></a></h3><p>(start: 20 cents) - &nbsp;<a href="/casino/rules/9numbers.html">how-to win</a></p>
+<h3><a href="/casino/lotto/9numbers.html"><strong>9</strong> - <u>number*</u></a></h3><p>(start: 20 cents) - &nbsp;<a href="/casino/rules/9numbers.html">how-to win</a></p>
 <h3><a href="/casino/lotto/5numbers.html"><strong><u>5</u></strong> - number</a></h3><p>(start: 10 cents) - &nbsp;<a href="/casino/rules/5numbers.html">how-to win</a></p>
 <div><br /></div>
 </center>
