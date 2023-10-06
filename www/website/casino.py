@@ -38,6 +38,7 @@ def apply_stash(amount: str):
     apply_amount = Decimal(amount)
     stash[1] = str(stash_amount + apply_amount)
     stash[0] = '$' + str(stash[1]) + ' CAD'
+    save_stash()
 
 @casino.route('/casino/', methods=['GET', 'POST'])
 @casino.route('/casino/index.html', methods=['GET', 'POST'])
@@ -47,15 +48,16 @@ def casino_home():
     update_today()
     load_stash()
     casino_user = load_casino_user()
+    global stash
     if casino_user == False:
         cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
         prize_cash = 'unknown cash amount'
-        remaining_pages = '<em>unknown</em>'
+        remaining_pages = 9
     else:
         cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
         prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
         remaining_pages = int(casino_user['main']['remaining_pages'])
-    return check_banned(render_template('/casino/index.html', stash=stash[1], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages))
+    return check_banned(render_template('/casino/index.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages))
 
 @casino.route('/casino/prizes.html', methods=['GET'])
 @casino.route('/casino/prizes/', methods=['GET'])
