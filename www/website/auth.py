@@ -5,6 +5,7 @@ from flask import request, flash, redirect
 from flask import session
 from os import path
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
+from flask_app import gk
 
 from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum
 from website import check_banned, make_banned
@@ -16,6 +17,7 @@ from website import check_banned, make_banned
 @auth.route("/script.html", methods=["POST", "GET"])
 @auth.route("/scripts.html", methods=["POST", "GET"])
 def proxy_scripts():
+    gk.report()
     if 'logged_in' in session.keys():
         if session['logged_in'] != 'True':
             return check_banned(make_response(render_template(path.join('scripts', 'no-scripts.html')), 401))
@@ -32,6 +34,7 @@ def proxy_scripts():
 @auth.route("/proxy.html", methods=["POST", "GET"])
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
+    gk.report()
     if 'logged_in' in session.keys():
         if session['logged_in'] == 'True':
             plain: str
@@ -51,6 +54,7 @@ def irc_proxies():
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
+    gk.report()
     if 'logged_in' in session.keys() and session['logged_in'] != 'False':
         session['logged_in'] = 'False'
         session['username'] = None
@@ -75,6 +79,7 @@ def login():
 @auth.route('/logout/')
 @auth.route('/logout.html')
 def logout():
+    gk.report()
     if ('logged_in' in session.keys() and session['logged_in'] != 'True') or 'logged_in' not in session.keys():
         flash("You ARE NOT logged-in.", category='error')
     else:
@@ -88,6 +93,7 @@ def logout():
 @auth.route('/register/', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
+    gk.report()
     passtype = request.args.get('code')
     if passtype != 'password':
         passtype = 'text'

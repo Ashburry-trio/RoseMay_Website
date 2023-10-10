@@ -4,13 +4,14 @@ from flask import (
 from flask import redirect, session, url_for
 from os.path import isdir
 from website import user_page_exists
-
+from flask_app import gk
 users_pages = Blueprint('users_pages', __name__, template_folder='templates', static_folder='static')
 
 
 @users_pages.route('/user/<user>/', methods=['GET'])
 @users_pages.route('/user/<user>/index.html', methods=['GET'])
 def user_home_pages(user):
+    gk.report()
     while '..' in user:
         user = user.replace('..','')
     while '\\' in user:
@@ -25,6 +26,7 @@ def user_home_pages(user):
 
 @users_pages.route('/user/nobody.html', methods=['GET'])
 def no_user_page():
+    gk.report()
     has_page: bool
     if 'username' in session.keys():
         user_low: str = session['username'].lower()
