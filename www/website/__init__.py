@@ -45,30 +45,6 @@ def make_banned():
 
 
 def check_banned(site):
-    banned_for: float
-    if request.environ['REMOTE_ADDR'] not in pages_counted.keys():
-        pages_counted[request.environ['REMOTE_ADDR']] = {}
-        pages_counted[request.environ['REMOTE_ADDR']]['count'] = 1
-        pages_counted[request.environ['REMOTE_ADDR']]['time'] = secstime() + 9
-    else:
-        pages_counted[request.environ['REMOTE_ADDR']]['count'] += 1
-        if pages_counted[request.environ['REMOTE_ADDR']]['count'] >= 8:
-            secs_pages = secstime() - pages_counted[request.environ['REMOTE_ADDR']]['time']
-            if secs_pages >= 1:
-                return make_banned()
-            else:
-                if secs_pages <= 0:
-                    del pages_counted[request.environ['REMOTE_ADDR']]
-
-    if request.environ['REMOTE_ADDR'] in banned.keys():
-        banned_for = banned[request.environ['REMOTE_ADDR']] - secstime()
-        if banned_for <= 0:
-            flash(banned_for)
-            del banned[request.environ['REMOTE_ADDR']]
-            pages_counted[request.environ['REMOTE_ADDR']]['time'] = secstime() + 9
-            return site
-        else:
-            return make_banned()
     return site
 
 class BadHash(BaseException):

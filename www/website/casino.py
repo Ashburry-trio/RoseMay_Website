@@ -16,6 +16,7 @@ from website import check_banned, make_banned
 from .date_func import update_today
 from decimal import Decimal
 casino = Blueprint('casino', __name__, template_folder='templates', static_folder='static')
+from flask_app import gk
 
 stash: list[str, str] = ['$0.00 CAD', '0.00']
 stash_load: list[int] = [0]
@@ -45,6 +46,7 @@ def apply_stash(amount: str):
 @casino.route('/casino/casino.html', methods=['GET', 'POST'])
 @casino.route('/casino/games.html', methods=['GET', 'POST'])
 def casino_home():
+    gk.report()
     update_today()
     load_stash()
     casino_user = load_casino_user()
@@ -63,6 +65,7 @@ def casino_home():
 @casino.route('/casino/prizes/', methods=['GET'])
 @casino.route('/casino/prizes/index.html', methods=['GET'])
 def peak_prizes():
+    gk.report()
     try:
         load_stash()
         update_today()
@@ -74,6 +77,7 @@ def peak_prizes():
 @casino.route('/casino/locked/', methods=['GET'])
 @casino.route('/casino/locked/games.html', methods=['GET'])
 def locked_games():
+    gk.report()
     try:
         load_stash()
         update_today()
