@@ -33,21 +33,22 @@ from flask_app import gk
 @views.route('/casino.html', methods=['GET', 'POST'])
 def well_known_trap():
     gk.report()
-    # 429 = too many requests
-    return make_banned()
+    gk.report()
+    gk.report()
+
 
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET'])
 def index_home():
     gk.report()
-    return check_banned(render_template('index.html'))
+    return render_template('index.html')
 
 
 @views.route('/hosted.html', methods=['GET'])
 @views.route('/hosted/', methods=['GET'])
 def hosted_info():
     gk.report()
-    return check_banned(render_template('hosted.html'))
+    return render_template('hosted.html')
 
 
 @views.route('/license/zero-bsd.html', methods=['GET'])
@@ -55,7 +56,7 @@ def hosted_info():
 @views.route('/zero-bsd.html', methods=['GET'])
 def zero_bsd():
     gk.report()
-    return check_banned(render_template('zero-bsd.html'))
+    return render_template('zero-bsd.html')
 
 
 @views.route('/coc/code_of_conduct.html', methods=['GET'])
@@ -64,7 +65,7 @@ def zero_bsd():
 @views.route('/coc.html', methods=['GET'])
 def coc():
     gk.report()
-    return check_banned(render_template('coc.html'))
+    return render_template('coc.html')
 
 @views.route('/banned.txt', methods=['GET', 'POST'])
 def banned_txt():
@@ -77,21 +78,21 @@ def banned_txt():
 @views.route('/contributing.html', methods=['GET'])
 def contrib():
     gk.report()
-    return check_banned(render_template('contributing.html'))
+    return render_template('contributing.html')
 
 
 @views.route('/security.html', methods=['GET'])
 @views.route('/security', methods=['GET'])
 def security():
     gk.report()
-    return check_banned(render_template('security.html'))
+    return render_template('security.html')
 
 
 @views.route('/download.html', methods=['GET'])
 @views.route('/download/', methods=['GET'])
 def download_msl():
     gk.report()
-    return check_banned(render_template('download.html'))
+    return render_template('download.html')
 
 
 

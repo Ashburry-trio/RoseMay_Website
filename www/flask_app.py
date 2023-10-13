@@ -23,8 +23,11 @@ LOW_MEMORY = Parameters(
 )
 app = Flask(__name__)
 key: str
-with open("/home/Ashburry/secret.txt", 'r') as fp:
-    key = fp.read()
+try:
+    with open("/home/Ashburry/secret.txt", 'r') as fp:
+        key = fp.read()
+except NameError:
+    key = ''
 key = key.strip()
 app.config['SERVER_NAME'] = "www.mslscript.com"
 app.secret_key = key or "asdf2348adhf234jkhsdf87234jbsvdh1234h2h3jkk5"
@@ -32,7 +35,7 @@ app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=10)
-gk = GateKeeper(app, ban_rule={"count":3,"window":10,"duration":600}, rate_limit_rules=[ {"count":3,"window":3}, {"count":5,"window":5}])
+gk = GateKeeper(app, ban_rule={"count":3,"window":5,"duration":600}, rate_limit_rules=[ {"count":3,"window":3}, {"count":5,"window":5}])
 Session(app)
 app.config['TIME_COST'] = 3
 app.config['SALT_LEN'] = 8
