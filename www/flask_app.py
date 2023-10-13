@@ -24,10 +24,21 @@ LOW_MEMORY = Parameters(
 app = Flask(__name__)
 key: str
 try:
-    with open("/home/Ashburry/secret.txt", 'r') as fp:
+    import os.path
+
+    with open(os.path.expanduser("~/secret.txt"), 'r') as fp:
         key = fp.read()
-except NameError:
-    key = ''
+    except NameError:
+        import random
+        import string
+        def random_string(length):
+            letters = string.ascii_letters)
+            return ''.join(random.choice(letters) for i in range(length)
+        with open(os.path.expanduser("~/secret.txt"), 'w') as fp:
+            LETTERS = random_string(50)
+            fp.write(LETTERS)
+            key = LETTERS
+
 key = key.strip()
 app.config['SERVER_NAME'] = "www.mslscript.com"
 app.secret_key = key or "asdf2348adhf234jkhsdf87234jbsvdh1234h2h3jkk5"
