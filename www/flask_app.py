@@ -11,7 +11,7 @@ from flask_argon2 import Argon2
 from argon2 import Type
 from argon2 import Parameters
 from flask_gatekeeper import GateKeeper
-
+from os.path import expanduser
 LOW_MEMORY = Parameters(
     type=Type.ID,
     version=19,
@@ -24,29 +24,27 @@ LOW_MEMORY = Parameters(
 app = Flask(__name__)
 key: str
 try:
-    import os.path
-
-    with open(os.path.expanduser("~/secret.txt"), 'r') as fp:
+    with open(expanduser("~/secret.txt"), 'r') as fp:
         key = fp.read()
-    except NameError:
-        import random
-        import string
-        def random_string(length):
-            letters = string.ascii_letters)
-            return ''.join(random.choice(letters) for i in range(length)
-        with open(os.path.expanduser("~/secret.txt"), 'w') as fp:
-            LETTERS = random_string(50)
-            fp.write(LETTERS)
-            key = LETTERS
+except (NameError, FileNotFoundError):
+    import random
+    import string
+    def random_string(length):
+        letters = string.ascii_letters
+        return ''.join(random.choice(letters) for i in range(length))
+    with open(expanduser("~/secret.txt"), 'w') as fp:
+        LETTERS = random_string(50)
+        fp.write(LETTERS)
+        key = LETTERS
 
 key = key.strip()
 app.config['SERVER_NAME'] = "www.mslscript.com"
-app.secret_key = key or "asdf2348adhf234jkhsdf87234jbsvdh1234h2h3jkk5"
+app.secret_key = key or "asdfoasdf;asdfjkasdf123908)(*@#$*(,.;"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=10)
-gk = GateKeeper(app, ban_rule={"count":3,"window":5,"duration":600}, rate_limit_rules=[ {"count":3,"window":3}, {"count":5,"window":5}])
+gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":60}, rate_limit_rules=[ {"count":4,"window":1, "duration":120}, {"count":15,"window":7,"duration":240}])
 Session(app)
 app.config['TIME_COST'] = 3
 app.config['SALT_LEN'] = 8

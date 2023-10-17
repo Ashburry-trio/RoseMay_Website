@@ -232,14 +232,6 @@ def login_user_post(username: str, password: str):
 def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
     clear_session()
     users.clear()
-    global pass_type
-    if passtype == 'text':
-        pass_type.pop()
-        pass_type.append('text')
-    else:
-        pass_type.pop()
-        pass_type.append('password')
-        passtype = 'password'
     password_strip: list[str, bool] = strip_html(passwd)
     username_strip: list[str, bool] = strip_html(username)
     del passwd, username
@@ -251,10 +243,10 @@ def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
         return make_response(render_template('register.html', passtype=passtype), 401)
     username_low: str = str(username_strip[0]).lower()
     load_users_ini(username_low)
-    if pass_type != 'password':
-        pass_type = 'text'
-    session['username'] = users['main']['username']
-    session['logged_in'] = 'False'
+    if passtype != 'password':
+        passtype = 'text'
+    else:
+        passtype = 'password'
 
     try:
         # User already exists and they know the password

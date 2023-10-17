@@ -5,6 +5,7 @@ from flask import redirect, session, url_for
 from website import check_banned, make_banned
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
+from time import sleep
 
 @views.route('/.well-known/', methods=['GET', 'POST'])
 @views.route('//wp-includes/wlwmanifest.xml', methods=['GET', 'POST'])
@@ -33,9 +34,7 @@ from flask_app import gk
 @views.route('/casino.html', methods=['GET', 'POST'])
 def well_known_trap():
     gk.report()
-    gk.report()
-    gk.report()
-
+    return render_template('banned.txt')
 
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET'])
@@ -67,22 +66,18 @@ def coc():
     gk.report()
     return render_template('coc.html')
 
-@views.route('/banned.txt', methods=['GET', 'POST'])
-def banned_txt():
-    gk.report()
-    return make_response(render_template('banned.txt'), 429)
 
-@views.route('/contrib.html', methods=['GET'])
-@views.route('/contributing', methods=['GET'])
+@views.route('/contributing/', methods=['GET'])
 @views.route('/contrib/', methods=['GET'])
 @views.route('/contributing.html', methods=['GET'])
+@views.route('/contrib.html', methods=['GET'])
 def contrib():
     gk.report()
     return render_template('contributing.html')
 
 
 @views.route('/security.html', methods=['GET'])
-@views.route('/security', methods=['GET'])
+@views.route('/security/', methods=['GET'])
 def security():
     gk.report()
     return render_template('security.html')
