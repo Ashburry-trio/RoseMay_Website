@@ -8,9 +8,7 @@ from shutil import copytree
 from configparser import ConfigParser
 from os import path, rename
 from os.path import isdir
-import flask_argon2
-#from .reload import reload
-
+from .reload import reload
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '../app')
 
@@ -23,9 +21,6 @@ casino_last_update: list[int] = [0]
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
 
-banned = {}
-pages_counted = {}
-pass_type: list[str] = ['']
 
 def checkAlnum(word: str):
     if not word:
@@ -39,38 +34,29 @@ def checkAlnum(word: str):
 def clear_session():
     [session.pop(key) for key in list(session.keys()) if not key.startswith('_')]
 
-def make_banned():
-    banned[request.environ['REMOTE_ADDR']] = secstime() + 3000
-    return redirect('/banned.txt', code='307')
-
-
-def check_banned(site):
-    return site
-
-class BadHash(BaseException):
-    pass
-
 
 class NoSuchUser(BaseException):
     pass
 
-def gph(secret: str):
-    try:
-        return flask_argon2.generate_password_hash(secret)
-    except BaseException:
-        raise BadHash
+def writePassword(secret: str):
+    users['passcode']['secret'] = secret
+    save_user()
 
-def checkPassword(hash_data, secret):
-    try:
-        verify = flask_argon2.check_password_hash(hash_data, secret)
-    except BaseException:
-        raise BadHash
-    return verify
+def checkPassword(secret) -> bool:
+    if not secret:
+        return False
+    if users.has_section('passcode') and 'secret' in users['passcode'].values():
+        if users['passcode']['secret'] == secret:
+            return True
+        else:
+            return False
+    else:
+        raise NoSuchUser('No user specified, or specified user does not exist.')
 
-def strip_code(m):
+def strip_code(m: str) -> list:
     return strip_html(m)
 
-def strip_html(msg):
+def strip_html(msg) -> list:
     """
       Takes in 'msg' with py and html and path codes and
       removes the nasty bytes. Decodes bytes to string.
@@ -114,21 +100,21 @@ def strip_html(msg):
         return (msg, True)
     return (msg, False)
 
-def user_page_exists(username: str):
+def user_page_exists(username: str) -> bool:
     user_strip: list[str, bool]
     user_low: str
     user_low = username.lower()
     del username
     user_strip = strip_html(user_low)
     del user_low
-    if user_strip[1] or not user_strip[0]:
+    if user_strip[1]:
         return False
     if isdir(path.join(path.expanduser('~'), 'www', 'website', 'templates', 'users', user_strip[0])):
         return True
     else:
         return False
 
-def user_exists(user_name: str):
+def user_exists(user_name: str) -> bool:
     user_low: str = user_name.lower()
     del user_name
     user_low = strip_html(user_low)
@@ -139,15 +125,19 @@ def user_exists(user_name: str):
     return False
 
 
-def set_paths(username: str):
+def set_paths(username: str) -> None | bool:
     username_low: list[str, bool] = strip_html(username.lower())
     del username
     user_dir[0] = ''
     user_file[0] = ''
     if username_low[1]:
-        return
+        return None
     user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0])
     user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0], username_low[0] + ".ini")
+    if exists(user_file[0]):
+        return True
+    else:
+        return False
 
 def load_casino_user(username: str | None = None):
     username_low: tuple[str, bool]
@@ -174,14 +164,12 @@ def save_casino_app():
         casino_app.write(fp, space_around_delimiters=True)
     casino_last_update[0] = int(secstime())
 
-def load_users_ini(username: str):
+def load_users_ini(username: str) -> ConfigParser:
     users.clear()
     username_low: str = strip_html(username.lower())
     del username
-    if username_low[1] or not username_low[0]:
-        raise ValueError('Not a valid UserName.')
-    set_paths(username_low[0])
-    users.read(user_file[0])
+    if set_paths(username_low[0]):
+        users.read(user_file[0])
     return users
 
 
@@ -191,45 +179,44 @@ def load_users_ini(username: str):
 
 
 def login_user_post(username: str, password: str):
+    clear_session()
     try:
-        session['logged_in'] = 'False'
-        username = strip_html(username)
-        password = strip_html(password)
-        if username[1] or password[1]:
-            flash("not a valid UserName.")
-            return redirect('/login.html')
-        username_low: str = username[0].lower()
-        load_users_ini(username_low)
-        if not 'main' in users.keys():
-            flash("unknown UserName.", category="error")
+        session['logged_in'] = False
+        user_strip: list[str, bool] = strip_html(username)
+        pass_strip: list[str, bool] = strip_html(password)
+        del username, password
+        if user_strip[1] or pass_strip[1]:
+            flash("Not a valid UserName or Password.")
+            return make_response(render_template('login.html'), 401)
+        username_low: str = str(user_strip[0]).lower()
+        load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0],
+                                        # Clears `users[str]` configparser
+        if not users.has_section('main'):
+            flash("Unknown UserName.", category="error")
             return make_response(render_template("login.html"), 401)
-        if 'main' in users.keys() and not 'password' in users['main'].keys():
-            # ERASE USERNAME FROM DISK
+        if not users.has_section('passcode'):
+            # -+
+            #  ERASE USERNAME FOLDER FROM DISK
+            # -+
             flash("bad UserName.", category="error")
             return make_response(render_template("login.html"), 401)
-        try:
-            ph_hash = checkPassword(users['main']['password'], password[0])
-        except BadHash:
-            flash('error checking password. try again...')
-            return make_response(render_template('login.html'), 401)
-        if ph_hash:
-            session['logged_in'] = 'True'
-            session['username'] = str(users['main']['username'])
-            session['password'] = str(users['main']['password'])
-            session['_password_plain'] = password[0]
+
+        if checkPassword(pass_strip[0]):
+            session['logged_in'] = True
+            user_up: str = str(users['main']['username'])
+            session['username'] = str(users['main']['username']).lower()
             session['power'] = str(users['main']['power']) or 'normal'
-            save_user()
-            flash(f"you have logged-in as \'{session['username']}\'", category='success')
+            flash(f"You have logged-in as \'{user_up}\'", category='success')
             return redirect('/irc/proxies.html', code='307')
         else:
-            flash(f"bad password! '{password[0]}'", category='error')
+            flash(f"bad password! \'{pass_strip[0]}\'", category='error')
             return make_response(render_template('login.html'), 401)
-    except (ValueError, KeyError, FileNotFoundError):
-        flash("unknown UserName.", category="error")
+    except (ValueError, KeyError, FileNotFoundError, NoSuchUser):
+        flash("Unknown UserName.", category="error")
         return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
+def register_user_post(username: str, passwd: str, power = 'normal'):
     clear_session()
     users.clear()
     password_strip: list[str, bool] = strip_html(passwd)
@@ -237,41 +224,31 @@ def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
     del passwd, username
     if username_strip[1] or password_strip[1]:
         if username_strip[1]:
-            flash('not a valid UserName, it must be alphabetic and digits only.')
+            flash('Not a valid UserName, it must be alphabetic and digits only.', category='error')
         elif password_strip[1]:
-            flash('Password MUST contain alphabetic and digit characters only.', category='error')
-        return make_response(render_template('register.html', passtype=passtype), 401)
+            flash('Password MUST contain alphabetic and digits only.', category='error')
+        return make_response(render_template('register.html'), 401)
     username_low: str = str(username_strip[0]).lower()
     load_users_ini(username_low)
-    if passtype != 'password':
-        passtype = 'text'
-    else:
-        passtype = 'password'
-
     try:
         # User already exists and they know the password
         # load_users_ini(username_low)
-        session['logged_in'] = 'False'
+        session['logged_in'] = False
         session['username'] = users['main']['username']
-        try:
-            ph_hash = checkPassword(users['main']['password'], password_strip[0])
-        except BadHash:
-            flash('error checking password. try a different password.', category='error')
-            return make_response(render_template('register.html', passtype=passtype), 401)
-        if ph_hash:
-            session['password'] = users['main']['password']
-            session['_password_plain'] = password_strip[0] if passtype == 'text' else 'password'
-            session['username'] = username_strip[0]
-            session['power'] = power
-            session['logged_in'] = 'True'
+        if checkPassword(password_strip[0]) == True:
+            user_up: str = users["main"]["username"]
+            session['username'] = str(username_strip[0]).lower()
+            session['power'] = users['main']['power']
+            session['logged_in'] = True
             save_user()
-            flash(f"you have logged-in as '{username_strip[0]}'", category='success')
+            flash(f"You have logged-in as \'{user_up}\'", category='success')
+            del user_up
             return redirect(url_for('auth.irc_proxies'), code='307')
         else:
-            flash('UserName is taken, try again...', category='error')
+            flash('UserName is taken, Try Again...', category='error')
             clear_session()
-            session['logged_in'] = 'False'
-            return make_response(render_template('register.html', passtype=passtype), 401)
+            session['logged_in'] = False
+            return make_response(render_template('register.html'), 401)
     except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
         if not username_low:
             flash("You are missing the UserName to create.", category='error')
@@ -287,27 +264,20 @@ def register_user_post(username: str, passwd: str, passtype, power = 'normal'):
             flash('Password must be, at-most, 15 characters.', category='error')
         else:
             session["username"] = username_strip[0]
-            try:
-                password_secret = gph(password_strip[0])
-            except BadHash:
-                flash("invalid Password.", category='error')
-                return make_response(render_template('register.html', passtype=passtype), 401)
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             src_file = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low}", 'default_user.ini')
             set_paths(username_low)
             copytree(src_dir, user_dir[0])
             rename(src_file, user_file[0])
             load_users_ini(username_low)
-            session['password'] = password_secret
-            session['_password_plain'] = password_strip[0] if passtype == 'text' else 'password'
             session['username'] = username_strip[0]
             session['power'] = power
-            session['logged_in'] = 'True'
-            save_user()
-            flash(f"UserName '{username_strip[0]}' was just created...")
+            session['logged_in'] = True
+            writePassword(password_strip[0])  # includes save_user()
+            flash(f"UserName '{username_strip[0]}' was just created and saved...")
             # reload()
             return redirect('/irc/proxies.html', code='307')
-        return make_response(render_template('register.html', passtype=passtype), 401)
+        return make_response(render_template('register.html'), 401)
 
 def save_casino_user(username: str | None = None) -> None:
     if not casino_user:
@@ -330,13 +300,10 @@ def save_casino_user(username: str | None = None) -> None:
 def save_user() -> None:
     try:
         username = strip_html(session['username'])
-        username_low: str = username[0].lower()
         if username[1]:
             return None
-        set_paths(username_low)
-        load_users_ini(username_low)
         if not users.has_section('main'):
-            users['main'] = {}
+            raise NoSuchUser
         for opt, val in session.items():
             opt = str(opt)
             val = str(val)
@@ -345,14 +312,14 @@ def save_user() -> None:
                 users['main'][opt] = val
         with open(user_file[0], 'w') as fp:
             users.write(fp, space_around_delimiters=True)
-    except (KeyError, ValueError, FileNotFoundError):
+    except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
         clear_session()
         users.clear()
         return None
-    logged = str(session['logged_in'])
+    logged = bool(session['logged_in'])
     power = session['power']
     clear_session()
     session['logged_in'] = logged
-    if logged == 'True':
+    if logged is True:
         session['username'] = username[0]
         session['power'] = power

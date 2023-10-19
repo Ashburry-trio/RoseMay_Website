@@ -2,7 +2,6 @@ from flask import (
     Blueprint, render_template, request, flash, make_response
     )
 from flask import redirect, session, url_for
-from website import check_banned, make_banned
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
 from time import sleep
