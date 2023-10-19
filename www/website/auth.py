@@ -8,7 +8,6 @@ auth = Blueprint('auth', __name__, template_folder='templates', static_folder='s
 from flask_app import gk
 
 from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum
-from website import check_banned, make_banned
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
@@ -20,11 +19,11 @@ def proxy_scripts():
     gk.report()
     if 'logged_in' in session.keys():
         if session['logged_in'] != 'True':
-            return check_banned(make_response(render_template(path.join('scripts', 'no-scripts.html')), 401))
+            return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
         else:
-            return check_banned(render_template(path.join('scripts', 'scripts.html')))
+            return render_template(path.join('scripts', 'scripts.html'))
     else:
-        return check_banned(make_response(render_template(path.join('scripts', 'no-scripts.html')), 401))
+        return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
 
 
 @auth.route("/proxies/", methods=["POST", "GET"])
@@ -43,13 +42,8 @@ def irc_proxies():
             if not users.has_section('proxy'):
                 users['proxy'] = {}
             proxy_list = users['proxy']
-            if '_password_plain' in session.keys():
-                plain = str(session['_password_plain'])
-                del session['_password_plain']
-            else:
-                plain = 'password'
-            return check_banned(render_template('proxies.html', bnc_list=proxy_list, passcode=plain))
-    return check_banned(render_template('proxy-login.html'))
+            return render_template('proxies.html', bnc_list=proxy_list, passcode=users['main']['username'])
+    return render_template('proxy-login.html')
 
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
@@ -71,8 +65,8 @@ def login():
         elif username[1] or passw[1]:
             flash("UserName and Password fields must be alphanumeric only.", category='error')
         else:
-            return check_banned(login_user_post(username[0], passw[0]))
-    return check_banned(make_response(render_template("login.html"), 401))
+            return login_user_post(username[0], passw[0])
+    return make_response(render_template("login.html"), 401)
 
 
 
@@ -87,7 +81,7 @@ def logout():
     session['logged_in'] = 'False'
     if 'username' in session.keys():
         save_user()
-    return check_banned(check_banned(redirect('/index.html', code='307')))
+    return redirect('/index.html', code='307')
 
 @auth.route('/register/index.html', methods=['GET', 'POST'])
 @auth.route('/register/', methods=['GET', 'POST'])
@@ -109,7 +103,7 @@ def register():
             gooditem = checkAlnum(passwd)
         if not gooditem:
             flash('you must use alphabetic and digit characters only.', category='error')
-            return check_banned(render_template("register.html", passtype=passtype))
+            return render_template("register.html")
         else:
-            return check_banned(register_user_post(username, passwd, passtype))
-    return check_banned(render_template("register.html", passtype=passtype))
+            return register_user_post(username, passwd)
+    return render_template("register.html")

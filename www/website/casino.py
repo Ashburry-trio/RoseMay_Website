@@ -12,7 +12,6 @@ _dir = path.dirname(path.abspath(__file__))
 # if not _dir in syspath:
 #     syspath.append(_dir)
 from website import load_casino_user, save_casino_app, load_casino_app
-from website import check_banned, make_banned
 from .date_func import update_today
 from decimal import Decimal
 casino = Blueprint('casino', __name__, template_folder='templates', static_folder='static')
@@ -69,7 +68,7 @@ def peak_prizes():
     try:
         load_stash()
         update_today()
-        return check_banned(render_template('/casino/prizes.html', stash=stash[1]))
+        return render_template('/casino/prizes.html', stash=stash[1])
     except BaseException:
         return
 
@@ -85,10 +84,10 @@ def locked_games():
             casino_user = load_casino_user()
             pages = 9 - int(casino_user['main']['pages-visted'])
             if int(casino_user['main']['remaining_pages']) > 0:
-                return check_banned(render_template('/casino/locked.html', stash=stash[1], pages_count=pages))
+                return render_template('/casino/locked.html', stash=stash[1], pages_count=pages)
             else:
-                return check_banned(render_template('/casino/unlocked.html', stash=stash[1]))
+                return render_template('/casino/unlocked.html', stash=stash[1])
         flash('you must login to view the locked games')
-        return check_banned(redirect('/login.html', code='307'))
+        return redirect('/login.html', code='307')
     except KeyError:
-        return check_banned(render_template('/casino/locked.html'))
+        return render_template('/casino/locked.html')
