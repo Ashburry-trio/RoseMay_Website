@@ -6,13 +6,14 @@ from flask import session, redirect, flash, make_response, render_template, requ
 from time import time as secstime
 from shutil import copytree
 from configparser import ConfigParser
-from os import path, rename
-from os.path import isdir
+from shutil import rmtree
+from os import path, rename, rmdir
+from os.path import isdir, isfile
 from .reload import reload
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '../app')
 
-users: ConfigParser[str | None, str | None, str | None] = ConfigParser()
+users: ConfigParser[str, str | None, str | None] = ConfigParser()
 casino_user: ConfigParser[str | None, str | None, str | None] = ConfigParser()
 casino_file: str = path.join(path.expanduser("~"), "www", "app", "casino.ini")
 casino_app: ConfigParser[str | None, str | None, str | None] = ConfigParser()
@@ -45,7 +46,7 @@ def writePassword(secret: str):
 def checkPassword(secret) -> bool:
     if not secret:
         return False
-    if users.has_section('passcode') and 'secret' in users['passcode'].values():
+    if users.has_section('passcode') and 'secret' in users['passcode'].keys():
         if users['passcode']['secret'] == secret:
             return True
         else:
@@ -102,10 +103,8 @@ def strip_html(msg) -> list:
 
 def user_page_exists(username: str) -> bool:
     user_strip: list[str, bool]
-    user_low: str
-    user_low = username.lower()
+    user_strip = strip_html(username.lower())
     del username
-    user_strip = strip_html(user_low)
     del user_low
     if user_strip[1]:
         return False
@@ -117,10 +116,10 @@ def user_page_exists(username: str) -> bool:
 def user_exists(user_name: str) -> bool:
     user_low: str = user_name.lower()
     del user_name
-    user_low = strip_html(user_low)
-    if user_low[1] or not user_low[0]:
+    user_low_strip: list[str, bool] = strip_html(user_low)
+    if user_low_strip[1]:
         return False
-    if isdir(path.join(path.expanduser('~'), 'website_and_proxy', 'users', user_low[0])):
+    if isdir(path.join(path.expanduser('~'), 'website_and_proxy', 'users', user_low_strip[0])):
         return True
     return False
 
@@ -134,7 +133,7 @@ def set_paths(username: str) -> None | bool:
         return None
     user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0])
     user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0], username_low[0] + ".ini")
-    if exists(user_file[0]):
+    if isfile(user_file[0]):
         return True
     else:
         return False
@@ -191,16 +190,6 @@ def login_user_post(username: str, password: str):
         username_low: str = str(user_strip[0]).lower()
         load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0],
                                         # Clears `users[str]` configparser
-        if not users.has_section('main'):
-            flash("Unknown UserName.", category="error")
-            return make_response(render_template("login.html"), 401)
-        if not users.has_section('passcode'):
-            # -+
-            #  ERASE USERNAME FOLDER FROM DISK
-            # -+
-            flash("bad UserName.", category="error")
-            return make_response(render_template("login.html"), 401)
-
         if checkPassword(pass_strip[0]):
             session['logged_in'] = True
             user_up: str = str(users['main']['username'])
@@ -211,8 +200,8 @@ def login_user_post(username: str, password: str):
         else:
             flash(f"bad password! \'{pass_strip[0]}\'", category='error')
             return make_response(render_template('login.html'), 401)
-    except (ValueError, KeyError, FileNotFoundError, NoSuchUser):
-        flash("Unknown UserName.", category="error")
+    except (ValueError, KeyError, FileNotFoundError, NoSuchUser) as exp:
+        flash(f"Unknown UserName.", category="error")
         return make_response(render_template("login.html"), 401)
 
 
@@ -234,7 +223,7 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
         # User already exists and they know the password
         # load_users_ini(username_low)
         session['logged_in'] = False
-        session['username'] = users['main']['username']
+        session['username'] = str(users['main']['username']).lower()
         if checkPassword(password_strip[0]) == True:
             user_up: str = users["main"]["username"]
             session['username'] = str(username_strip[0]).lower()
@@ -245,7 +234,7 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
             del user_up
             return redirect(url_for('auth.irc_proxies'), code='307')
         else:
-            flash('UserName is taken, Try Again...', category='error')
+            flash('UserName is taken. Try Again...', category='error')
             clear_session()
             session['logged_in'] = False
             return make_response(render_template('register.html'), 401)
@@ -267,14 +256,16 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             src_file = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low}", 'default_user.ini')
             set_paths(username_low)
-            copytree(src_dir, user_dir[0])
-            rename(src_file, user_file[0])
-            load_users_ini(username_low)
+            try:
+                copytree(src_dir, user_dir[0])
+                rename(src_file, user_file[0])
+            except FileExistsError:
+                pass
             session['username'] = username_strip[0]
             session['power'] = power
             session['logged_in'] = True
             writePassword(password_strip[0])  # includes save_user()
-            flash(f"UserName '{username_strip[0]}' was just created and saved...")
+            flash(f"UserName \'{username_strip[0]}\' was just created and saved...")
             # reload()
             return redirect('/irc/proxies.html', code='307')
         return make_response(render_template('register.html'), 401)
