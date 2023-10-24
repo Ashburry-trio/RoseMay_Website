@@ -9,39 +9,35 @@ from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser
 import sys
-app = Flask(__name__)
+
 key: str
 def make_key():
     global key
     try:
         with open(expanduser("~/secret.txt"), 'r') as fp:
             key = fp.read()
-            key = key.split('\n')[0].strip()
+            key = bytes(key.split('\n')[0].strip(), 'utf-8')
             if not key:
                 raise NameError('Key is empty space! This is wrong.')
     except (NameError, FileNotFoundError):
-        import random
-        import string
-        def random_string(length):
-            letters = string.ascii_letters + string.digits + string.punctuation
-            return ''.join(random.choice(letters) for _ in range(length))
+        import secrets
         with open(expanduser("~/secret.txt"), 'w') as fp:
-            LETTERS = random_string(55)
+            LETTERS = secrets.token_urlsafe(55)
             fp.write(LETTERS)
-            key = LETTERS
-            del LETTERS
-            del random
-            del string
+            key = bytes(LETTERS, 'utf-8')
+        del LETTERS
+        del secrets
 make_key()
-
+app = Flask(__name__)
+app.secret_key = key or b"Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
 app.config['SERVER_NAME'] = "www.mslscript.com"
-app.config["SECRET_KEY"] = key or "Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
-app.config["SESSION_TYPE"] = "file"     #  or filesystem
+app.config["SESSION_TYPE"] = "filesystem"     #  or file
 app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
-Session(app)
+sess = Session()
+sess.init_app(app)
 gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":60}, rate_limit_rules=[ {"count":4,"window":1, "duration":120}, {"count":15,"window":7,"duration":240}])
 
 from website.views import views
