@@ -23,8 +23,8 @@ def make_key()
         import random
         import string
         def random_string(length):
-            letters = string.ascii_letters
-            return ''.join(random.choice(letters) for i in range(length))
+            letters = string.ascii_letters + string.digits + string.punctuation
+            return ''.join(random.choice(letters) for _ in range(length))
         with open(expanduser("~/secret.txt"), 'w') as fp:
             LETTERS = random_string(55)
             fp.write(LETTERS)
@@ -35,7 +35,7 @@ def make_key()
 make_key()
 
 app.config['SERVER_NAME'] = "www.mslscript.com"
-app.secret_key = key or "Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
+app.config["SECRET_KEY"] = key or "Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
 app.config["SESSION_TYPE"] = "file"     #  or filesystem
