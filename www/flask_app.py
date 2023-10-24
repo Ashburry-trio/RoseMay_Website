@@ -4,11 +4,17 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from flask import Flask
-from flask import request
+from flask import Flask, request
 from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser
+import sys
+# Open the file in write mode ('w')
+with open('/home/Ashburry/www/newfile.txt', 'w') as f:
+    # Write some text to the file
+    f.write(f"Python version: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
+
+
 app = Flask(__name__)
 key: str
 try:
@@ -33,8 +39,8 @@ app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=10)
-gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":60}, rate_limit_rules=[ {"count":4,"window":1, "duration":120}, {"count":15,"window":7,"duration":240}])
 Session(app)
+gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":60}, rate_limit_rules=[ {"count":4,"window":1, "duration":120}, {"count":15,"window":7,"duration":240}])
 
 from website.views import views
 from website.auth import auth

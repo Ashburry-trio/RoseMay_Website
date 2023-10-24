@@ -35,14 +35,14 @@ def proxy_scripts():
 def irc_proxies():
     gk.report()
     if 'logged_in' in session.keys():
-        if session['logged_in'] == 'True':
+        if session['logged_in'] is True:
             plain: str
             proxy_list: dict[str | None, str | None]
             users = load_users_ini(session['username'])
             if not users.has_section('proxy'):
                 users['proxy'] = {}
             proxy_list = users['proxy']
-            return render_template('proxies.html', bnc_list=proxy_list, passcode=users['main']['username'])
+            return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
     return render_template('proxy-login.html')
 
 @auth.route("/login/", methods=["POST", "GET"])
@@ -102,7 +102,7 @@ def register():
         if gooditem == True:
             gooditem = checkAlnum(passwd)
         if not gooditem:
-            flash('you must use alphabetic and digit characters only.', category='error')
+            flash(f'you must use alphabetic and digit characters only. {username} {passwd}', category='error')
             return render_template("register.html")
         else:
             return register_user_post(username, passwd)
