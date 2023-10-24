@@ -11,7 +11,7 @@ from os.path import expanduser
 import sys
 app = Flask(__name__)
 key: str
-def make_key()
+def make_key():
     global key
     try:
         with open(expanduser("~/secret.txt"), 'r') as fp:
