@@ -1,7 +1,7 @@
 {% extends 'base_fixednav.html' %}
 {% block linklist %}
 
-         {% if session.logged_in == 'True' %}
+         {% if session.logged_in == True %}
          <li class="nav-item">
             <a class="nav-link" href="/index.html">home</a>
           </li>

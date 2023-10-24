@@ -5,7 +5,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/">home</a>
           </li>
-         {% if session.logged_in == 'True' %}
+         {% if session.logged_in == True %}
          <li class="nav-item">
             <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
          </li>
