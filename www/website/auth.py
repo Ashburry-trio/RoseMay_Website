@@ -17,10 +17,7 @@ from website import login_user_post, register_user_post, save_user, load_users_i
 @auth.route("/scripts.html", methods=["POST", "GET"])
 def proxy_scripts():
     gk.report()
-    if 'logged_in' in session.keys():
-        if session['logged_in'] != 'True':
-            return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
-        else:
+    if 'logged_in' in session.keys() and session['logged_in'] is True:
             return render_template(path.join('scripts', 'scripts.html'))
     else:
         return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
@@ -34,23 +31,21 @@ def proxy_scripts():
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
     gk.report()
-    if 'logged_in' in session.keys():
-        if session['logged_in'] is True:
-            plain: str
-            proxy_list: dict[str | None, str | None]
-            users = load_users_ini(session['username'])
-            if not users.has_section('proxy'):
-                users['proxy'] = {}
-            proxy_list = users['proxy']
-            return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
-    return render_template('proxy-login.html')
+    if 'logged_in' in session.keys() and session['logged_in'] is True:
+        plain: str
+        proxy_list: dict[str | None, str | None]
+        load_users_ini(session['username'])
+        proxy_list = users['proxy']
+        return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
+    else:
+        return render_template('proxy-login.html')
 
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
     gk.report()
-    if 'logged_in' in session.keys() and session['logged_in'] != 'False':
-        session['logged_in'] = 'False'
+    if 'logged_in' in session.keys() and session['logged_in'] is not False:
+        session['logged_in'] = False
         session['username'] = None
     if request.method == "POST":
         # record the user name
@@ -88,13 +83,8 @@ def logout():
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
     gk.report()
-    passtype = request.args.get('code')
-    if passtype != 'password':
-        passtype = 'text'
-    else:
-        passtype = 'password'
     if request.method == 'POST':
-        session['logged_in'] = 'False'
+        session['logged_in'] = False
         username: str = request.form.get('username')
         passwd: str = request.form.get('password')
         gooditem: bool = True
@@ -102,7 +92,7 @@ def register():
         if gooditem == True:
             gooditem = checkAlnum(passwd)
         if not gooditem:
-            flash(f'you must use alphabetic and digit characters only. {username} {passwd}', category='error')
+            flash(f'you must use alphabetic and digit characters only.', category='error')
             return render_template("register.html")
         else:
             return register_user_post(username, passwd)

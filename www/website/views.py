@@ -1,10 +1,8 @@
 from flask import (
-    Blueprint, render_template, request, flash, make_response
+    Blueprint, render_template, make_response
     )
-from flask import redirect, session, url_for
-views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
-from time import sleep
+views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
 @views.route('/.well-known/', methods=['GET', 'POST'])
 @views.route('//wp-includes/wlwmanifest.xml', methods=['GET', 'POST'])
@@ -33,7 +31,7 @@ from time import sleep
 @views.route('/casino.html', methods=['GET', 'POST'])
 def well_known_trap():
     gk.report()
-    return render_template('banned.txt')
+    return make_response(render_template('banned.txt'), 401)
 
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET'])

@@ -105,7 +105,6 @@ def user_page_exists(username: str) -> bool:
     user_strip: list[str, bool]
     user_strip = strip_html(username.lower())
     del username
-    del user_low
     if user_strip[1]:
         return False
     if isdir(path.join(path.expanduser('~'), 'www', 'website', 'templates', 'users', user_strip[0])):
@@ -113,9 +112,9 @@ def user_page_exists(username: str) -> bool:
     else:
         return False
 
-def user_exists(user_name: str) -> bool:
-    user_low: str = user_name.lower()
-    del user_name
+def user_exists(username: str) -> bool:
+    user_low: str = username.lower()
+    del username
     user_low_strip: list[str, bool] = strip_html(user_low)
     if user_low_strip[1]:
         return False
