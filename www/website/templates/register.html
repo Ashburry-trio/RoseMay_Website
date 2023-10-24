@@ -49,9 +49,8 @@
 
 {% block h1 %}Create an Account{% endblock h1 %}
 {% block content %}
-<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored encrypted on our disk.
-Only password changes and deletions are possible, <strong>NOT viewing it</strong>. So, remember your password at all times;
-<strong>write it down</strong> if you must!</p>
+<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored on our disk.
+<br>Remember your password at all times; <strong>write it down</strong> if you must!</p> <a href="/forgot.html" alt="click this link if you forgot your password">Forgot your password? click/tap here.</a>
 <form action="/register.html" method="POST">
     <p>username <input type="username" name="username" /></p>
     <p>password <input type="text" name="password" /></p>
