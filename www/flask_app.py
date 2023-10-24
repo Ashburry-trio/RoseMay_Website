@@ -9,36 +9,38 @@ from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser
 import sys
-# Open the file in write mode ('w')
-with open('/home/Ashburry/www/newfile.txt', 'w') as f:
-    # Write some text to the file
-    f.write(f"Python version: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
-
-
 app = Flask(__name__)
 key: str
-try:
-    with open(expanduser("~/secret.txt"), 'r') as fp:
-        key = fp.read()
-except (NameError, FileNotFoundError):
-    import random
-    import string
-    def random_string(length):
-        letters = string.ascii_letters
-        return ''.join(random.choice(letters) for i in range(length))
-    with open(expanduser("~/secret.txt"), 'w') as fp:
-        LETTERS = random_string(50)
-        fp.write(LETTERS)
-        key = LETTERS
+def make_key()
+    global key
+    try:
+        with open(expanduser("~/secret.txt"), 'r') as fp:
+            key = fp.read()
+            key = key.split('\n')[0].strip()
+            if not key:
+                raise NameError('Key is empty space! This is wrong.')
+    except (NameError, FileNotFoundError):
+        import random
+        import string
+        def random_string(length):
+            letters = string.ascii_letters
+            return ''.join(random.choice(letters) for i in range(length))
+        with open(expanduser("~/secret.txt"), 'w') as fp:
+            LETTERS = random_string(55)
+            fp.write(LETTERS)
+            key = LETTERS
+            del LETTERS
+            del random
+            del string
+make_key()
 
-key = key.strip()
 app.config['SERVER_NAME'] = "www.mslscript.com"
-app.secret_key = key or "Jsd2f3oasd4FDSEf;asdfjkajkdf12u3y908)(*@#$*(,.;"
+app.secret_key = key or "Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
-app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_TYPE"] = "file"     #  or filesystem
 app.config['SESSION_FILE_THRESHOLD'] = 250
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=10)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
 Session(app)
 gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":60}, rate_limit_rules=[ {"count":4,"window":1, "duration":120}, {"count":15,"window":7,"duration":240}])
 

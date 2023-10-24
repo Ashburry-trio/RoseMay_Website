@@ -46,19 +46,8 @@
           {% endif %}
 {% endblock linklist %}
 {% block h1 %}Select a User-Page{% endblock h1 %}
-{% block lead %}{% if has_page == True %}Edit{% else %}Create{% endif %} your own user-page, and stay connected with others.{% endif %}
-{% if session.logged_in == True and has_page is not True %}
-Click <a href="/create.html" alt="link to create your default username folder you can visit and edit.">create</a>, to start your page.
-{% elif session.logged_in == True and has_page is True %}
-View your page by clicking <a href="/user/{{ session.username }}" alt="link to your user-page">this link (/user/{% session.username %}</a>.
-{% else %}
-<a href="/login.html" alt="click here to sign-in to your account">Sign-in</a> then click the user-page link at the top navigation bar to create your page.
-{% endif %}
+{% block lead %}{% if has_page == True %}You already have a page created at this link <a href="https://www.mslscript.com/user/{% session.username %}/admin.html">https://www.mslscript.com/user/{% session.username %}/admin.html</a>.
+You can share it by removing the admin.html ending. {% else %}You must <a href="/login.html">SIGN-IN</a> or <a href="/register.html"SIGN-UP</a>
+before you can create a user-page. You can share your link by removing the /admin.html ending and copy/paste anywhere you wish. Your link will be hosted at www.mslscript.com/user/username/
 {% endblock lead %}
-{% block content %}
-{% if session.logged_in != True %}<p>New User? <a href="/register.html" alt="If you do not already have an account click this link to register/log-in one"><strong>create user here!</strong></a></p>
-{% else %}
-<p>Thank you for registering, custom IRC room pages will be available soon after I start coding it.</p>
-{% endif %}
-<p>page is nobody.html incomplete!</p>
 {% endblock content %}
