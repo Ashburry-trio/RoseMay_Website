@@ -6,7 +6,6 @@ from flask import session
 from os import path
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
-
 from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum, users
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
@@ -31,9 +30,10 @@ def proxy_scripts():
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
     gk.report()
+    global users
     if 'logged_in' in session.keys() and session['logged_in'] is True:
         proxy_list: dict[str | None, str | None]
-        load_users_ini(session['username'])
+        users = load_users_ini(session['username'])
         proxy_list = users['proxy']
         return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
     else:
