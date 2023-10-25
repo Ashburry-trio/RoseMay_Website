@@ -65,9 +65,19 @@ def peak_prizes():
     try:
         load_stash()
         update_today()
-        return render_template('/casino/prizes.html', stash=stash[1])
-    except BaseException:
-        return
+        casino_user = load_casino_user()
+        global stash
+        if casino_user is False:
+            cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+            prize_cash = 'unknown money amount'
+            remaining_pages = 9
+        else:
+            cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
+            prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
+            remaining_pages = int(casino_user['main']['remaining_pages'])
+            return render_template('casino/pirzes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+    except BaseException as e:
+        return render_template('casino/pirzes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
 
 @casino.route('/casino/locked/index.html', methods=['GET'])
 @casino.route('/casino/locked/', methods=['GET'])
@@ -83,8 +93,8 @@ def locked_games():
             if int(casino_user['main']['remaining_pages']) > 0:
                 return render_template('/casino/locked.html', stash=stash[1], pages_count=pages)
             else:
-                return render_template('/casino/unlocked.html', stash=stash[1])
+                return render_template('static/casino/unlocked.html', stash=stash[1])
         flash('you must login to view the locked games')
-        return redirect('/login.html', code='307')
+        return redirect('static/login.html', code='307')
     except KeyError:
         return render_template('/casino/locked.html')

@@ -1,0 +1,106 @@
+{% extends 'base_fixednav.html' %}
+{% block css %}
+p {
+  font-variant: small-caps;
+}
+{% endblock css %}
+{% block title %}casino, basic games, fair pay-out, also play on IRC!{% endblock title %}
+{% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
+{% block linklist %}
+          <li class="nav-item">
+            <a class="nav-link" href="/">home</a>
+          </li>
+         {% if session.logged_in == True %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/irc/proxies.html">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout.html">sign-out</a>
+          </li>
+         {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/nobody.html">user-pages</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" href="#">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/register.html">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login.html">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
+          </li>
+          {% endif %}
+{% endblock linklist %}
+{% block h1 %}The Casino Games{% endblock h1 %}
+{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html" alt="list of prizes you can choose from.">prizes*</a> you can earn!{% endblock lead %}
+{% block content %}
+<hr /><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br />
+{% if remaining_pages > 0 %}
+You have <u><strong>{{ remaining_pages or 9 }}</strong></u> hidden pages left to visit before unlocking <a href="/casino/locked/games.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
+{% else %}
+You have unlocked <a href="/casino/locked/games.html" alt="Select this link to access two secret high paying games; unlocked.">these 2 secret games</a>!
+{% endif %}
+<center>
+<p><u><code>AAAA Quadrupal A selection of buds: Shipped direct from a dispensery.</code></u></p>
+<h2>1/4 ounce Canabis - $30</h1>
+<h2>one ounce Canabis - $100</h1>
+<h2>Canabis Gummy Worms - $5 each</h1>
+
+<h1><strong>Illicit Drugs</strong> - Tested Every Sunday, at-least one Sunday.</h1>
+<p>I am a Licensed Provider, and have been accepted since the age of 3 years-old to sell Crystal-Meth, Fyntenol, Canabis, cocain powder, cocain rock,and thats all that I remember. I have a Masters and Grade 10 and a half, and a phd in the field of street drugs and another one for serial killers; at-that-time (which is hard to get).</p>
+<p>The drug Crystal-Meth is carefully crafted using only high-grade ingredients and is completely safe, however it has a 2 month withdrawl period with a painful kick in nut (worse?) at the end of your
+3rd month. So, make sure you use it only Wednesdays (1/4 gram only) for your first 4 months of quitting for a relaxed and empowering feelings facing the world forever with a new and improved
+brain chemistry: By damaging 3 special parts of brain which <strong>function</strong> only when damaged. If you think you need something to step up your game <strong>quitting this drug</strong> might
+be your best and cheapest way to go. If you only have 2 points left save it until the start of the fourth month when the hell kicks in, if it does. If it doesn't then flush the side bag after 5 months. You will
+feel so great you will have no problem smoking it or flushing it. I am trying to get some Temple Kung-Fu crystal-meth which has martial-arts genes to turn you in to a fighter with a small sniff,
+does no damage to the brain and is not addictive.
+<strong>And Fun too!</strong></p>
+<h2>(2x 8-ball) 1/4th ounce (7 grams) Crystal Meth - $200</h1>
+<h2>one ounce (30 grams) Crystal Meth - $500</h1>
+
+<h1><u>Warning:</u> The drug <em>fyntenal</em> will <strong>kill you</strong> if you have never done it before.<br />
+Carefully crafted by a knowledgable staff and tested for potency and harmful additives every Sunday.
+</h1>
+<h1><u>警告：</u> 如果你以前从未使用过<em>芬太尼</em>，这种药物<strong>会杀死你</strong>。<br /> 由知识丰富的工作人员精心制作，并在每个星期日测试效力和有害添加剂。 </h1>
+<h1><u>警告：</u> 薬物<em>フェンタニル</em>は、初めて使用する場合、<strong>あなたを死に至らせます</strong>。<br /> 知識豊富なスタッフによって慎重に作られ、毎週日曜日に有効性と有害な添加物のテストが行われます。 </h1>
+
+<p>Comes with wooden sticks and tin-foil peices and a pack of matches and get up to 3 noloxon (narcan) kits below while supply lasts. Tested every Sunday morning, and chefs are watched with scrutiny as they create the drug. But the chef knows exactly how it will be tested more than the testers and will never provide anything that would fatally kill nor injure a person no matter how new they are to the drug, just keep noloxon on site just incase and never use alone! Triple layed rainbow color is the high point for this drug, available only once a month since it takes so much of the chefs time and money to create. First come, first served.</p>
+<h2>1/8th ounce (3.5 grams) Fyntenal - $200</h2>
+<h2>1/2 ounce (15 grams) Fyntenal - $750</h2>
+<p>1, 2 or 3 Noloxon kits, just pay for shipping and the kits are FREE. Check <a href="bing.com/chat">bing.com/chat</a> And ask where you can get FREE noloxon kits and even <a href="casino/noloxon/training.html">training</a> - <b>$10 or less shipping.</b> Ask for 1, 2 or 3 kits.</u></h1>
+
+<h2>Double (or triple-point) scale to weigh your doses, 3-point scale while supplies last and if I can restock - $25</h1>
+<p>I usually buy <b>all</b> the 3-point scales from the store, like everyone else, with a few 2-point scales. Then, I need to wait for the store to reload on 3-point scales. They move quick and usually cost $50 or more.</p>
+<hr />
+<h1><u>Prizes available</u>:</h1>
+<h2>$1 dollar x 200 prizes</h2>
+<h2>$5 x 20 prizes available</h2>
+<h2>$10 x 2 prizes available</h2>
+<h2>$20 x 5 prizes available</h2>
+<h2>$50 x 1 prizes available</h2>
+<h2>$100 x 1 prizes available</h2>
+<h5>Total: $570 to spend on prizes listed above. 229 prizes are counted. More prizes added every month. More prize winnings added every month. Play the <a href="/casino/games/dineout.html">FloxGlove - Dine-out or Shud-up to win prizes.</a> to win prize money.</h5>
+<p>Please Note: You have exactly the same chances on winning a $100 prize as you do any of the $1 prizes, despite the larger amount of $1 prizes. The app takes 3 samples and picks a random prize of the 3 samples, unless your first sample is $1 dollar then your prize is $1 dollar. Only if it is your first pick from the sample prizes.</p>
+</center>
+{% endblock content %}
+
+
