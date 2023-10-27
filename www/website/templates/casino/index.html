@@ -51,7 +51,7 @@ p {
           {% endif %}
 {% endblock linklist %}
 {% block h1 %}The Casino Games{% endblock h1 %}
-{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html" alt="list of prizes you can choose from.">prizes*</a> you can earn!{% endblock lead %}
+{% block lead %}House-hold Safe: <b>{{ stash }}</b> &nbsp;- Peak at <a href="/casino/prizes.html" alt="list of prizes you can choose from.">prizes*</a> you can earn!{% endblock lead %}
 {% block content %}
 <hr /><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br />
 {% if remaining_pages > 0 %}
