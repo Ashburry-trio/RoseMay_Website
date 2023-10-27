@@ -37,6 +37,7 @@ def apply_stash(amount: str):
     stash[0] = '$' + str(stash[1]) + ' CAD'
     save_stash()
 
+
 @casino.route('/casino/', methods=['GET', 'POST'])
 @casino.route('/casino/index.html', methods=['GET', 'POST'])
 @casino.route('/casino/casino.html', methods=['GET', 'POST'])
@@ -57,6 +58,7 @@ def casino_home():
         remaining_pages = int(casino_user['main']['remaining_pages'])
     return render_template('/casino/index.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
 
+
 @casino.route('/casino/prizes.html', methods=['GET'])
 @casino.route('/casino/prizes/', methods=['GET'])
 @casino.route('/casino/prizes/index.html', methods=['GET'])
@@ -71,30 +73,62 @@ def peak_prizes():
             cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
             prize_cash = 'unknown money amount'
             remaining_pages = 9
+            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
         else:
             cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
             prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
             remaining_pages = int(casino_user['main']['remaining_pages'])
-            return render_template('casino/pirzes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
-    except BaseException as e:
-        return render_template('casino/pirzes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+    except (KeyError, ValueError):
+        cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+        prize_cash = 'unknown money amount'
+        remaining_pages = 9
+        return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
 
-@casino.route('/casino/locked/index.html', methods=['GET'])
 @casino.route('/casino/locked/', methods=['GET'])
 @casino.route('/casino/locked/games.html', methods=['GET'])
-def locked_games():
+def lockedASAD_games():
+    gk.report()
+    load_stash()
+    update_today()
+    casino_user = load_casino_user(session['username'])
+    if casino_user is False:
+        flash('you must login to view the locked games.')
+        return redirect("/register.html", code=307)
+    elif 'username' in session.keys():
+        cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
+        prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
+        remaining_pages = int(casino_user['main']['remaining_pages'])
+        if remaining_pages >= 1:
+            return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        elif remaining_pages <= 0:
+            return render_template('/casino/unlocked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+    else:
+        cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+        prize_cash = 'unknown money amount'
+        remaining_pages = 9
+        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+
+@casino.route('/casino/bank.html', methods=['GET'])
+@casino.route('/casino/banker.html', methods=['GET'])
+@casino.route('/casino/bank/', methods=['GET'])
+@casino.route('/casino/banker/', methods=['GET'])
+def casino_banker():
     gk.report()
     try:
         load_stash()
         update_today()
         if 'username' in session.keys():
             casino_user = load_casino_user()
-            pages = 9 - int(casino_user['main']['pages-visted'])
-            if int(casino_user['main']['remaining_pages']) > 0:
-                return render_template('/casino/locked.html', stash=stash[1], pages_count=pages)
-            else:
-                return render_template('static/casino/unlocked.html', stash=stash[1])
-        flash('you must login to view the locked games')
-        return redirect('static/login.html', code='307')
+            cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
+            prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
+            remaining_pages = int(casino_user['main']['remaining_pages'])
+            return render_template('/casino/bank.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        else:
+            raise KeyError
     except KeyError:
-        return render_template('/casino/locked.html')
+        cash = '<a href=\"/login.html\" alt=\"click to sign-in to mSLscript.com account.\">to Log-in</a>'
+        prize_cash = 'unknown money amount'
+        remaining_pages = 9
+        return render_template("/casino/bank.html", stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+

@@ -46,7 +46,7 @@ def user_index_pages(user):
 
 @users_pages.route('/user/nobody.html', methods=['GET'])
 @users_pages.route('/user/', methods=['GET'])
-def no_user_page():
+def no_user_pageasdf():
     gk.report()
     has_page: bool
     if 'username' in session.keys():

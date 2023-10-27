@@ -1,0 +1,112 @@
+{% extends 'base_fixednav.html' %}
+{% block css %}
+@font-face {
+  font-family: 'Lexend Tera';
+  src: url('/static/LexendTera-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'DangerNight';
+  src: url('/static/DangerNightPersonalUse-owdl4.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Hellounicorn';
+  src: url('/static/Hellounicorn-GOrLG.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+p {
+    font-family: 'Lexend Tera', sans-serif;
+    font-variant: small-caps;
+}
+span.warning {
+    font-family: 'DangerNight', sans-serif;
+    font-size: 68px;
+}
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Hellounicorn", sans-serif;
+}
+.center {
+    display: flex;
+    justify-content: center;
+
+form {
+    text-aign: right;
+}
+{% endblock css %}
+{% block title %}casino, basic games, fair pay-out, also play on IRC!{% endblock title %}
+{% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
+{% block linklist %}
+          <li class="nav-item">
+            <a class="nav-link" href="/">home</a>
+          </li>
+         {% if session.logged_in == True %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/irc/proxies.html">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout.html">sign-out</a>
+          </li>
+         {% else %}
+         <li class="nav-item">
+            <a class="nav-link" href="/user/nobody.html">user-pages</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link disabled" href="#">proxies</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" href="/register.html">sign-up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login.html">sign-in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
+          </li>
+          {% endif %}
+{% endblock linklist %}
+{% block h1 %}The Casino Games Listing{% endblock h1 %}
+{% block lead %}House-hold Safe: {{ stash }} &nbsp;- Peak at <a href="/casino/prizes.html" alt="list of prizes you can choose from.">prizes*</a> you can earn!{% endblock lead %}
+{% block content %}
+<hr /><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br />
+{% if remaining_pages > 0 %}
+You have <u><strong>{{ remaining_pages or 9 }} hidden pages</strong></u> left to visit before unlocking <a href="/casino/locked/games.html" alt="2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
+{% else %}
+You have unlocked <a href="/casino/locked/games.html" alt="Select this link to access two secret high paying games; unlocked.">these 2 secret games</a>!
+{% endif %}
+    <div class="center">
+        <form action="/casino/bank.html" method="POST">
+            <label for="name">Name on Credit Card <input type="text" id="name" name="name" value="{{ session.name_card }}"/></p>
+            <label for="ship_name">Name to Ship To <input type="text" id="ship_name" name="name_ship" value="{{ session.name_ship }}" required></p>
+            <label for="email">Contact Email <input type="text" id="email" name="email" value="{{ session.email }}" required></p>
+            <label for="country">Country <input type="text" id="country" name="country" value="{{ session.country }}" required></p>
+            <label for="city">City <input type="text" id="city" name="city" value="{{ session.city }}" required></p>
+            <label for="street">Apt. #-address #-street name <input type="text" id="street" name="sttreet" value="{{ session.street }}" required></p>
+            <label for="zip">Postal-Code / Zip <input type="text" id="zip" name="zip"  value="{{ session.zip }}" required></p>
+            <label for="cc">Credit-Card # <input type="tel" id="cc" name="cc" pattern="[0-9]{13,16}" required></p>
+            <label for="cvv2">CVV2 <input type="text" id="cvv2" name="cvv2" pattern="\d{3,4}" required></p>
+            <label for="money">Amount to Withdraw <input type="number" id="money" name="money" value="21" min="20" /></p>
+            <label for="submit">Update <input name="submit" id="submit" type="submit" value="Upload Funds" /></p>
+        </form>
+    </div>
+{% endblock content %}
+
+
