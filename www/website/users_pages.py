@@ -11,7 +11,7 @@ users_pages = Blueprint('users_pages', __name__, template_folder='templates', st
 
 @users_pages.route('/user/<user>/admin.html', methods=['GET'])
 @users_pages.route('/user/<user>/admin/', methods=['GET'])
-def user_admin_page():
+def user_admin_page(user):
     gk.report()
     load_users_ini()
     while '.' in user:
@@ -40,7 +40,9 @@ def user_index_pages(user):
     del user
     has_page: bool = user_page_exists(user_low)
     if has_page:
-        return render_template('/users/'+user_low + '/index.html')
+        load_users_ini()
+        user_up = users['main']['username']
+        return render_template('/users/'+user_low + '/index.html',user_up=user_up)
     else:
         return redirect('/user/nobody.html')
 

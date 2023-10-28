@@ -162,8 +162,13 @@ def save_casino_app():
         casino_app.write(fp, space_around_delimiters=True)
     casino_last_update[0] = int(secstime())
 
-def load_users_ini(username: str) -> ConfigParser:
+def load_users_ini(username: str | None = None) -> ConfigParser | None:
     users.clear()
+    if username == None:
+        if 'username' in session.keys():
+            username = session['username']
+        else:
+            return
     username_low: str = strip_html(username.lower())
     del username
     if set_paths(username_low[0]):
@@ -223,12 +228,11 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
         # load_users_ini(username_low)
         session['logged_in'] = False
         session['username'] = str(users['main']['username']).lower()
-        if checkPassword(password_strip[0]) == True:
+        if checkPassword(password_strip[0]) is True:
             user_up: str = users["main"]["username"]
             session['username'] = str(username_strip[0]).lower()
             session['power'] = users['main']['power']
             session['logged_in'] = True
-            save_user()
             flash(f"You have logged-in as \'{user_up}\'", category='success')
             del user_up
             return redirect(url_for('auth.irc_proxies'), code='307')
@@ -236,6 +240,7 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
             flash('UserName is taken. Try Again...', category='error')
             clear_session()
             session['logged_in'] = False
+            del session['username']
             return make_response(render_template('register.html'), 401)
     except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
         if not username_low:
@@ -260,7 +265,8 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
                 rename(src_file, user_file[0])
             except FileExistsError:
                 pass
-            session['username'] = username_strip[0]
+            session['username'] = username_strip[0].lower()
+            users['main']['username'] = username_strip[0]
             session['power'] = power
             session['logged_in'] = True
             writePassword(password_strip[0])  # includes save_user()
@@ -289,7 +295,7 @@ def save_casino_user(username: str | None = None) -> None:
 
 def save_user() -> None:
     try:
-        username = strip_html(session['username'])
+        username = strip_html(users['main']['username'])
         if username[1]:
             return None
         if not users.has_section('main'):
@@ -297,7 +303,7 @@ def save_user() -> None:
         for opt, val in session.items():
             opt = str(opt)
             val = str(val)
-            if opt and val and not opt.startswith('_'):
+            if opt and val and not opt.startswith('_') and not val == 'username':
                 opt = opt.lower()
                 users['main'][opt] = val
         with open(user_file[0], 'w') as fp:
@@ -311,5 +317,5 @@ def save_user() -> None:
     clear_session()
     session['logged_in'] = logged
     if logged is True:
-        session['username'] = username[0]
+        session['username'] = username[0].lower()
         session['power'] = power
