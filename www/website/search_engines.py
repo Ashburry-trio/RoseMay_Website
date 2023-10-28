@@ -1,4 +1,4 @@
-from flask import send_from_directory
+from flask import Blueprint, send_from_directory
 from flask_app import gk
 search_engines = Blueprint('search_engines', __name__, template_folder='templates', static_folder='static')
 

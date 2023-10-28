@@ -8,7 +8,7 @@ from flask import Flask, request
 from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser, isdir
-for os import mkdir
+from os import mkdir
 import sys
 
 key: str

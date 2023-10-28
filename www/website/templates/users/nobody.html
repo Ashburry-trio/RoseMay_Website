@@ -46,11 +46,11 @@
           {% endif %}
 {% endblock linklist %}
 {% block h1 %}Select a User-Page{% endblock h1 %}
-{% block lead %}{% if has_page == True %}Edit{% else %}Create{% endif %} your own user-page, and stay connected with others.{% endif %}
-{% if session.logged_in == True and has_page is not True %}
-Click <a href="/create.html" alt="link to create your default username folder you can visit and edit.">create</a>, to start your page.
-{% elif session.logged_in == True and has_page is True %}
-View your page by clicking <a href="/user/{{ session.username }}" alt="link to your user-page">this link (/user/{% session.username %}</a>.
+{% block lead %}{% if has_page == True %}Edit{% else %}Create{% endif %} your own user-page, and stay connected with others.
+{% if session.logged_in == True and has_page != True %}
+Click <a href="/create.html" alt="link to create your default username folder you can visit and edit.">CREATE</a>, to start your page.
+{% elif session.logged_in == True and has_page == True %}
+View your page by clicking <a href="/user/{{ session.username }}" alt="link to your user-page"><em>This Link</em> to (<strong>/user/{{ session.username }}</strong>)</a>.
 {% else %}
 <a href="/login.html" alt="click here to sign-in to your account">Sign-in</a> then click the user-page link at the top navigation bar to create your page.
 {% endif %}

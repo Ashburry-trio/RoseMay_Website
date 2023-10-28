@@ -1,8 +1,20 @@
 from flask import (
-    Blueprint, render_template, make_response
+    Blueprint, render_template, make_response, Response, jsonify
     )
-from flask_app import gk
+from werkzeug.exceptions import TooManyRequests
+from flask_app import gk, app
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
+
+@app.errorhandler(TooManyRequests)
+def handle_rate_limit_exceeded(e):
+    return jsonify({'error': 'Rate limit exceeded'}), 429
+
+@views.route('/casino.html', methods=['GET', 'POST'])
+@gk.specific(rate_limit_rules=[{"count":1,"window":1,"duration":240}])
+def skinners_version_ignore():
+    gk.report()
+    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. This is a danger person who you should ignore.', status=429, mimetype='text/plain')
+    return response
 
 @views.route('/.well-known/', methods=['GET', 'POST'])
 @views.route('//wp-includes/wlwmanifest.xml', methods=['GET', 'POST'])
@@ -27,10 +39,10 @@ views = Blueprint('views', __name__, template_folder='templates', static_folder=
 @views.route('/view-source:', methods=['GET', 'POST'])
 @views.route('/misc/ajax.js', methods=['GET', 'POST'])
 @views.route('/wp-login.php', methods=['GET', 'POST'])
-@views.route('/casino.html', methods=['GET', 'POST'])
+@gk.specific(rate_limit_rules=[{'count': 1, 'window': 60,"duration":240}])
 def well_known_trap():
     gk.report()
-    return make_response(render_template('banned.txt'), 401)
+    return make_response(render_template('banned.txt'), 429)
 
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET'])
