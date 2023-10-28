@@ -91,10 +91,13 @@ def lockedASAD_games():
     gk.report()
     load_stash()
     update_today()
-    casino_user = load_casino_user(session['username'])
+    casino_user = load_casino_user()
     if casino_user is False:
-        flash('you must login to view the locked games.')
-        return redirect("/register.html", code=307)
+        cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+        prize_cash = 'unknown money amount'
+        remaining_pages = 9
+        flash('you must sign-in to view the locked games.')
+        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
     elif 'username' in session.keys():
         cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
         prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
