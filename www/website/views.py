@@ -27,7 +27,6 @@ views = Blueprint('views', __name__, template_folder='templates', static_folder=
 @views.route('/view-source:', methods=['GET', 'POST'])
 @views.route('/misc/ajax.js', methods=['GET', 'POST'])
 @views.route('/wp-login.php', methods=['GET', 'POST'])
-@views.route('/favicon.ico', methods=['GET', 'POST'])
 @views.route('/casino.html', methods=['GET', 'POST'])
 def well_known_trap():
     gk.report()
