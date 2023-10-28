@@ -68,11 +68,11 @@ def login():
 @auth.route('/logout.html')
 def logout():
     gk.report()
-    if ('logged_in' in session.keys() and session['logged_in'] != 'True') or 'logged_in' not in session.keys():
+    if ('logged_in' in session.keys() and session['logged_in'] is not True) or 'logged_in' not in session.keys():
         flash("You ARE NOT logged-in.", category='error')
     else:
         flash("You have signed-out successfully!", category='success')
-    session['logged_in'] = 'False'
+    session['logged_in'] = False
     if 'username' in session.keys():
         save_user()
     return redirect('/index.html', code='307')
@@ -88,7 +88,7 @@ def register():
         passwd: str = request.form.get('password')
         gooditem: bool = True
         gooditem = checkAlnum(username)
-        if gooditem == True:
+        if gooditem is True:
             gooditem = checkAlnum(passwd)
         if not gooditem:
             flash(f'you must use alphabetic and digit characters only.', category='error')
