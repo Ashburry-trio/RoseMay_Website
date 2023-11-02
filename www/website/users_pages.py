@@ -4,7 +4,8 @@ from flask import (
 from flask import redirect, session
 from website import user_page_exists
 from flask_app import gk
-from .reload import reload
+from os import mkdir
+from .reload import *
 from website import load_users_ini, users
 users_pages = Blueprint('users_pages', __name__, template_folder='templates', static_folder='static')
 
@@ -71,8 +72,10 @@ def user_craete_page():
         has_page = user_page_exists(user_low)
     else:
         has_page = None
-    if has_page == False:
-        copytree('/home/Ashburry/www/website/templates/default_user','/home/Ashburry/www/website/templates/users/' + session['username'] +'/')
+    if has_page is False:
+        # copytree('/home/Ashburry/www/website/templates/default_user','/home/Ashburry/www/website/templates/users/' + session['username'].lower() +'/')
+        make_user_dir(session['username'].lower())
+        api_upload_default_files(session['username'].lower())
         has_page = True
-        reload()
+        return render_template('/users/'+session['username'].lower()+"/index.html")
     return render_template('/create.html', has_page=has_page)
