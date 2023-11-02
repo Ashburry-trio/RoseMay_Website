@@ -9,7 +9,6 @@ from configparser import ConfigParser
 from shutil import rmtree
 from os import path, rename, rmdir
 from os.path import isdir, isfile
-from .reload import reload
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '../app')
 
@@ -271,7 +270,6 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
             session['logged_in'] = True
             writePassword(password_strip[0])  # includes save_user()
             flash(f"UserName \'{username_strip[0]}\' was just created and saved...")
-            # reload()
             return redirect('/irc/proxies.html', code='307')
         return make_response(render_template('register.html'), 401)
 

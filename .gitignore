@@ -15,6 +15,7 @@ virtualenvs/*
 *secret*
 *secret.txt
 reload.py
+api_*.py
 flask_session*/
 pany*
 .*

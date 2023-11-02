@@ -46,8 +46,10 @@
           {% endif %}
 {% endblock linklist %}
 {% block h1 %}Select a User-Page{% endblock h1 %}
-{% block lead %}{% if has_page == True %}You already have a page created at this link <a href="https://www.mslscript.com/user/{% session.username %}/admin.html">https://www.mslscript.com/user/{% session.username %}/admin.html</a>.
+{% block lead %}{% if has_page == True %}You already have a page created at this link <a href="https://www.mslscript.com/user/{{ session.username }}/admin.html">https://www.mslscript.com/user/{{ session.username }}/admin.html</a>.
 You can share it by removing the admin.html ending. {% else %}You must <a href="/login.html">SIGN-IN</a> or <a href="/register.html"SIGN-UP</a>
 before you can create a user-page. You can share your link by removing the /admin.html ending and copy/paste anywhere you wish. Your link will be hosted at www.mslscript.com/user/username/
-{% endblock lead %}
+{% endif %}{% endblock lead %}
+{% block content %}
+<p>Not complete</p>
 {% endblock content %}
