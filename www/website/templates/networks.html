@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'base_fixednav.html' %}
 {% block title %}user irc network listing{% endblock title %}
-{% block h1 %}proxy-user--network activity{% endblock h1 %}
+{% block h1 %}proxy-user-network activity{% endblock h1 %}
 {% block content %}
 <p>Click on an active nickname to see who is connected using your login.</p><p>
   {% if not user.logged_in %}
   <p>You must be signed-in to view your irc network activity.</p>
   {% elif networks == None %}
-  <p>You are not logged in to any irc networks at this time. Note: Including website logins.</p>
+  <p>You are not logged-in to any irc networks at this time. Note: Including website logins.</p>
   {% else %}
-<p>Listing {{ len(networks) }} active networks for: <strong>{{ user.username }}</strong></p>
+<p>Listing {{ network|length }} active networks for: <strong>{{ user.username }}</strong></p>
 {% set bold = [0] %}
 <p>
   {{ table }}

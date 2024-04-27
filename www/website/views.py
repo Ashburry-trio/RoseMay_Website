@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, make_response, Response, jsonify
+    Blueprint, render_template, make_response, Response, jsonify, redirect
     )
 from werkzeug.exceptions import TooManyRequests
 from flask_app import gk, app
@@ -7,14 +7,18 @@ views = Blueprint('views', __name__, template_folder='templates', static_folder=
 
 @app.errorhandler(TooManyRequests)
 def handle_rate_limit_exceeded(e):
-    return jsonify({'error': 'Rate limit exceeded'}), 429
+    return jsonify({'tooManyRequests': 'the webserver is flooded with traffic, try again in atleast 4 minutes.' }), 429
 
 @views.route('/casino.html', methods=['GET', 'POST'])
 @gk.specific(rate_limit_rules=[{"count":1,"window":1,"duration":240}])
 def skinners_version_ignore():
     gk.report()
-    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. This is a danger person who you should ignore.', status=429, mimetype='text/plain')
+    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. That is a dangerous person who you should ignore.', status=429, mimetype='text/plain')
     return response
+
+@views.route('/nick.txt/', methods=['GET', 'POST'])
+def asdfasdfasf():
+    return make_response(render_template('nick.txt'), 200)
 
 @views.route('/.well-known/', methods=['GET', 'POST'])
 @views.route('//wp-includes/wlwmanifest.xml', methods=['GET', 'POST'])
@@ -44,6 +48,11 @@ def well_known_trap():
     gk.report()
     return make_response(render_template('banned.txt'), 429)
 
+@views.route('/leakygut.html')
+def fixbiome():
+    return redirect('https://shop.fixbiome.com/ref/31/', code=302)
+
+@views.route('/index.htm', methods=['GET'])
 @views.route('/', methods=['GET'])
 @views.route('/index.html', methods=['GET'])
 def index_home():

@@ -32,7 +32,7 @@ def irc_proxies():
     gk.report()
     global users
     if 'logged_in' in session.keys() and session['logged_in'] is True:
-        proxy_list: dict[str | None, str | None]
+        proxy_list: dict[str, str]
         users = load_users_ini(session['username'])
         proxy_list = users['proxy']
         return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
@@ -43,7 +43,7 @@ def irc_proxies():
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
     gk.report()
-    if 'logged_in' in session.keys() and session['logged_in'] is not False:
+    if 'logged_in' in session.keys() and session['logged_in'] is True:
         session['logged_in'] = False
         session['username'] = None
     if request.method == "POST":
@@ -59,13 +59,14 @@ def login():
         elif username[1] or passw[1]:
             flash("UserName and Password fields must be alphanumeric only.", category='error')
         else:
+            load_users_ini(username[0].lower())
             return login_user_post(username[0], passw[0])
     return make_response(render_template("login.html"), 401)
 
 
 
-@auth.route('/logout/')
-@auth.route('/logout.html')
+@auth.route('/logout/', methods=['GET'])
+@auth.route('/logout.html', methods=['GET'])
 def logout():
     gk.report()
     if ('logged_in' in session.keys() and session['logged_in'] is not True) or 'logged_in' not in session.keys():
@@ -73,8 +74,6 @@ def logout():
     else:
         flash("You have signed-out successfully!", category='success')
     session['logged_in'] = False
-    if 'username' in session.keys():
-        save_user()
     return redirect('/index.html', code='307')
 
 @auth.route('/register/index.html', methods=['GET', 'POST'])
@@ -91,8 +90,9 @@ def register():
         if gooditem is True:
             gooditem = checkAlnum(passwd)
         if not gooditem:
-            flash(f'you must use alphabetic and digit characters only.', category='error')
+            flash('you must use alphabetic and digit characters only.', category='error')
             return render_template("register.html")
         else:
             return register_user_post(username, passwd)
     return render_template("register.html")
+

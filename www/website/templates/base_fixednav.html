@@ -1,15 +1,24 @@
+{% set url = "https://Ashburry.PythonAnywhere.com" %}
+{% set longurl = "https://Ashburry.PythonAnywhere.com" %}
+{% set shorturl = "Ashburry.PythonAnywhere.com" %}
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{% block desc %}Machine-Gun mSL script named Bauderr and home of Trio-ircProxy host for IRC clients.S{% endblock desc %}">
+    <meta name="description" content="{% block desc %}Where can I get proxy servers list for IRC clients? Proxy server/vhost list for IRC clients, click here.{% endblock desc %}">
     <meta name="author" content="Ashburry and Bootstrap contributors">
-    <title>{% block title %}Machine-Gun mSL script named Bauderr{% endblock title %}</title>
-
-    <link rel="canonical" href="https://www.mslscript.com/">
+    <title>{% block title %}Machine-Gun mSL script named Bauderr for trio-ircproxy.py{% endblock title %}</title>
+    <link rel="canonical" href="https://ashburry.pythonanywhere.com/">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-    <link href="{{ url_for('static', filename='assets/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+	form i {
+		margin-left: -30px;
+		cursor: pointer;
+	}
+	</style>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="mask-icon" href="{{ url_for('static', filename='safari-pinned-tab.svg') }}" color="#DAA520">
     <meta name="msapplication-TileImage" content="{{ url_for('static', filename='mstile-144x144.ico') }}">
     <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='android-chrome-192x192.ico') }}">
@@ -18,9 +27,9 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
-  <meta property="og:image" content="https://www.mslscript.com/static/repository-open-graph-template.ico">
-  <meta property="og:title" content="Machine-Gun mSL script named Bauderr">
-  <meta property="og:description" content="Machine-Gun mSL script named Bauderr for mIRC & Adiirc and home of Trio-ircProxy host for any IRC client.">
+  <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
+  <meta property="og:title" content="Machine-Gun mSL script named Bauderr for trio-ircproxy.py">
+  <meta property="og:description" content="Where can I get proxy servers list for IRC? Proxy server/vhost list for IRC clients, click here.">
   <meta name="theme-color" content="#DAA520">
   <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
     <style>
@@ -166,57 +175,86 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a href="https://www.mslscript.com/" class="navbar-brand" style="color: #DAA520;">Machine-Gun</a>
+      <a href="/index.html" class="navbar-brand" style="color: #DAA520;">Machine-Gun</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
-{% block linklist %}
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">home</a>
-          </li>
-         {% if session.logged_in == True %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/irc/proxies.html">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout.html">sign-out</a>
-          </li>
-         {% else %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/nobody.html">user-pages*</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" href="#">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/register.html">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login.html">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
-          </li>
-          {% endif %}
-{% endblock linklist %}
-        </ul>
+{%- if content_page_name == 'home' -%}
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/index.html">home</a>
+  </li>
+{%- else -%}
+  <li class="nav-item">
+    <a class="nav-link" href="/">home</a>
+  </li>
+{%- endif -%}
+{%- if content_page_name == 'user-pages' -%}
+ <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/user/nobody.html">user-pages*</a>
+ </li>
+{%- else -%}
+  <li class="nav-item">
+    <a class="nav-link" href="/user/nobody.html">user-pages*</a>
+  </li>
+{%- endif -%}
+{%- if content_page_name == 'casino' -%}
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+ </li>
+{% else %}
+<li class="nav-item">
+    <a class="nav-link" href="/casino/games.html">casino</a>
+ </li>
+{%- endif -%}
+{%- if content_page_name == 'proxies' -%}
+ <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/irc/proxies.html">proxies</a>
+ </li>
+{%- else -%}
+<li class="nav-item">
+    <a class="nav-link" href="/irc/proxies.html">proxies</a>
+ </li>
+{%- endif -%}
+{%- if content_page_name != 'register' and session.logged_in == True -%}
+ <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">register</a>
+  </li>
+
+{%- elif content_page_name == 'register' and session.logged_in != True -%}
+ <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/register.html">register</a>
+  </li>
+{%- elif content_page_name != 'register' and session.logged_in != True -%}
+  <li class="nav-item">
+    <a class="nav-link" href="/register.html">register</a>
+  </li>
+{%- endif -%}
+
+{%- if content_page_name != 'login' and session.logged_in == True -%}
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">login</a>
+  </li>
+{%- elif content_page_name != 'login' and session.logged_in != True -%}
+<li class="nav-item">
+    <a class="nav-link" href="/login.html">login</a>
+  </li>
+{%- elif content_page_name == 'login' and session.logged_in != True -%}
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/login.html">login</a>
+  </li>
+ {%- endif -%}
+ {%- if session.logged_in != True -%}
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">logout</a>
+  </li>
+{%- else -%}
+  <li class="nav-item">
+    <a class="nav-link" href="/logout.html">logout</a>
+  </li>
+{%- endif -%}
+</ul>
     <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="XDCC  Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -244,8 +282,16 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-    <h1 class="mt-5">{% block h1 %}Welcome to mSLscript.com{% endblock h1 %}</h1>
-    <p class="lead">{% block lead %}Your Gateway to a World of Exciting Python Applications{% endblock lead %}</p>
+<div>
+<p class="mt-5">
+<a href="http://jigsaw.w3.org/css-validator/validator?lang=en&profile=css3svg&uri={{ shorturl }}&usermedium=all&vextwarning=&warning=1">
+    <img style="border:0;width:88px;height:31px"
+        src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+        alt="Valid CSS!">
+    </a>
+</p>
+<p><h1>{%- block h1 -%}<i>Welcome to</i><br>{{ shorturl }}{%- endblock h1 -%}</h1></p>
+<p class="lead">{%- block lead -%}Your Gateway to a World of Exciting Python Applications{%- endblock lead -%}</p>
 {% block content %}
 {% endblock content %}
 </div>
@@ -256,6 +302,6 @@
     <span class="text-body-secondary"><a href="/zero-bsd.html">zero-bsd</a> -master sire gi Kenggi Peters phd. ret.</span>
   </div>
 </footer>
-<script src="{{ url_for('static', filename='assets/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     </body>
 </html>
