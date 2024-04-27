@@ -17,7 +17,7 @@ def make_key():
     try:
         with open(expanduser("~/secret.txt"), 'r') as fp:
             key = fp.read()
-            key = bytes(key.split('\n')[0].strip(), 'utf-8')
+         #  key = bytes(key.split('\n')[0].strip(), 'utf-8')
             if not key:
                 raise NameError('Key is empty space! This is wrong.')
     except (NameError, FileNotFoundError):
@@ -32,9 +32,10 @@ make_key()
 if not isdir(expanduser('~/flask_session_cache')):
     mkdir(expanduser('~/flask_session_cache'))
 
+
 app = Flask(__name__)
 app.secret_key = key or b"Jsd1232f3oasdfsd4FDSEf;asdfjkXCVBEUK:ajkdf12u3y908)(*@#$*(,.;"
-app.config['SERVER_NAME'] = "Ashburry.pythonanywhere.com"
+app.config['SERVER_NAME'] = "ashburry.pythonanywhere.com"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
 app.config["SESSION_TYPE"] = "filesystem"     #  or file
@@ -56,3 +57,4 @@ app.register_blueprint(views, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 app.register_blueprint(navfix, url_prefix='/')
 app.register_blueprint(casino, url_prefix='/')
+

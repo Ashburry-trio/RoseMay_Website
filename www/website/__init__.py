@@ -5,22 +5,21 @@ from __future__ import annotations
 from flask import session, redirect, flash, make_response, render_template, request, url_for
 from time import time as secstime
 from shutil import copytree
-from configparser import ConfigParser
 from shutil import rmtree
-from os import path, rename, rmdir
+from os import path, rename, rmdir, walk
 from os.path import isdir, isfile
 _dir = path.dirname(path.abspath(__file__))
-app_dir = path.join(_dir, '../app')
+app_dir = path.join(_dir, '..','app')
 
-users: ConfigParser[str, str | None, str | None] = ConfigParser()
-casino_user: ConfigParser[str | None, str | None, str | None] = ConfigParser()
-casino_file: str = path.join(path.expanduser("~"), "www", "app", "casino.ini")
-casino_app: ConfigParser[str | None, str | None, str | None] = ConfigParser()
+from configparser import ConfigParser
+users: ConfigParser[str, str] = ConfigParser()
+casino_user: ConfigParser[str] = ConfigParser()
+casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
+casino_app: ConfigParser[str] = ConfigParser()
 casino_last_update: list[int] = [0]
 
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
-
 
 def checkAlnum(word: str):
     if not word:
@@ -51,7 +50,7 @@ def checkPassword(secret) -> bool:
         else:
             return False
     else:
-        raise NoSuchUser('No user specified, or specified user does not exist.')
+        raise NoSuchUser('__init__.checkPassword: User does not exist.')
 
 def strip_code(m: str) -> list:
     return strip_html(m)
@@ -110,6 +109,34 @@ def user_page_exists(username: str) -> bool:
         return True
     else:
         return False
+
+def get_user_pages():
+    user_dirs = next(walk(path.expanduser(path.join('~','www','website','templates','users'))),(None,[],None))[1]
+    total_nicklist = set()
+    total_chanlist = set()
+    for udir in user_dirs:
+        nets = next(walk(path.expanduser(path.join('~','www','website','templates','users', udir))),(None,[],None))[1]
+        for net in nets:
+            nicklist = set()
+            chanlist = set()
+            ass_ini = path.expanduser(path.join('~','www','website','templates','users', udir, net, 'assets.ini'))
+            config_ini = ConfigParser()
+            config_ini.read(ass_ini)
+            if 'nicks' in config_ini.keys() and 'nicks' in config_ini['nicks'].keys():
+                for nick in config_ini['nicks']['nicks'].split(' '):
+                    nicklist.add(nick)
+            if 'chans' in config_ini.keys() and 'chans' in config_ini['chans'].keys():
+                for chan in config_ini['chans']['chans'].split(' '):
+                    chanlist.add(chan)
+            total_nicklist.add((udir, net, tuple(nicklist)))
+            total_chanlist.add((udir, net, tuple(chanlist)))
+    total_chanlist = tuple(total_chanlist)
+    total_nicklist = tuple(total_nicklist)
+    asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = (total_chanlist, total_nicklist)
+    return asset_list
+    # asset_list[0] is Chan list
+    # asset_list[1] is Nickname list
+
 
 def user_exists(username: str) -> bool:
     user_low: str = username.lower()
@@ -191,8 +218,7 @@ def login_user_post(username: str, password: str):
             flash("Not a valid UserName or Password.")
             return make_response(render_template('login.html'), 401)
         username_low: str = str(user_strip[0]).lower()
-        load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0],
-                                        # Clears `users[str]` configparser
+        load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0])
         if checkPassword(pass_strip[0]):
             session['logged_in'] = True
             user_up: str = str(users['main']['username'])
@@ -210,7 +236,9 @@ def login_user_post(username: str, password: str):
 
 def register_user_post(username: str, passwd: str, power = 'normal'):
     clear_session()
+    global users
     users.clear()
+    users['main'] = {}
     password_strip: list[str, bool] = strip_html(passwd)
     username_strip: list[str, bool] = strip_html(username)
     del passwd, username
@@ -221,8 +249,9 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
             flash('Password MUST contain alphabetic and digits only.', category='error')
         return make_response(render_template('register.html'), 401)
     username_low: str = str(username_strip[0]).lower()
-    load_users_ini(username_low)
     try:
+        load_users_ini(username_low)
+        users['main']['username'] = username_strip[0]
         # User already exists and they know the password
         # load_users_ini(username_low)
         session['logged_in'] = False
@@ -255,16 +284,18 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
         elif len(password_strip[0]) > 15:
             flash('Password must be, at-most, 15 characters.', category='error')
         else:
-            session["username"] = username_strip[0]
+            session["username"] = username_strip[0].lower()
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             src_file = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low}", 'default_user.ini')
             set_paths(username_low)
             try:
                 copytree(src_dir, user_dir[0])
                 rename(src_file, user_file[0])
+                users = load_users_ini(username_low)
             except FileExistsError:
                 pass
             session['username'] = username_strip[0].lower()
+
             users['main']['username'] = username_strip[0]
             session['power'] = power
             session['logged_in'] = True
@@ -299,10 +330,9 @@ def save_user() -> None:
         if not users.has_section('main'):
             raise NoSuchUser
         for opt, val in session.items():
-            opt = str(opt)
+            opt = str(opt).lower()
             val = str(val)
-            if opt and val and not opt.startswith('_') and not val == 'username':
-                opt = opt.lower()
+            if opt and val and not opt.startswith('_') and opt != 'secret' and opt != 'username':
                 users['main'][opt] = val
         with open(user_file[0], 'w') as fp:
             users.write(fp, space_around_delimiters=True)

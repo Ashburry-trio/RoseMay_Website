@@ -1,62 +1,41 @@
-{% extends "base_fixednav.html" %} {% block title %}Login to your account{% endblock %}
-{% block linklist %}
-         {% if session.logged_in == 'True' %}
-        <li class="nav-item">
-            <a class="nav-link" href="/index.html">home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/{{ session.username }}">user-page</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/irc/proxies.html">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout.html">sign-out</a>
-          </li>
-         {% else %}
-         <li class="nav-item">
-            <a class="nav-link" href="/index.html">home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/nobody.html">user-pages</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">proxies</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register.html">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/login.html">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
-          </li>
-          {% endif %}
-{% endblock linklist %}
-
-{% block h1 %}sign-in to your mSLscript account{% endblock h1 %}
+{% set content_page_name = 'login' %}
+{% extends "base_fixednav.html" %}
+{% block title %}Login to your account{% endblock title %}
+{% block desc %}Login to your IRC-Proxy account: view proxy list, custom web page, simple casino!{% endblock desc %}
+{%- block h1 -%}Login Here{%- endblock h1 -%}
+{%- block lead -%}Login to you already existing account.{%- endblock lead -%}
 {% block content %}
-<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored encrypted on our disk.
-Only password changes and deletions are possible, not recovery. So, remember your password!</p>
-<form action="/login.html" method="POST">
-    <p>username <input type="username" name="username" /></p>
-    <p>password <input type="text" name="password" /></p>
-    <p>sign-in <input type="submit" value="sign-in" /></p>
-</form>
-
-<h3>don't have an account??</h3>
-<h4><a href = "/register.html" title="click this link to create an account at www.mslscript.com">click here to <u><strong>create</strong></u> an account.</a></h4>
+	<div class="container">
+		<form method="post">
+			<p>
+				<label>Username:</label>
+				<input type="text" name="username" id="username">
+			</p>
+			<p>
+				<label>Password:</label>
+				<input type="password" name="password" id="password">
+				<i class="bi bi-eye-slash" id="togglePassword"></i>
+			</p>
+			<button type="submit" id="submit" class="btn btn-primary">
+				Log In
+			</button>
+		</form>
+	</div>
+<p class="h3">don't have an account??</p>
+<p class="h4"><a href="/register.html" title="create an account to be assigned your proxy server(s)">click here to <u><strong>create</strong></u> an account.</a></p>
+  <script>
+		const togglePassword = document
+			.querySelector('#togglePassword');
+		const password = document.querySelector('#password');
+		togglePassword.addEventListener('click', () => {
+			// Toggle the type attribute using
+			// getAttribure() method
+			const type = password
+				.getAttribute('type') === 'password' ?
+				'text' : 'password';
+			password.setAttribute('type', type);
+			// Toggle the eye and bi-eye icon
+			this.classList.toggle('bi-eye');
+		});
+	</script>
 {% endblock content %}

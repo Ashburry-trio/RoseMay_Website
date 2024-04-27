@@ -1,61 +1,28 @@
-{% extends "base_fixednav.html" %} {% block title %}create an account{% endblock %}
-{% block linklist %}
-         {% if session.logged_in == 'True' %}
-        <li class="nav-item">
-            <a class="nav-link" href="/index.html">home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/{{ session.username }}">user-page</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/irc/proxies.html">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout.html">sign-out</a>
-          </li>
-         {% else %}
-         <li class="nav-item">
-            <a class="nav-link" href="/index.html">home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/nobody.html">user-pages*</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/casino/games.html">casino</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">proxies</a>
-         </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login.html">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
-          </li>
-          {% endif %}
-{% endblock linklist %}
-
-{% block h1 %}Create an Account{% endblock h1 %}
-{% block content %}
-<p>We don’t support Google login (and others) because your IRC client requires a user-provided password, stored on our disk.
-<br>Remember your password at all times; <strong>write it down</strong> if you must!</p> <a href="/forgot.html" alt="click this link if you forgot your password">Forgot your password? click/tap here.</a>
-<form action="/register.html" method="POST">
-    <p>username <input type="username" name="username" /></p>
-    <p>password <input type="text" name="password" /></p>
-    <p>register <input type="submit" value="create new" /></p>
-</form>
-<h3>already have an account?</h3>
-<h4><a href="/login.html" alt="click this link to go to the sign-in page.">click here to <u><strong>sign-in</strong></u>.</a></h4>
-{% endblock content %}
+{%- set content_page_name = 'register' -%}
+{%- extends "base_fixednav.html" -%} {% block title %}Create an account to get a list of IRC Proxies{%- endblock -%}
+{%- block desc -%}Create an account to get a list of IRC proxies and edit your web-pages{%- endblock -%}
+{%- block h1 -%}Create an Account{%- endblock h1 -%}
+{%- block content -%}
+{%- block lead -%}Register a New Account. Use only ONE account!{%- endblock lead -%}
+<p>Remember your password at all times; <strong>write it down</strong> if you must!<br/><a href="/forgot.html" text="click here if you've forgotten your password">Forgotten Your Password? Tap Here.</a></p>
+<div class="container"><form method="post"><p><label>E-Mail:</label> <input type="email" name="email" id="email"></p>
+<p><label>Username:</label> <input type="text" name="username" id="username"></p>
+<p><label>Password:</label> <input type="password" name="password" id="password"><i class="bi bi-eye-slash" id="togglePassword"></i></p>
+<button type="submit" id="submit" class="btn btn-primary">Log In</button>
+</form></div><p class="h3">Already have an account?</p><p class="h4"><a href="/login.html" text="Go to the sign-in page.">click here to <u><strong>sign-in</strong></u>.</a></p>
+  <script>
+		const togglePassword = document
+			.querySelector('#togglePassword');
+		const password = document.querySelector('#password');
+		togglePassword.addEventListener('click', () => {
+			// Toggle the type attribute using
+			// getAttribure() method
+			const type = password
+				.getAttribute('type') === 'password' ?
+				'text' : 'password';
+			password.setAttribute('type', type);
+			// Toggle the eye and bi-eye icon
+			this.classList.toggle('bi-eye');
+		});
+	</script>
+{%- endblock content -%}
