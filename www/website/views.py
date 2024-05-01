@@ -5,9 +5,15 @@ from werkzeug.exceptions import TooManyRequests
 from flask_app import gk, app
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
+
 @app.errorhandler(TooManyRequests)
 def handle_rate_limit_exceeded(e):
-    return jsonify({'tooManyRequests': 'the webserver is flooded with traffic, try again in atleast 4 minutes.' }), 429
+    return jsonify({'tooManyRequests': 'the webserver is flooded with traffic. Try again, whenever you are ready...' }), 429
+
+@app.errorhanler(404)
+    def no_found(e):
+        gk.report()
+        return render_template('404.html'), 404
 
 @views.route('/casino.html', methods=['GET', 'POST'])
 @gk.specific(rate_limit_rules=[{"count":1,"window":1,"duration":240}])
