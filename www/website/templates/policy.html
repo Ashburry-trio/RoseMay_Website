@@ -1,0 +1,26 @@
+{%- extends 'base_fixednav.html' -%}
+{%- block title -%}Privacy Policy for this website and linked apps{%- endblock title -%}
+{%- block desc -%}Privacy Policy for this website and trio-ircproxy.py service{%- endblock desc -%}
+{%- block h1 -%}Privacy Policy{%- endblock h1 -%}
+{%- block lead -%}This page will be updated to describe all data stored on my servers associated with your account username{% endblock lead %}
+{%- block content -%}<p>First off, there are cookies stored which Flask uses for normal functioning of the website such as the "Flash" message which
+appears at the top of the page when you log-in and log-out and maybe some other times in the future if needed. Also I store session cookies that just contain
+a username string which is just random letters that is used to identify your actual username. And a logged_in key whos value is True or False. 
+Since cookies can be read by anyone, but not changed and then used, no sensitive information
+such as passwords or email addresses are stored in the cookies. All that information is stored on the web-server and linked to that random string in the username cookie.
+Your password cannot be revealed unless you go through the proper "forgot password?" page and answer the questions, only then the password will be emailed to you for all accounts
+associated with that email address. If you are caught using two or more accounts simultaniously your accounts will be deleted and your email added to the ban list, meaning you will not be able to
+create a new account with that email address ever again. Your IP address will be banned which is the only time your IP address will be stored on our servers. Other than our website
+provider's basic error, access and server logs which will contain your user-agent string, IP address and timestamps in the log files. A flask-gatekeeper app will record your IP and
+the number of times you have visted each page only valid for maybe 60 seconds at the most. In the future (now?) we may employ Google Analytics just to see how our website is being used.
+Please note, Never will I reveal any descriminating information about any visits to my websites to the "law" or "authorities". Not even if they reqeust it. However PythonAnywhere, my hosting provider
+may rat you out to the feds if you disrupt any of their service. I will just get a new URL and host my website there instead; if it comes under attack. This is a free service so please
+be kind and respectful and answer all the form data honestly because it may be used to reissue your password if you forget it. And if you stop using our service make sure you delete
+your account don't wait for the expiration time because your account retains resources that are limited to specific number of people and is these resources are reserved just for you,
+because you created a account. IRC chat logs are never recorded except for the last few lines of text so you can have an idea of what the current conversation is like. 
+The topic of the room and number of users, etc. is recorded if you create a user-page for that channel of course the information included on
+the page is stored on the web-server, and proxy servers in real time. You must be connected to IRC through a irc-proxy-server and joined in the room to have real-time meta-data about the room on the
+web-page you create. All data saved on the server is for legit purposes and never will I rat you out to the feds even if you destroy my URL, however my hosting company
+has a different story, beware!! Also note that none of your information will ever be sold, not even for a hundred dollars. =)</p>
+<p><br>o end of document.</p>
+{% endblock content %}
