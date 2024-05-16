@@ -1,6 +1,6 @@
-{% set url = "https://Ashburry.PythonAnywhere.com" %}
-{% set longurl = "https://Ashburry.PythonAnywhere.com" %}
-{% set shorturl = "Ashburry.PythonAnywhere.com" %}
+{% set url = "https://www.MyProxyIP.com" %}
+{% set longurl = "https://www.MyProxyIP.com" %}
+{% set shorturl = "MyProxyIP.com" %}
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
   <head>
@@ -9,7 +9,7 @@
     <meta name="description" content="{% block desc %}Where can I get proxy servers list for IRC clients? Proxy server/vhost list for IRC clients, click here.{% endblock desc %}">
     <meta name="author" content="Ashburry and Bootstrap contributors">
     <title>{% block title %}Machine-Gun mSL script named Bauderr for trio-ircproxy.py{% endblock title %}</title>
-    <link rel="canonical" href="https://ashburry.pythonanywhere.com/">
+    <link rel="canonical" href="https://www.myproxyip.com/">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -29,7 +29,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
   <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
   <meta property="og:title" content="Machine-Gun mSL script named Bauderr for trio-ircproxy.py">
-  <meta property="og:description" content="Where can I get proxy servers list for IRC? Proxy server/vhost list for IRC clients, click here.">
+  <meta property="og:description" content="Where can I get proxy servers list for IRC? Proxy server/vhost/znc list for IRC clients, click here.">
   <meta name="theme-color" content="#DAA520">
   <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
     <style>
@@ -183,75 +183,75 @@
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
 {%- if content_page_name == 'home' -%}
   <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/index.html">home</a>
+    <a class="nav-link active" aria-current="page" href="/index.html" title="Visit the home page">home</a>
   </li>
 {%- else -%}
   <li class="nav-item">
-    <a class="nav-link" href="/">home</a>
+    <a class="nav-link" href="/" title="Visit the home page">home</a>
   </li>
 {%- endif -%}
 {%- if content_page_name == 'user-pages' -%}
  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/user/nobody.html">user-pages*</a>
+    <a class="nav-link active" aria-current="page" href="/user/nobody.html" title="Create your own web-space for your nicknames and channels">user-pages*</a>
  </li>
 {%- else -%}
   <li class="nav-item">
-    <a class="nav-link" href="/user/nobody.html">user-pages*</a>
+    <a class="nav-link" href="/user/nobody.html" title="Create your own web-space for your nicknames and channels">user-pages*</a>
   </li>
 {%- endif -%}
 {%- if content_page_name == 'casino' -%}
 <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
+    <a class="nav-link active" aria-current="page" href="/casino/games.html" title="Try your luck in the casino and win real prizes and cash">casino</a>
  </li>
 {% else %}
 <li class="nav-item">
-    <a class="nav-link" href="/casino/games.html">casino</a>
+    <a class="nav-link" href="/casino/games.html" title="Try your luck in the casino and win real prizes and cash">casino</a>
  </li>
 {%- endif -%}
 {%- if content_page_name == 'proxies' -%}
  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/irc/proxies.html">proxies</a>
+    <a class="nav-link active" aria-current="page" href="/irc/proxies.html" title="List of IRC Proxies reserved for your usage">proxies</a>
  </li>
 {%- else -%}
 <li class="nav-item">
-    <a class="nav-link" href="/irc/proxies.html">proxies</a>
+    <a class="nav-link" href="/irc/proxies.html" title="List of IRC Proxies reserved for your usage">proxies</a>
  </li>
 {%- endif -%}
 {%- if content_page_name != 'register' and session.logged_in == True -%}
  <li class="nav-item">
-    <a class="nav-link disabled" aria-disabled="true">register</a>
+    <a class="nav-link disabled" aria-disabled="true" title="create a new account">register</a>
   </li>
 
 {%- elif content_page_name == 'register' and session.logged_in != True -%}
  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/register.html">register</a>
+    <a class="nav-link active" aria-current="page" href="/register.html" title="create a new account">register</a>
   </li>
 {%- elif content_page_name != 'register' and session.logged_in != True -%}
   <li class="nav-item">
-    <a class="nav-link" href="/register.html">register</a>
+    <a class="nav-link" href="/register.html" title="create a new account">register</a>
   </li>
 {%- endif -%}
 
 {%- if content_page_name != 'login' and session.logged_in == True -%}
   <li class="nav-item">
-    <a class="nav-link disabled" aria-disabled="true">login</a>
+    <a class="nav-link disabled" aria-disabled="true" title="Log-in to website">login</a>
   </li>
 {%- elif content_page_name != 'login' and session.logged_in != True -%}
 <li class="nav-item">
-    <a class="nav-link" href="/login.html">login</a>
+    <a class="nav-link" href="/login.html" title="Log-in to website">login</a>
   </li>
 {%- elif content_page_name == 'login' and session.logged_in != True -%}
   <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/login.html">login</a>
+    <a class="nav-link active" aria-current="page" href="/login.html" title="Log-in to website">login</a>
   </li>
  {%- endif -%}
  {%- if session.logged_in != True -%}
   <li class="nav-item">
-    <a class="nav-link disabled" aria-disabled="true">logout</a>
+    <a class="nav-link disabled" aria-disabled="true"  title="Log-out of website">logout</a>
   </li>
 {%- else -%}
   <li class="nav-item">
-    <a class="nav-link" href="/logout.html">logout</a>
+    <a class="nav-link" href="/logout.html" title="Log-out of website">logout</a>
   </li>
 {%- endif -%}
 </ul>
@@ -299,7 +299,7 @@
 
 <footer class="footer mt-auto py-3 bg-body-tertiary">
   <div class="container">
-    <span class="text-body-secondary"><a href="/zero-bsd.html">zero-bsd</a> -master sire gi Kenggi Peters phd. ret.</span>
+    <span class="text-body-secondary">Copyright: <a href="/zero-bsd.html" title="Copyright is to the zero-bsd license">zero-bsd</a> &nbsp; &nbsp; Addr: #403-9810 Foxglove Drive, Surrey, BC, Canada. V3T0P5 &nbsp; &nbsp; Phone: +[1]-778-720-5093 &nbsp; &nbsp; Email: <a href="mailto:Ashburry@MyProxyIP.com" title="Send me an email">Ashburry@MyProxyIP.com</a></span>
   </div>
 </footer>
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
