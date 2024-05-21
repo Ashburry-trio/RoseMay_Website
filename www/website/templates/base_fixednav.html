@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{% block desc %}Where can I get proxy servers list for IRC clients? Proxy server/vhost list for IRC clients, click here.{% endblock desc %}">
+    <meta name="description" content="{% block desc %}Where can I get a proxy server list for IRC clients? Proxy server/vhost list for IRC clients, click/tap here.{% endblock desc %}">
     <meta name="author" content="Ashburry and Bootstrap contributors">
     <title>{% block title %}Machine-Gun mSL script named Bauderr for trio-ircproxy.py{% endblock title %}</title>
     <link rel="canonical" href="https://www.myproxyip.com/">
@@ -18,18 +18,19 @@
 		cursor: pointer;
 	}
 	</style>
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"> -->
     <link rel="mask-icon" href="{{ url_for('static', filename='safari-pinned-tab.svg') }}" color="#DAA520">
     <meta name="msapplication-TileImage" content="{{ url_for('static', filename='mstile-144x144.ico') }}">
     <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='android-chrome-192x192.ico') }}">
     <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='android-chrome-512x512.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.ico') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
   <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
-  <meta property="og:title" content="Machine-Gun mSL script named Bauderr for trio-ircproxy.py">
-  <meta property="og:description" content="Where can I get proxy servers list for IRC? Proxy server/vhost/znc list for IRC clients, click here.">
+  <meta property="og:title" content="Machine-Gun mSL script named Bauderr for Trio-Ircproxy.py">
+  <meta property="og:description" content="Where can I get a proxy server list for IRC? Proxy server/vhost list for IRC clients, click here/tap.">
   <meta name="theme-color" content="#DAA520">
   <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
     <style>
@@ -106,8 +107,15 @@
         z-index: 1500;
       }
    main > .container {
-  padding: 60px 15px 0;
+    padding: 60px 15px 0;
+
+   }
+   main {
+    max-width: 1024px; /* Set your desired max width here */
+    width: 100%;
+    padding: 0 15px;
 }
+
 {% block css %}
 {% endblock css %}
     </style>
@@ -284,14 +292,17 @@
 {% endwith %}
 <div>
 <p class="mt-5">
-<a href="http://jigsaw.w3.org/css-validator/validator?lang=en&profile=css3svg&uri={{ shorturl }}&usermedium=all&vextwarning=&warning=1">
-    <img style="border:0;width:88px;height:31px"
-        src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
-        alt="Valid CSS!">
+    <a href="https://jigsaw.w3.org/css-validator/check/referer">
+        <img style="border:0;width:88px;height:31px"
+            src="https://jigsaw.w3.org/css-validator/images/vcss-blue"
+            alt="Valid CSS!" />
     </a>
 </p>
-<p><h1>{%- block h1 -%}<i>Welcome to</i><br>{{ shorturl }}{%- endblock h1 -%}</h1></p>
-<p class="lead">{%- block lead -%}Your Gateway to a World of Exciting Python Applications{%- endblock lead -%}</p>
+<img src="{{ url_for('static', filename='images/irc-image-100.jpg') }}" alt="IRC dimension" style="margin-right:20px;float:left">
+<p><h1>{%- block h1 -%}<i>Welcome to</i><br>{{ shorturl }}{%- endblock h1 -%}</h1>
+
+
+<p class="lead">{%- block lead -%}Your Gateway to a World of Exciting Python Applications</p>{%- endblock lead -%}
 {% block content %}
 {% endblock content %}
 </div>
@@ -302,6 +313,7 @@
     <span class="text-body-secondary">Copyright: <a href="/zero-bsd.html" title="Copyright is to the zero-bsd license">zero-bsd</a> &nbsp; &nbsp; Addr: #403-9810 Foxglove Drive, Surrey, BC, Canada. V3T0P5 &nbsp; &nbsp; Phone: +[1]-778-720-5093 &nbsp; &nbsp; Email: <a href="mailto:Ashburry@MyProxyIP.com" title="Send me an email">Ashburry@MyProxyIP.com</a></span>
   </div>
 </footer>
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> -->
     </body>
 </html>

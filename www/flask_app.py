@@ -30,7 +30,7 @@ def make_key():
 make_key()
 app = Flask(__name__)
 app.secret_key = key or b"jklasdfKJDFiojasdfiouDF*&asdfh12345"
-app.config['SERVER_NAME'] = "www.myproxyip.com"
+app.config['SERVER_NAME'] = "ashburry.pythonanywhere.com"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
 app.config["SESSION_TYPE"] = "filesystem"     #  or file
@@ -50,4 +50,3 @@ app.register_blueprint(views, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 app.register_blueprint(navfix, url_prefix='/')
 app.register_blueprint(casino, url_prefix='/')
-
