@@ -21,4 +21,5 @@ pany*
 .*
 !.gitignore
 www/website/templates/users/*
+www_proxy/*
 README.txt
