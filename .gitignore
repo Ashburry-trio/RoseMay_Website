@@ -20,6 +20,6 @@ flask_session*/
 pany*
 .*
 !.gitignore
-www/website/templates/users/*
+!www/website/templates/users/*
 www_proxy/*
 README.txt
