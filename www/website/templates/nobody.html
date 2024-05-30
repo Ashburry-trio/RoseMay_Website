@@ -1,0 +1,45 @@
+{% set content_page_name = 'login' %}
+{% extends "base_fixednav.html" %}
+{% block title %}User Nobody the full list of user names{% endblock title %}
+{% block desc %}Where can I post my nickname and channel on the web? Right here!...click/tap{% endblock desc %}
+{%- block h1 -%}User Nobody.html{%- endblock h1 -%}
+{% block content %}
+Usernames:
+{% set old_network = None %}
+{% for chan_list in assets[0]|groupby('0') %}
+{% if old_network != chan_list.grouper %}
+{% set old_network = chan_list.grouper %}
+<p class="h3">Network <span class='h6'>(Rooms):</span> {{ old_network }}</p>
+{% endif %}
+{% for item in chan_list.list %}
+{% if item[2]|length > 1 %}
+<p class="h5">User: {{ item[1] }}</p>
+<p>
+{% for chan in item[2] %}
+<a href="/user/{{ item[1] }}/{{ chan }}.html">{{ chan }}</a> &nbsp;
+{% endfor %}
+{% endif %}
+</p>
+{% endfor %}
+{% endfor %}
+<center>
+<hr size="10px" color='green' width="80%">
+</center>
+{% set old_network = None %}
+{% for nick_list in assets[0]|groupby('0') %}
+{% if old_network != nick_list.grouper %}
+{% set old_network = nick_list.grouper %}
+<p class="h3">Network <span class='h6'>(Nicknames):</span> {{ old_network }}</p>
+{% endif %}
+{% for item in nick_list.list %}
+{% if item[2]|length > 1 %}
+<p class="h5">User: {{ item[1] }}</p>
+<p>
+{% for nick in item[2] %}
+{{ nick }} &nbsp;
+{% endfor %}
+{% endif %}
+</p>
+{% endfor %}
+{% endfor %}
+{% endblock content %}

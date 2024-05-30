@@ -5,7 +5,7 @@ from flask import redirect, session
 from website import user_page_exists, get_user_pages
 from flask_app import gk
 from os import mkdir
-from .reload import *
+#from .reload import *
 from website import load_users_ini, users
 users_pages = Blueprint('users_pages', __name__, template_folder='templates', static_folder='static')
 
@@ -64,7 +64,7 @@ def no_user_page():
     else:
         has_page = False
     asset_list: tuple[tuple[str, str, tuple[str] | None], tuple[str, str, tuple[str] | None]] = get_user_pages()
-    return render_template('users/nobody.html', has_page=None, user_pages=asset_list)
+    return render_template('nobody.html', has_page=None, assets=asset_list)
 
 
 @users_pages.route('/user/', methods=['GET'])
