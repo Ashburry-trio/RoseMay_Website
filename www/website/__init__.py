@@ -102,7 +102,6 @@ def strip_html(msg) -> list:
 def user_page_exists(username: str) -> bool:
     user_strip: list[str, bool]
     user_strip = strip_html(username.lower())
-    del username
     if user_strip[1]:
         return False
     if isdir(path.join(path.expanduser('~'), 'www', 'website', 'templates', 'users', user_strip[0])):
@@ -128,11 +127,9 @@ def get_user_pages():
             if 'chans' in config_ini.keys() and 'chans' in config_ini['chans'].keys():
                 for chan in config_ini['chans']['chans'].split(' '):
                     chanlist.add(chan)
-            total_nicklist.add((udir, net, tuple(nicklist)))
-            total_chanlist.add((udir, net, tuple(chanlist)))
-    total_chanlist = tuple(total_chanlist)
-    total_nicklist = tuple(total_nicklist)
-    asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = (total_chanlist, total_nicklist)
+            total_nicklist.add((net, udir, tuple(nicklist)))
+            total_chanlist.add((net, udir, tuple(chanlist)))
+    asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = (sorted(tuple(total_chanlist)), sorted(tuple(total_nicklist)))
     return asset_list
     # asset_list[0] is Chan list
     # asset_list[1] is Nickname list

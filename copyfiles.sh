@@ -5,5 +5,6 @@
 # to copy symbolic links to another web-app directory.
 
 mkdir ~/www_proxy
-ln -s ~/www/* ~/www_proxy
+mkdir ~/www_proxy/website
+ln -s ~/www/website/* -t ~/www_proxy/website
 
