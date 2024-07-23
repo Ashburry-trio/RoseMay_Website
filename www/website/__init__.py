@@ -21,8 +21,8 @@ casino_last_update: list[int] = [0]
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
 
-def checkAlnum(word: str):
-    if not word:
+def checkAlnum(word: str) -> bool:
+    if not word or 'javascript' in word or 'return' in word or 'style' in word:
         return False
     for L in word:
         if L.isdigit() or L.isalpha() or L == '_' or L == '-':
@@ -37,9 +37,10 @@ def clear_session():
 class NoSuchUser(BaseException):
     pass
 
-def writePassword(secret: str):
+def writePassword(secret: str) -> None:
     users['passcode']['secret'] = secret
     save_user()
+    return None
 
 def checkPassword(secret) -> bool:
     if not secret:
@@ -55,7 +56,7 @@ def checkPassword(secret) -> bool:
 def strip_code(m: str) -> list:
     return strip_html(m)
 
-def strip_html(msg) -> list:
+def strip_html(msg: str) -> list:
     """
       Takes in 'msg' with py and html and path codes and
       removes the nasty bytes. Decodes bytes to string.
@@ -75,6 +76,8 @@ def strip_html(msg) -> list:
     msg = msg.replace('\f','')
     msg = msg.replace('\t','')
     msg = msg.replace('<','')
+    msg = msg.replace('%','')
+    msg = msg.replace('!','')
     msg = msg.replace('>','')
     msg = msg.replace('&','')
     msg = msg.replace('?','')

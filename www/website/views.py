@@ -1,10 +1,10 @@
 from flask import (
-    Blueprint, render_template, make_response, Response, jsonify, redirect
+    Blueprint, render_template, make_response, Response, jsonify, redirect, send_file, url_for
     )
 from werkzeug.exceptions import TooManyRequests
 from flask_app import gk, app
+from os.path import expanduser
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
-
 
 @app.errorhandler(TooManyRequests)
 def handle_rate_limit_exceeded(e):
@@ -19,8 +19,12 @@ def no_found(e):
 @gk.specific(rate_limit_rules=[{"count":1,"window":100,"duration":2400}])
 def skinners_version_ignore():
     gk.report()
-    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. If you received this webpage in a version reply from a user on IRC; that is a dangerous person whom you should ignore.', status=403, mimetype='text/plain')
+    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. If you received this webpage in a version reply from a user on IRC; consider that person as dangerous whom you should ignore.', status=403, mimetype='text/plain')
     return response
+
+@views.route('/.well-known/apple-developer-merchantid-domain-association', methods=['GET'])
+def apple_deveoper_merch():
+    return send_file(expanduser('~/www/website/static/apple-developer-merchantid-domain-association')), 200
 
 @views.route('/_asterisk/', methods=['GET', 'POST'])
 @views.route('/admin/assets/js/views/login.js', methods=['GET', 'POST'])

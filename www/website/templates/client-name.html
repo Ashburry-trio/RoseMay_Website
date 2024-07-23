@@ -1,14 +1,16 @@
-{% extends "base.html" %} {% block title %}username@Client-Name for proxy server sign-in{% endblock title %}
-{% block desc %}username@Client-Name help with your proxy server sign-in. see more...{% endblock desc %}
-{% block h1 %}username@Client-Name proxy sign-in Info{% endblock h1 %}
-{% block content %}
-<p>for each individual client process you are running you can give your client a name by appending @&lt;client-name&gt; to your username. You do this for each client
-if you run more than one client or run one client more than once.</p>
-<p>Since you can make multiple connections to IRC networks with one client you can give that client a name for all those connections. if you execute the client binary
-multiple times, give each process its own name. Do not make the mistake of giving two client processes the same name because this may prevent one client from receiving
-important meta-data about each client. also, when viewing client settings it may be easier to see which clients were affected by their client name instead of by each individual connection.
-The client name is optional, it just organizes multiple connections under one client name. To set the client names sign-in to the proxy-server with your-username@your-clients-name-here for the username.
-For Example, <b>Ashburry@mg-mIRC-one</b> and <b>Ashburry@mg-Adiirc-one</b> and you can see the client name in the titlebar when connected and the connection is active. You can give your client more than one client name
-by changing the username sign-in formation for the next IRC connection. if you are using a terminal client multiple times it is okay to give them all
-the same client name, or no client name. you can also name a connection with <b>/msg *status connectionName <em>named-Irssi-2</em></b>.</p>
-{% endblock %}
+{%- set content_page_name = 'cloned cards' -%}
+{%- extends "base_fixednav.html" -%}
+{%- block title -%}How does IrcProxy know which client is which?{%- endblock title -%}
+{%- block desc -%}The mechanics of how IRC Proxy knows which client is which.{%- endblock desc -%}
+{%- block h1 -%}Client Names{%- endblock h1 -%}
+{%- block lead -%}Name each client for a customized experience{%- endblock lead -%}
+{%- block content -%}
+<p>You name your client by putting an @ sign on the end of your username followed by your clients name. So it looks like this UserJacks@MG_script.</p>
+<p>This feature is important because I can send one global messsage through a dcc chat for that client instead of having one dcc chat for each servers connection all receiving
+the same message. And it is important to have different client names for different clients if you do not want to receive *STATUS messages to a random client instead of to a specific client.
+You can however choose to relay one clients messages to another client where prehaps you are more active. If howwever you connect to the same network twice your second connection to the
+network will be dropped and you will have two of the same connection to a single network-server connection. So you can never have more than one connection to a network, if you try you
+just get the same connection more than once. If they have different client names they will still share the same script settings, making me wonder why client names are important.
+However, some settings are for all of a clients connections, not every client the person is using. If that was the case then just leave client name blank. You will still need to
+/dcc chat &lt;proxy-ip&gt; &lt;proxy-port&gt;</p>
+{%- endblock content -%}

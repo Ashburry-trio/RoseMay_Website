@@ -207,15 +207,6 @@
     <a class="nav-link" href="/user/nobody.html" title="Create your own web-space for your nicknames and channels">user-pages*</a>
   </li>
 {%- endif -%}
-{%- if content_page_name == 'casino' -%}
-<li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/casino/games.html" title="Try your luck in the casino and win real prizes and cash">casino</a>
- </li>
-{% else %}
-<li class="nav-item">
-    <a class="nav-link" href="/casino/games.html" title="Try your luck in the casino and win real prizes and cash">casino</a>
- </li>
-{%- endif -%}
 {%- if content_page_name == 'proxies' -%}
  <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="/irc/proxies.html" title="List of IRC Proxies reserved for your usage">proxies</a>
@@ -223,6 +214,15 @@
 {%- else -%}
 <li class="nav-item">
     <a class="nav-link" href="/irc/proxies.html" title="List of IRC Proxies reserved for your usage">proxies</a>
+ </li>
+{%- endif -%}
+{%- if content_page_name == 'casino' -%}
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/casino/games.html" title="Play some games win some prizes of your choice or play for cash">casino</a>
+ </li>
+{% else %}
+<li class="nav-item">
+    <a class="nav-link" href="/casino/games.html" title="Play some games win some prizes of your choice or play for cash">casino</a>
  </li>
 {%- endif -%}
 {%- if content_page_name != 'register' and session.logged_in == True -%}

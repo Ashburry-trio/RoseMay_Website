@@ -4,9 +4,21 @@
  {% if accounts %}
 <p>Your login details have returned existing account(s).
   A link to change your password has been emailed to the following accounts:</p>
-<p>{% for email in accounts %}{{ email }} {% if accounts[email] == False %}- ERROR {% else %}- working{% endif %}<br />{% endfor %}</p>
+<p>{% for email in accounts %}{{ email }} {% if accounts[email] == False %}- ERROR {% else %}- working{% endif %}<br>{% endfor %}</p>
 {% else %}
-<p>No accounts have been found. Make sure you've entered your UserName and/or E-mail correctly. You may also
-<a href="/admin/signup.htm">sign-up for a new account</a> if you have a valid e-mail address with less than 5 not-expired
-    accounts.</p>{% endif %}
+<p>No accounts have been found.</p>
+<p>You may <a href="/register.html">sign-up for a new account</a> if you have a valid e-mail address with less than 3 not-expired
+    accounts still active. And you do not already have 3 active accounts with your IP addresses at the current moment.
+    If you need these limits raised, connect me with the {{ longurl }}/contact.html web-page and log in using a familiar web-browser
+    and explain your connection details (Where you're logging in from: at home, at an internet cafe, at a friends computer, you have multiple account holders sharing the same PC, your household has multiple account holders on different PC's but same IP address.
+    Each person in your household needs their own personal account if tehy are connecting from two IPs simultaneously and logging into the same account. If this is the case you are allowed to connect suimiltaneously from 3 IP addresses to the same account.
+    </p><p>When to not bother contacting me: WHen you don't have your exteranal IRC IP information and where-abouts, when your IRC IP is that of another vHost or ZNC server. You are not logged in to your account when you contact me. Use the <code>/username &lt;yournick&gt;</code> command on IRC to get your IP.
+    </p><p>Log-in to your account on the web-site so I know what account you use. If you forgot your password you will have to create another account, if you have run out of accounts for that email address you must create another email address or, wait for some of the other accounts to expire.
+    </p><p>
+    Please write down your password and username whenever you change or create an account. Use a password manager to remember your web-site password. And use the <b>Forgot Password?</b> function to regain access if you lose your password.
+    Do not just open a new account for everytime you forget your password. Use real answers to all questions so you can answer them truthfully when the time comes and you have forgotten your password.
+    Do not share personal details such as the answers to the security questions with anybody on IRC or in person. People who know your personal life can log in to your account if you do not check your email on time.
+    </p>
+    <p>Accounts inactive for longer than 1 month will be erased completely, you may increase this time period only temporarily.</p>
+    <p><b><i>DO NOT FORGET YOUR USERNAME AND PASSWORD! Be kind and delete your account when you are done with it.</i></b></p></b>
 {% endblock content %}
