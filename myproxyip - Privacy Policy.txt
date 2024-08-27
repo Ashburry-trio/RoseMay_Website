@@ -1,0 +1,69 @@
+Privacy Policy
+Last Updated: Monday August 26 2024
+
+This Privacy Policy explains how www.myproxyip.com (and other URLs) ("we," "us," or "our") collects, uses, and protects the
+personal information of visitors ("you" or "your") to our website www.myproxyip.com (the "Site"). We are committed to
+maintaining the privacy and security of your personal data.
+
+Information We Collect
+When you visit our Site, we may collect the following types of information:
+
+Visitor Logs: We log basic information about visitors, including:
+
+Nickname
+Voluntary data related to IRC (Internet Relay Chat), which may include:
+Room names
+Topics
+Room modes
+Nickserv and Chanserv and X bot details
+
+Minimal Personal Data (if you are logged in):
+
+Email address
+Password (encrypted)
+IP address
+Device type
+This data will be saved in a cookie for user convenience and login management.
+
+Use of Information
+The data we collect is used solely for the following purposes:
+
+To provide and maintain our services, including enhancing user experience and functionality.
+To improve the security and reliability of our website and applications.
+To allow for easy login and management of IRC-related settings.
+
+Data Sharing and Disclosure
+We want to reassure you that:
+
+We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties.
+We do not share your email address, home address, IP address, geolocation data, or device type with any third parties.
+The information you provide is solely for your use and the function of our services.
+Security of Your Information
+We implement reasonable security measures to protect your personal information. While we strive to use commercially acceptable
+means to safeguard your data, please remember that no method of transmission over the Internet, or method of electronic storage, 
+is 100% secure. Therefore, we cannot guarantee its absolute security.
+
+Open Source Commitment
+All the software and applications associated with our website are open source and continually reviewed for security improvements. 
+Our commitment to transparency means that we are dedicated to addressing security vulnerabilities with every push made 
+to our GitHub repository.
+
+Your Rights
+As a user, you have the following rights regarding your personal data:
+
+You have the right to request access to the personal information we hold about you.
+You can request to update or delete your information by contacting us at ashburry-ceo@myproxyip.com
+
+Changes to This Privacy Policy
+We may update our Privacy Policy from time to time. When we do, we will post the new Privacy Policy on this page, 
+and we will update the "Last Updated" date at the top of this policy. We encourage you to periodically review this 
+policy for any changes.
+
+Contact Us
+If you have any questions or concerns about this Privacy Policy, please contact us at:
+
+Email: mailto:ashburry-ceo@myproxyip.com
+Website: https://www.myproxyip.com  and  https://ashburry.pythonanywhere.com
+
+By using our Site, you consent to the terms of this Privacy Policy. Thank you for trusting us with your information.
+
