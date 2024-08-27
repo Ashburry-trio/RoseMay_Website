@@ -3,24 +3,72 @@
 {%- block desc -%}Privacy Policy for this website and trio-ircproxy.py service{%- endblock desc -%}
 {%- block h1 -%}Privacy Policy{%- endblock h1 -%}
 {%- block lead -%}This page will be updated to describe all data stored on my servers associated with your account username{% endblock lead %}
-{%- block content -%}<p>First off, there are cookies stored which Flask uses for normal functioning of the website such as the "Flash" message which
-appears at the top of the page when you log-in and log-out and maybe some other times in the future if needed. Also I store session cookies that just contain
-a username string which is just random letters that is used to identify your actual username. And a logged_in key whos value is True or False. 
-Since cookies can be read by anyone, but not changed and then used, no sensitive information
-such as passwords or email addresses are stored in the cookies. All that information is stored on the web-server and linked to that random string in the username cookie.
-Your password cannot be revealed unless you go through the proper "forgot password?" page and answer the questions, only then the password will be emailed to you for all accounts
-associated with that email address. If you are caught using two or more accounts simultaniously your accounts will be deleted and your email added to the ban list, meaning you will not be able to
-create a new account with that email address ever again. Your IP address will be banned which is the only time your IP address will be stored on our servers. Other than our website
-provider's basic error, access and server logs which will contain your user-agent string, IP address and timestamps in the log files. A flask-gatekeeper app will record your IP and
-the number of times you have visted each page only valid for maybe 60 seconds at the most. In the future (now?) we may employ Google Analytics just to see how our website is being used.
-Please note, Never will I reveal any descriminating information about any visits to my websites to the "law" or "authorities". Not even if they reqeust it. However PythonAnywhere, my hosting provider
-may rat you out to the feds if you disrupt any of their service. I will just get a new URL and host my website there instead; if it comes under attack. This is a free service so please
-be kind and respectful and answer all the form data honestly because it may be used to reissue your password if you forget it. And if you stop using our service make sure you delete
-your account don't wait for the expiration time because your account retains resources that are limited to specific number of people and is these resources are reserved just for you,
-because you created a account. IRC chat logs are never recorded except for the last few lines of text so you can have an idea of what the current conversation is like. 
-The topic of the room and number of users, etc. is recorded if you create a user-page for that channel of course the information included on
-the page is stored on the web-server, and proxy servers in real time. You must be connected to IRC through a irc-proxy-server and joined in the room to have real-time meta-data about the room on the
-web-page you create. All data saved on the server is for legit purposes and never will I rat you out to the feds even if you destroy my URL, however my hosting company
-has a different story, beware!! Also note that none of your information will ever be sold, not even for a hundred dollars. =)</p>
+{%- block content -%}
+<h2>Privacy Policy</h2>
+<p>Last Updated: Monday August 26 2024</p><p>
+This Privacy Policy explains how www.myproxyip.com (and other URLs) ("we," "us," or "our") collects, uses, and protects the
+personal information of visitors ("you" or "your") to our website www.myproxyip.com (the "Site"). We are committed to
+maintaining the privacy and security of your personal data.
+</p><h3>
+Information We Collect</h3>
+<p>When you visit our Site, we may collect the following types of information:
+</p><p>
+Visitor Logs: We log basic information about visitors, including:
+<br>IP Address (or proxy), device type and page visited.
+</p><p>
+Voluntary data related to IRC (Internet Relay Chat), which may include:
+<br>Nickname
+<br>Room names
+<br>Topics
+<br>Room modes
+<br>Nickserv and Chanserv and X bot details
+</p><p>
+Minimal Personal Data (if you are logged in) will be collected:
+</p><p>
+Email address
+<br>Password (encrypted)
+<br>IP address
+<br>Device type
+</p><h3>
+Use of Information
+<br>The data we collect is used solely for the following purposes:
+</h3><p>
+To provide and maintain our services, including enhancing user experience and functionality.
+<br>To improve the security and reliability of our website and applications.
+<br>To allow for easy login and management of IRC-related settings.
+</p>
+<h3>
+Data Sharing and Disclosure
+<br>We want to reassure you that:
+</h3><p>
+We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties.
+We do not share your email address, home address, IP address, geolocation data, or device type with any third parties.
+The information you provide is solely for your use and the function of our services.
+</p>
+<h3>Security of Your Information</h3>
+<p>We implement reasonable security measures to protect your personal information. While we strive to use commercially acceptable
+means to safeguard your data, please remember that no method of transmission over the Internet, or method of electronic storage,
+is 100% secure. Therefore, we cannot guarantee its absolute security.
+</p><h3>Open Source Commitment</h3>
+<p>All the software and applications associated with our website are open source and continually reviewed for security improvements.
+Our commitment to transparency means that we are dedicated to addressing security vulnerabilities with every push made
+to our GitHub repository.
+</p><h3>Your Rights</h3><p>
+As a user, you have the following rights regarding your personal data:
+</p><p>
+You have the right to request access to the personal information we hold about you.
+You can request to update or delete your information by contacting us at ashburry-ceo@myproxyip.com
+</p>
+<h3>Changes to This Privacy Policy</h3>
+<p>We may update our Privacy Policy from time to time. When we do, we will post the new Privacy Policy on this page,
+and we will update the "Last Updated" date at the top of this policy. We encourage you to periodically review this
+policy for any changes.
+</p><h3>Contact Us</h3>
+<p>If you have any questions or concerns about this Privacy Policy, please contact us at:
+</p><p>
+Email: ashburry-ceo@myproxyip.com
+<br>Website: www.myproxyip.com
+</p><p>By using our Site, you consent to the terms of this Privacy Policy. Thank you for trusting us with your information.
+</p>
 <p><br>o end of document.</p>
 {% endblock content %}

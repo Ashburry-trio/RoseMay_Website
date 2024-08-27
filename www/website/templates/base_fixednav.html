@@ -227,16 +227,16 @@
 {%- endif -%}
 {%- if content_page_name != 'register' and session.logged_in == True -%}
  <li class="nav-item">
-    <a class="nav-link disabled" aria-disabled="true" title="create a new account">register</a>
+    <a class="nav-link disabled" aria-disabled="true" title="create a new account">new user</a>
   </li>
 
 {%- elif content_page_name == 'register' and session.logged_in != True -%}
  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/register.html" title="create a new account">register</a>
+    <a class="nav-link active" aria-current="page" href="/register.html" title="create a new account">new user</a>
   </li>
 {%- elif content_page_name != 'register' and session.logged_in != True -%}
   <li class="nav-item">
-    <a class="nav-link" href="/register.html" title="create a new account">register</a>
+    <a class="nav-link" href="/register.html" title="create a new account">new user</a>
   </li>
 {%- endif -%}
 
@@ -310,7 +310,7 @@
 
 <footer class="footer mt-auto py-3 bg-body-tertiary">
   <div class="container">
-    <span class="text-body-secondary">Copyright: <a href="/zero-bsd.html" title="Copyright is to the zero-bsd license">zero-bsd</a> &nbsp; &nbsp; Addr: #403-9810 Foxglove Drive, Surrey, BC, Canada. V3T0P5 &nbsp; &nbsp; Phone: +[1]-778-720-5093 &nbsp; &nbsp; Email: <a href="mailto:Ashburry@MyProxyIP.com" title="Send me an email">Ashburry@MyProxyIP.com</a></span>
+    <span class="text-body-secondary">Copyright: <a href="/zero-bsd.html" title="Copyright is to the zero-bsd license">zero-bsd</a> &nbsp; &nbsp; Addr: #403-9810 Foxglove Drive, Surrey, BC, Canada. V3T0P5 &nbsp; &nbsp; Phone: +[1]-Not in Service &nbsp; &nbsp; Email: <a href="mailto:Ashburry-ceo@MyProxyIP.com" title="Send me an email">Ashburry-ceo@MyProxyIP.com</a></span>
   </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
