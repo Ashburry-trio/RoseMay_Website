@@ -6,7 +6,7 @@ from flask import session
 from os import path
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
-from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum, users
+from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum, users, fetch_user_by_detail
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
@@ -96,3 +96,38 @@ def register():
             return register_user_post(username, passwd)
     return render_template("register.html")
 
+
+@auth.route('/quest.html', methods=['POST'])
+@auth.route('/question.html', methods=['POST'])
+@auth.route('/questions.html', methods=['POST'])
+def questions():
+    """
+        This page will show the security questions associated with the accounts
+        username or email address that is provided.
+        The page renders the username, email, and the security questions, or
+        reedirects back to forogt.html with a flash of the reason it failed
+        to render questions.html
+    """
+    gk.report()
+    if request.method == 'POST':
+        session['logged_in'] = False
+        user_email: str = request.form.get('user_email')
+        user_email = user_email.lower()
+        gooditem: bool = True
+        gooditem = checkAlnum(user_email, email = True)
+        if not gooditem is True:
+            flash('you must use alphabetic and digit characters only.', category='error')
+            # render forgot.html
+        else:
+            if not user_email:
+                flash("You must submit a UserName or a E-Mail address")
+                # render forgot.html
+            else:
+                found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail=user_email)
+                if found_user is False:
+                    flash("No user account found that matches your input")
+                    # render forgot.html
+                else:
+                    # Put the user and email in a form input with zero thick borders
+                    return render_template("questions.html", user=found_user, email=found_email, q1.q=found_q1[0], q2.q=found_q2[0])
+    return render_template("forgot.html")

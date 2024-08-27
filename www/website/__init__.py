@@ -8,11 +8,12 @@ from shutil import copytree
 from shutil import rmtree
 from os import path, rename, rmdir, walk
 from os.path import isdir, isfile
+from configparser import ConfigParser
+
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '..','app')
 
-from configparser import ConfigParser
-users: ConfigParser[str, str] = ConfigParser()
+users: ConfigParser[str] = ConfigParser()
 casino_user: ConfigParser[str] = ConfigParser()
 casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
 casino_app: ConfigParser[str] = ConfigParser()
@@ -21,11 +22,15 @@ casino_last_update: list[int] = [0]
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
 
-def checkAlnum(word: str) -> bool:
-    if not word or 'javascript' in word or 'return' in word or 'style' in word:
+def checkAlnum(word: str. email = False) -> bool:
+    word = word.lower()
+    if email is True:
+        if email.count('@') != 1 or email.count('.') != 1:
+            return False
+    if not word or 'javascript' in word or 'return' in word or 'style' in word or 'script' in word:
         return False
     for L in word:
-        if L.isdigit() or L.isalpha() or L == '_' or L == '-':
+        if L.isdigit() or L.isalpha() or L == '_' or L == '-' or ((L == '@' or L = '.') and email is True):
             continue
         return False
     return True
@@ -56,7 +61,7 @@ def checkPassword(secret) -> bool:
 def strip_code(m: str) -> list:
     return strip_html(m)
 
-def strip_html(msg: str) -> list:
+def strip_html(msg: str, email = False) -> list:
     """
       Takes in 'msg' with py and html and path codes and
       removes the nasty bytes. Decodes bytes to string.
@@ -91,12 +96,13 @@ def strip_html(msg: str) -> list:
     msg = msg.replace('/','')
     msg = msg.replace('{','')
     msg = msg.replace('}','')
-    msg = msg.replace('.','')
     msg = msg.replace(':','')
     msg = msg.replace(';','')
-    msg = msg.replace('@','')
+    if email == False:
+        msg = msg.replace('@','')
+        msg = msg.replace('.','')
     msg = msg.replace('~','')
-    if checkAlnum(msg) == False:
+    if checkAlnum(msg, email) == False:
         return (msg, True)
     if len(msg) < length:
         return (msg, True)
@@ -189,6 +195,7 @@ def save_casino_app():
     casino_last_update[0] = int(secstime())
 
 def load_users_ini(username: str | None = None) -> ConfigParser | None:
+    global users
     users.clear()
     if username == None:
         if 'username' in session.keys():
@@ -201,7 +208,26 @@ def load_users_ini(username: str | None = None) -> ConfigParser | None:
         users.read(user_file[0])
     return users
 
+def fetch_user_by_detail(detail):
+    detail = detail.lower()
+    if '@' in detail:
+        e = True
+        detail_strip: list[str, bool] = strip_html(detail, email = True)
+    else:
+        e = False
+        detail_strip: list[str, bool] = strip_html(detail)
 
+    if detail_strip[1] is True or e:
+        if detail_strip[1] is True:
+            flash('Invalid UserName or Email address')
+        if e:
+            flash('Email lookup is not supported yet")
+        return False, False, [False, False], [False, False]
+    if user_exsits(detail):
+        users = load_users_ini(detail)
+        return detail, users['main']['email'], [users['main']['q1.q'], users['main']['q1.a']] , [users['main']['q2.q'], users['main']['q2.a']]
+    else:
+        return False, False, [False, False], [False, False]
 # def load_default_user():
 #    users.read(path.expanduser("~/website_and_proxy/default_user/default_user.ini"))
 #    return users
@@ -234,7 +260,7 @@ def login_user_post(username: str, password: str):
         return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd: str, power = 'normal'):
+def register_user_post(username: str, passwd: str, q1: list[str, str], q2: list[str, str], power = 'normal'):
     clear_session()
     global users
     users.clear()
@@ -252,13 +278,15 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
     try:
         load_users_ini(username_low)
         users['main']['username'] = username_strip[0]
+        users['main']['q1'] = q1
+        users['main']['q2'] = q2
         # User already exists and they know the password
         # load_users_ini(username_low)
         session['logged_in'] = False
-        session['username'] = str(users['main']['username']).lower()
+        session['username'] = username_low
         if checkPassword(password_strip[0]) is True:
             user_up: str = users["main"]["username"]
-            session['username'] = str(username_strip[0]).lower()
+            session['username'] = user_up.lower()
             session['power'] = users['main']['power']
             session['logged_in'] = True
             flash(f"You have logged-in as \'{user_up}\'", category='success')
@@ -298,6 +326,10 @@ def register_user_post(username: str, passwd: str, power = 'normal'):
 
             users['main']['username'] = username_strip[0]
             session['power'] = power
+            users['main']['q1.q'] = q1[0]
+            users['main']['q1.a'] = q1[1]
+            users['main']['q2.q'] = q2[0]
+            users['main']['q2.a'] = q2[1]
             session['logged_in'] = True
             writePassword(password_strip[0])  # includes save_user()
             flash(f"UserName \'{username_strip[0]}\' was just created and saved...")

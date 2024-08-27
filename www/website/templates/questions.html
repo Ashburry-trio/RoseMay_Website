@@ -1,0 +1,14 @@
+te{%- set content_page_name = 'register' -%}
+{%- extends "base_fixednav.html" -%} {% block title %}Answer your security questions{%- endblock -%}
+{%- block desc -%}Answer your security questions to reveal your password{%- endblock -%}
+{%- block h1 -%}Answer your security questions{%- endblock h1 -%}
+{%- block lead -%}Answer your security questions to reveal your password without the need to log-in to your email account{%- endblock lead -%}
+{%- block content -%}
+<p>Answer the security questions to reveal your password/p>
+<div class="container"><form target="/answer.html" method="post">
+<p><label>UserName:</label> <input type="username" name="username" id="usernme" value="{{ user }}"></p>
+<p><label>E-Mail:</label> <input type="email" name="email" id="email" value="{{ email }}"></p>
+<p><label>Security Question #1:</label> {{ q1.q }}</p>
+<p><label>Security Question #2:</label> {{ q2.q }}</p>
+<button type="submit" id="submit" class="btn btn-primary">Show Password</button>
+{%- endblock content -%}

@@ -1,22 +1,39 @@
-{%- set content_page_name = 'register' -%}
-{%- extends "base_fixednav.html" -%} {% block title %}Create an account to get a list of IRC Proxies{%- endblock -%}
-{%- block desc -%}Create an account to get a list of IRC proxies and edit your web-pages{%- endblock -%}
+te{%- set content_page_name = 'register' -%}
+{%- extends "base_fixednav.html" -%} {% block title %}Create an account to get a list of IRC Proxies, edit your webpage and play games{%- endblock -%}
+{%- block desc -%}Create an account to get a list of IRC proxies, edit your web-pages, or play games for prizes and money{%- endblock -%}
 {%- block h1 -%}Create an Account{%- endblock h1 -%}
-{%- block content -%}
 {%- block lead -%}Register a New Account. Use only ONE account!{%- endblock lead -%}
+{%- block content -%}
 <p>Remember your password at all times; <strong>write it down</strong> if you must!<br/><a href="/forgot.html" text="click here if you've forgotten your password">Forgotten Your Password? Tap Here.</a></p>
-<div class="container"><form method="post"><p><label>E-Mail:</label> <input type="email" name="email" id="email"></p>
-<p><label>Username:</label> <input type="text" name="username" id="username"></p>
-<p><label>Password:</label> <input type="password" name="password" id="password"><i class="bi bi-eye-slash" id="togglePassword"></i></p>
-<button type="submit" id="submit" class="btn btn-primary">Log In</button>
+<div class="container"><form method="post">
+<p><label>E-Mail:</label> <input type="email" name="email" id="email"></p>
+<p><label>Username:</label> <input type="username" name="username" id="username"></p>
+<p><label>Password:</label> <input type="password" name="password" id="password"><i class="bi bi-eye" id="togglePassword"></i></p>
+<p><label for="question">Security Question:</label>
+<select name="question" id="question">
+  <option value="blank">Select a question:</option>
+  <option value="bookt">What is your favorite book or movie?</option>
+  <option value="street">On what street did you grew up?</option>
+  <option value="car">What was your first car?</option>
+  <option value="teacher">What is the name of your favorite teacher?</option>
+  <option value="job">What was your dream job as a child?</option>
+  <option value="rest">What is the name of your favorite restaurant?</option>
+  <option value="song">What is the title of your favorite song?</option>
+  <option value="dog">What is your dogs name?</option>
+  <option value="cat">What is your cats name?</option>
+  <option value="pet">What is your pet name?</option>
+</select> &nbsp;&nbsp; Answr: <input type="text" name="answer" id="answer"></p>
+<p><label>Custom Security Question (optional):</label> <input type="text" name="customq" id="customq"> &nbsp; Answr: <input type="text" name="answr" id="answr"></p>
+<button type="submit" id="submit" class="btn btn-primary">Register</button>
 </form></div><p class="h3">Already have an account?</p><p class="h4"><a href="/login.html" text="Go to the sign-in page.">click here to <u><strong>sign-in</strong></u>.</a></p>
+
   <script>
 		const togglePassword = document
 			.querySelector('#togglePassword');
 		const password = document.querySelector('#password');
 		togglePassword.addEventListener('click', () => {
 			// Toggle the type attribute using
-			// getAttribure() method
+			// getAttribute() method
 			const type = password
 				.getAttribute('type') === 'password' ?
 				'text' : 'password';
@@ -25,4 +42,49 @@
 			this.classList.toggle('bi-eye');
 		});
 	</script>
+<style>
+    .dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+select #security {
+  border:none;
+  border-radius:5px;
+  padding:15px 30px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+select #security:hover{
+  background-color:#ddd;
+}
+
+.dropdown-options {
+  display: none;
+  position: absolute;
+  overflow: auto;
+  background-color:#fff;
+  border-radius:5px;
+  box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.4);
+}
+
+.dropdown:hover .dropdown-options {
+  display: block;
+}
+
+.dropdown-options a {
+  display: block;
+  color: #000000;
+  padding: 5px;
+  text-decoration: none;
+  padding:20px 40px;
+}
+
+.dropdown-options a:hover {
+  color: #0a0a23;
+  background-color: #ddd;
+  border-radius:5px;
+}
+</style>
 {%- endblock content -%}
