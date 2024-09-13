@@ -6,6 +6,11 @@ te{%- set content_page_name = 'register' -%}
 {%- block content -%}
 <p>To locate your account enter your email address or username</p>
 <div class="container"><form target="/questions.html" method="post">
-<p><label>UserName or E-Mail:</label> <input type="username" name="user_email" id="user_email"></p>
-<button type="submit" id="submit" class="btn btn-primary">Find My Account</button>
+<p><label>E-Mail:</label><input type="email" name="useremail" id="useremail"></p>
+<p><label>UserName:</label><input type="username" name="username" id="user_email"></p>
+<button type="submit" id="submit" class="btn btn-primary">Find My Account</button></p>
+<p>You may receive a e-mail message with your username/password by using this form.
+You must be able to log in to your e-mail account to view your password. If you
+cannot do that then just create a new account with a new e-mail address and do not
+forget your e-mail password nor your MyProxyIP account username and password.</p>
 {%- endblock content -%}

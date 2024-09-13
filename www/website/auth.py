@@ -6,7 +6,7 @@ from flask import session
 from os import path
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
-from website import login_user_post, register_user_post, save_user, load_users_ini, strip_html, checkAlnum, users, fetch_user_by_detail
+from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, users, fetch_user_by_detail
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
@@ -83,51 +83,55 @@ def register():
     gk.report()
     if request.method == 'POST':
         session['logged_in'] = False
-        username: str = request.form.get('username')
-        passwd: str = request.form.get('password')
-        gooditem: bool = True
-        gooditem = checkAlnum(username)
-        if gooditem is True:
-            gooditem = checkAlnum(passwd)
-        if not gooditem:
-            flash('you must use alphabetic and digit characters only.', category='error')
+        username: [bool, str] = request.form.get('username')
+        passwd: [bool, str] = request.form.get('password')
+        q1_q: [bool, str] = request.form.get('q1_q')
+        q1_a: [bool, str] = request.form.get('q1_a')
+        q2_q: [bool, str] = request.form.get('q2_q')
+        q2_a: [bool, str] = request.form.get('q2_a')
+        user_pass = username + ':' + passwd
+        username_check = validate_email_or_login(user_pass, email = False)
+        if not username_check:
+            flash('credentials may use only alphabetic and digit characters without banned words.', category='error')
             return render_template("register.html")
         else:
-            return register_user_post(username, passwd)
+            return register_user_post(username, passwd, q1_q, q1_a, q2_q, q2_a)
     return render_template("register.html")
 
 
-@auth.route('/quest.html', methods=['POST'])
-@auth.route('/question.html', methods=['POST'])
-@auth.route('/questions.html', methods=['POST'])
-def questions():
+@auth.route('/quest.html', methods=['GET', 'POST'])
+@auth.route('/question.html', methods=['GET', 'POST'])
+@auth.route('/questions.html', methods=['GET', 'POST'])
+def question_form():
     """
         This page will show the security questions associated with the accounts
         username or email address that is provided.
-        The page renders the username, email, and the security questions, or
-        reedirects back to forogt.html with a flash of the reason it failed
-        to render questions.html
+        The page renders the the e-mail, usernames, and the security questions,
+        or reedirects back to forogt.html with a flash of the reason it failed
+        to render questions.html. Questions.html is where the questions get
+        answered, however they are processed with 'def answer_form()'
+        via 'answered.html'
     """
     gk.report()
     if request.method == 'POST':
         session['logged_in'] = False
         user_email: str = request.form.get('user_email')
         user_email = user_email.lower()
-        gooditem: bool = True
-        gooditem = checkAlnum(user_email, email = True)
-        if not gooditem is True:
+        goodemail: bool = True
+        goodemail = validate_email_or_login(user_email, email = True)
+        gooduser = validate_email_or_login(username, email = False)
+        if not goodemail and not gooduser:
             flash('you must use alphabetic and digit characters only.', category='error')
             # render forgot.html
+        elif goodemail and gooduser:
+            flash("Submit a E-Mail or a UserName but not both.")
+            # render forgot.html
         else:
-            if not user_email:
-                flash("You must submit a UserName or a E-Mail address")
+            found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail = goodemail or gooduser)
+            if found_user is False:
+                flash("No user accounts match your input")
                 # render forgot.html
             else:
-                found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail=user_email)
-                if found_user is False:
-                    flash("No user account found that matches your input")
-                    # render forgot.html
-                else:
-                    # Put the user and email in a form input with zero thick borders
-                    return render_template("questions.html", user=found_user, email=found_email, q1.q=found_q1[0], q2.q=found_q2[0])
+                return render_template("questions.html", user=found_user, email=found_email, q1_q=found_q1[0], q2_q=found_q2[0])
     return render_template("forgot.html")
+
