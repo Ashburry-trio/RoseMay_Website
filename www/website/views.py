@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.exceptions import TooManyRequests
 from flask_app import gk, app
 from os.path import expanduser
+
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
 @app.errorhandler(TooManyRequests)

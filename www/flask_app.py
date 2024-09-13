@@ -38,7 +38,7 @@ app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
 sess = Session()
 sess.init_app(app)
-gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":600}, rate_limit_rules=[ {"count":4,"window":1, "duration":1200}, {"count":15,"window":7,"duration":2400}])
+gk = GateKeeper(app, ban_rule={"count":5,"window":3,"duration":25}, rate_limit_rules=[ {"count":4,"window":1, "duration":45}, {"count":15,"window":7,"duration":35}])
 
 from website.views import views
 from website.auth import auth
