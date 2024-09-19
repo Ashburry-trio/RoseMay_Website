@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, make_response
 
-from flask import request, flash, redirect
+from flask import request, flash, redirect,  Response
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
 from os import path
@@ -83,6 +83,7 @@ def register():
     gk.report()
     if request.method == 'POST':
         session['logged_in'] = False
+        email: [bool, str] = request.form.get('email')
         username: [bool, str] = request.form.get('username')
         passwd: [bool, str] = request.form.get('password')
         q1_q: [bool, str] = request.form.get('q1_q')
@@ -91,11 +92,19 @@ def register():
         q2_a: [bool, str] = request.form.get('q2_a')
         user_pass = username + ':' + passwd
         username_check = validate_email_or_login(user_pass, email = False)
-        if not username_check:
-            flash('credentials may use only alphabetic and digit characters without banned words.', category='error')
+        email_check = validate_email_or_login(email, email = True)
+        if not email_check:
+            flash("You must enter your real email address; to verify it.")
+            return render_template("register.html")
+        elif not username_check:
+            flash('Minimum <b>EiGhT</b> <u>alphanumeric</u> characters; no <u>banned</u> words/ones/zeros.', category='error')
             return render_template("register.html")
         else:
-            return register_user_post(username, passwd, q1_q, q1_a, q2_q, q2_a)
+            del user_pass
+            del username_check
+            del email_check
+            # return Response('These are the items username='+username+' passwd='+passwd+' q1_q='+q1_q+' q1_a='+q1_a+' q2_q='+q2_q+' q2_a='+q2_a, status=200, mimetype='text/plain')
+            return register_user_post(username, passwd, email, q1_q, q1_a, q2_q, q2_a, power='normal')
     return render_template("register.html")
 
 
@@ -116,18 +125,15 @@ def question_form():
     if request.method == 'POST':
         session['logged_in'] = False
         user_email: str = request.form.get('user_email')
-        user_email = user_email.lower()
-        goodemail: bool = True
+        username: str | bool = request.form.get('username')
+        goodemail: bool | str = True
         goodemail = validate_email_or_login(user_email, email = True)
-        gooduser = validate_email_or_login(username, email = False)
-        if not goodemail and not gooduser:
-            flash('you must use alphabetic and digit characters only.', category='error')
-            # render forgot.html
-        elif goodemail and gooduser:
-            flash("Submit a E-Mail or a UserName but not both.")
+        gooduser: bool | str = validate_email_or_login(username, email = False)
+        if not goodemail or not gooduser:
+            flash('<a href="https://simple.wikipedia.org/wiki/Alphanumeric">Alphabetic</a> and <u>digit</u> characters only. Not <b>ones</b> nor <b>zeros</b>.', category='error')
             # render forgot.html
         else:
-            found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail = goodemail or gooduser)
+            found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail = goodemail)
             if found_user is False:
                 flash("No user accounts match your input")
                 # render forgot.html
