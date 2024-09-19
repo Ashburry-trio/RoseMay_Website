@@ -50,45 +50,47 @@ def usable_decode(text: bytes | str) -> str:
 
 # formerly def checkAlnum()
 def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
+
     passwd: str
     login: str
     client_name: str
-    word = colourstrip(word)
+    word = colourstrip(word.strip())
+    word = word.strip()
     word_len: int = len(word)
     word = word.lower()
     word = word.split()[0]
     word = word.strip()
-    word = word.strip(' @.:')
-    if word_len > len(word) or len(word) < 9:
-        return "False1"
-    if word.count('..') + word.count(' ') + word.count(' ') + word.count('--') \
-     + word.count('__') + word.count('-_') + word.count('_-') \
-     + word.count('--') > 0:
+    word = word.strip(' @.:\x0c\f\n\t')
+    if (word_len > len(word)) or (len(word) < 9) or (' ' in word):
         return False
     username: str
     hostname: str
     if email is True and '@' in word:
         if fnmatch(word,"*???@???*.?*"):
-            username = word.split('@')[0]
-            hostname = word.split('@')[1]
+            username = word.split('@')[0].strip()
+            hostname = word.split('@')[1].strip()
+            if '1' in username or '0' in username:
+                return False
         else:
             return False
         word = username + '@' + hostname
         if profanity.contains_profanity(username) \
               or profanity.contains_profanity(hostname) \
-              or username.replace('.','0').isdigit() \
-              or hostname.replace('.','0').isdigit() \
-              or username.startswith('-'):
+              or username.startswith('.') \
+              or username.startswith('-') or hostname[-1] in '_-.' \
+              or hostname[0] in '_-.':
             return False
         if (fnmatch(word,'???*@???*.?*') is False) \
                 or (len(word) > 63 or len(word) < 9) or (len(username) > 30 \
                 or len(username) < 3) or (len(hostname) > 32 \
                 or len(hostname) < 5) or username.count('.') > 0 \
                 or (word.count('@') != 1 or hostname.count('.') == 0) \
-                or ':' in word:
+                or ':' in word or '..' in word or '--' in hostname \
+                or '__' in word or '-_' in hostname or '_-' in hostname:
             return False
         if len(hostname) > 33 or hostname.startswith('.') \
-          or hostname.endswith('.') or ':' in hostname:
+              or hostname[-1] in '_-.' \
+              or hostname[0] in '_-.' or ':' in hostname:
             return False
 
     elif not email:
@@ -104,6 +106,7 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
                 login = word
         else:
             return False
+
         username = login.split(':')[0]
         passwd = login.split(':')[1]
         del login
@@ -111,9 +114,12 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
             return False
         if len(passwd) > 32 or len(passwd) < 8:
             return False
+        if '1' in username or '0' in username:
+                return False
         if not passwd or passwd.startswith('javascript') \
           or passwd.startswith('return') or passwd.startswith('style') \
           or passwd.startswith('script') or '.' in passwd \
+          or passwd.startswith('input') \
           or ':' in passwd or '@' in passwd \
           or profanity.contains_profanity(username):
             return False
@@ -217,11 +223,11 @@ def checkPassword(secret) -> bool:
 
 
 def user_page_exists(username: str) -> bool:
-    user_strip: list[str, bool]
-    user_strip = strip_html(username.lower())
-    if user_strip[1]:
+    user_low: str = username.lower().strip()
+    user_verify = validate_email_or_login(username.lower() + ':' + 'nopass')
+    if not user_verify:
         return False
-    if isdir(path.join(path.expanduser('~'), 'www', 'website', 'templates', 'users', user_strip[0])):
+    if isdir(path.join(path.expanduser('~'), 'www', 'website', 'templates', 'users', user_low)):
         return True
     else:
         return False
@@ -263,15 +269,15 @@ def user_exists(username: str) -> bool:
     return False
 
 
-def set_paths(username: str) -> None | bool:
-    username_low: list[str, bool] = strip_html(username.lower())
+def set_paths(username: str) -> bool:
+    username_low: str = username.lower()
     del username
     user_dir[0] = ''
     user_file[0] = ''
-    if username_low[1]:
-        return None
-    user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0])
-    user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low[0], username_low[0] + ".ini")
+    if not username_low:
+        return False
+    user_dir[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low)
+    user_file[0] = path.join(path.expanduser("~"), "website_and_proxy", "users", username_low, username_low + ".ini")
     if isfile(user_file[0]):
         return True
     else:
@@ -309,19 +315,16 @@ def load_users_ini(username: str | None = None) -> ConfigParser | None:
         if 'username' in session.keys():
             username = session['username']
         else:
-            return
-    username = username + ':nopass'
-    username_low: str | bool = validate_email_or_login(username)
-
-
-    if not username_low:
-        raise NoSuchUser
+            raise NoSuchUser
+    username_check: str | bool = username + ':nopass'
+    username_check = validate_email_or_login(username_check)
     username_low = username.lower()
     del username
     if set_paths(username_low):
         try:
-            users.read(user_file)
-            'username' in users.keys()
+            users.read(user_file[0])
+            if not 'main' in users.sections():
+                raise NoSuchUser
         except (FileNotFoundError, KeyError, ValueError):
             raise NoSuchUser
     return users
@@ -356,16 +359,17 @@ def fetch_user_by_detail(detail) -> [bool | str, bool | str, [bool | str, bool |
             except NoSuchUser:
                 return [False, False, [False, False], [False, False]]
 
-def load_users_email(email = None) -> [ConfigParser,bool]:
+def load_users_email(username: str, email = None) -> [ConfigParser,bool]:
     global users, email_file
     users.clear()
     if email is None:
         if 'username' in session.keys():
             username = session['username']
-            users = load_users_ini(username.lower())
+            try:
+                users = load_users_ini(username.lower())
+            except NoSuchUser:
+                raise NoSuchUser
             email = users['main']['email']
-            if not email:
-                return NoSuchUser
         else:
             raise NoSuchUser
     users.clear()
@@ -393,60 +397,69 @@ def login_user_post(username: str, password: str):
             user_up: str = str(users['main']['username'])
             session['username'] = user_up
             session['power'] = str(users['main']['power']).lower() or 'normal'
-            flash(f"You have logged-in as \'{user_up}\'", category='success')
+            flash("You have logged-in successfully.", category='success')
             return redirect('/irc/proxies.html', code='307')
         else:
-            flash(f"Bad Password!", category='error')
+            flash("Bad Password!", category='error')
             return make_response(render_template('login.html'), 401)
     except (ValueError, KeyError, FileNotFoundError, NoSuchUser) as exp:
-        flash(f"Unknown UserName.", category="error")
+        flash("Unknown UserName.", category="error")
         return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd: str, email: str, q1_q, q1_a, q2_q, q2_a,power = 'normal'):
+def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str, q2_a: str,power = 'normal'):
     clear_session()
     global users
+    q1_q = q1_q.strip()
+    q1_a = q1_a.strip()
+    q2_q = q2_q.strip()
+    q2_a = q2_a.strip()
     username = username.strip(' \n\x03\t\f')
     username = username.strip()
     username = username.strip(' \n\x03\t\f')
     passwd = passwd.strip(' \n\x03\t\f')
     passwd = passwd.strip()
     passwd = passwd.strip(' \n\x03\t\f')
+
     password = passwd
     users.clear()
-    users['main'] = {}
     user_pass: str | bool = username + ':' + passwd
     user_pass = validate_email_or_login(user_pass)
     if not user_pass:
-        flash("UserName and Password must be alphanumeric characters")
+        # flash("Login must be <u><a href="https://simple.wikipedia.org/wiki/Alphanumeric" target="alphanumeric">alphanumeric</a></u> <b>without</b> <u>banned</u> words.")
         return make_response(render_template('register.html'), 401)
+    del user_pass
     username_low: str = username.lower()
     try:
         users = load_users_ini(username_low)
-        users['main']['username'] = username
-        users['main']['q1_q'] = q1_q
-        users['main']['q1_a'] = q1_a
-        users['main']['q2_q'] = q2_q
-        users['main']['q2_a'] = q2_a
-        # User already exists and they know the password
-        # load_users_ini(username_low)
-        session['logged_in'] = False
-        session['username'] = username
-        if checkPassword(passwd) is True:
-            user_up: str = users["main"]["username"]
-            session['username'] = user_up
-            session['power'] = users['main']['power'].lower()
-            session['logged_in'] = True
-            flash(f"You have logged-in as \'{user_up}\'", category='success')
-            del user_up
-            return redirect(url_for('auth.irc_proxies'), code='307')
-        else:
-            flash('UserName is taken. Try Again.', category='error')
-            clear_session()
+        if 'main' in users.sections():
+            users['main']['username'] = username
+            if q1_q:
+                users['main']['q1_q'] = q1_q.strip()
+            if q1_a:
+                users['main']['q1_a'] = q1_a.strip()
+            if q2_q:
+                users['main']['q2_q'] = q2_q.strip()
+            if q2_a:
+                users['main']['q2_a'] = q2_a.strip()
+            # User already exists and they know the password
             session['logged_in'] = False
-            del session['username']
-            return make_response(render_template('register.html'), 401)
-    except (KeyError, ValueError, FileNotFoundError, NoSuchUser):
+            session['username'] = username
+            if checkPassword(passwd) is True:
+                user_up: str = users["main"]["username"]
+                session['username'] = user_up
+                session['power'] = users['main']['power'].lower() or power.lower()
+                session['logged_in'] = True
+                flash(f"You have logged-in as \'{user_up}\'.", category='success')
+                del user_up
+                return redirect(url_for('auth.irc_proxies'), code='307')
+            else:
+                flash('UserName is taken, bad Password. Try a different one.', category='error')
+                clear_session()
+                return make_response(render_template('register.html'), 401)
+        else:
+            raise NoSuchUser
+    except NoSuchUser:
         if not username_low:
             flash("You are missing the UserName to create.", category='error')
         elif 'admin' in username_low:
@@ -455,25 +468,33 @@ def register_user_post(username: str, passwd: str, email: str, q1_q, q1_a, q2_q,
             flash("Bad choice of UserName!", category='error')
         elif not password:
             flash("You MUST enter a Password you can remember.", category='error')
-        elif len(password) < 5:
+        elif len(password) < 8:
             flash('Password must be at-least 5 characters.', category='error')
         elif len(password) > 32:
             flash('Password must be, at-most, 32 characters.', category='error')
         else:
-            session["username"] = username
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             dst_dir = path.join(path.expanduser("~"), "website_and_proxy","users", username_low)
-            copytree(src_dir, dst_dir)
-            rename(path.join(dst_dir, 'default_user.ini'),path.join(dst_dir,username_low + '.ini'))
-
-            users['main']['q1_q'] = q1_q
-            users['main']['q1_a'] = q1_a
-            users['main']['q2_q'] = q2_q
-            users['main']['q2_a'] = q1_a
-            session['logged_in'] = True
-            writePassword(password)  # includes save_user()
-            flash(f"UserName \'{username}\' was just created and saved", category="success")
-            return redirect('/irc/proxies.html', code='307')
+            try:
+                copytree(src_dir, dst_dir)
+                rename(path.join(dst_dir, 'default_user.ini'),path.join(dst_dir,username_low + '.ini'))
+                users = load_users_ini(username_low)
+                if q1_q:
+                    users['main']['q1_q'] = q1_q.strip()
+                if q1_a:
+                    users['main']['q1_a'] = q1_a.strip()
+                if q2_q:
+                    users['main']['q2_q'] = q2_q.strip()
+                if q2_a:
+                    users['main']['q2_a'] = q2_a.strip()
+                users['main']['power'] = power.lower()
+                session["username"] = username
+                session['logged_in'] = True
+                writePassword(password)  # includes save_user()
+                flash("UserName was just created and saved.", category="success")
+                return redirect('/irc/proxies.html', code='307')
+            except (FileExistsError, NoSuchUser):
+                pass
         return make_response(render_template('register.html'), 401)
 
 custom_badwords = ['fukk','fukkk','sexx','sexxx','loli','l0li','l@li',
