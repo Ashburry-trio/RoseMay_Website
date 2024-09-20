@@ -7,6 +7,16 @@ from os.path import expanduser
 
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
+@views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
+def mywotddd():
+    # Change this to your own Web of Trust file
+    return send_file(expanduser('~/www/website/static/mywotdddf72ca09e4c80ba89a.html')), 200
+
+@views.route('/fo-verify.html', methods=['GET','POST'])
+def flexoffers():
+    # This is to verify flexoffers.com account
+    return send_file(expanduser('~/www/website/static/fo-verify.html')), 200
+
 @app.errorhandler(TooManyRequests)
 def handle_rate_limit_exceeded(e):
     return jsonify({'tooManyRequests': 'the webserver is flooded with traffic. Try again, whenever you are ready...' }), 429
