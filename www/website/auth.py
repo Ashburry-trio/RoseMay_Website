@@ -1,11 +1,16 @@
 from flask import Blueprint, render_template, make_response
-
-from flask import request, flash, redirect,  Response
+from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
-from os import path
-auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 from flask_app import gk
+from os.path import expanduser
+from os import path
+import os
+from configparser import ConfigParser
+import hashlib
+from website.ipreg import get_ip_info
+
+auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, users, fetch_user_by_detail
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
@@ -76,16 +81,66 @@ def logout():
     session['logged_in'] = False
     return redirect('/index.html', code='307')
 
+def delete_file(file_path: str) -> bool:
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        return True
+    except Exception:
+        return False
+    return True
+
+def read_json_into_config(json_data,config):
+    for key, value in json_data.items():
+        # If value is a dictionary, create a section
+        if isinstance(value, dict):
+            config[key] = value
+        else:
+            # If not a dictionary, treat it as a key-value pair at the root
+            config["DEFAULT"][key] = str(value)
+
+
+def ip_to_hash_filename(ip):
+    """Encode a IPv4 and IPv6 to a filename
+    for use with ip_info in /register.html
+    """
+    # Encode the IP address to bytes
+    ip_bytes = ip.encode('utf-8')
+    # Create a SHA-256 hash object
+    hash_object = hashlib.sha256(ip_bytes)
+    # Get the hexadecimal representation of the hash
+    hash_filename = hash_object.hexdigest()
+
+    return hash_filename + '.ini'
+
 @auth.route('/register/index.html', methods=['GET', 'POST'])
 @auth.route('/register/', methods=['GET', 'POST'])
+@auth.route('/registry.html', methods=['GET', 'POST'])
+@auth.route('/registry/register.html', methods=['GET', 'POST'])
+@auth.route('/registry/index.html', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
     gk.report()
+    client_ip = request.remote_addr
+    ip_info = ConfigParser()
+    ip_file = path.join(expanduser('~'),'www','app','ip_reg',ip_to_hash_filename(client_ip))
+    if delete_file(ip_file) is False:
+        pass
+    else:
+        json_data = get_ip_info(client_ip)
+        if json_data:
+            read_json_into_config(json_data,ip_info)
+            with open(ip_file,'w') as fp:
+                ip_info.write(fp, space_around_delimiters = True)
+        else:
+            with open(ip_file,'w') as fp:
+                fp.write(str(json_data))
+
     if request.method == 'POST':
         session['logged_in'] = False
         email: [bool, str] = request.form.get('email')
-        username: [bool, str] = request.form.get('username')
-        passwd: [bool, str] = request.form.get('password')
+        username: [bool, str] = request.form.get('username').strip(' \n\x0c\t\f')
+        passwd: [bool, str] = request.form.get('password').strip(' \n\x0c\t\f')
         q1_q: [bool, str] = request.form.get('q1_q')
         q1_a: [bool, str] = request.form.get('q1_a')
         q2_q: [bool, str] = request.form.get('q2_q')
