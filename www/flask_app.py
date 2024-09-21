@@ -8,28 +8,32 @@ from flask import Flask, request
 from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser
+import os
 import sys
 
 key: str
 def make_key():
     global key
+    secret_file: str = expanduser(os.path.join("~",'secret.txt'))
     try:
-        with open(expanduser("~/secret.txt"), 'r') as fp:
+        with open(secret_file, 'r') as fp:
             key = fp.read()
-            key = bytes(key.split('\n')[0].strip(), 'utf-8')
+            key = bytes(key.split(' \n\0x5\t\f')[0].strip(), 'utf-8')
             if not key:
                 raise NameError('Key is empty space! This is wrong.')
     except (NameError, FileNotFoundError):
         import secrets
-        with open(expanduser("~/secret.txt"), 'w') as fp:
+        with open(expanduser(secret_file, 'w') as fp:
             LETTERS = secrets.token_urlsafe(55)
             fp.write(LETTERS)
-            key = bytes(LETTERS, 'utf-8')
+        key = bytes(LETTERS, 'utf-8')
         del LETTERS
         del secrets
-make_key()
+        return key
+
+key = make_key()
 app = Flask(__name__)
-app.secret_key = key or b"jklasdfKJDFiojasdfiouDF*&asdfh12345"
+app.secret_key = key or b"jqwerzxcvasdfKJD1231230s0sdf:><:L&asdfh12345"
 app.config['SERVER_NAME'] = 'ashburry.pythonanywhere.com'
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser('~/flask_session_cache')
