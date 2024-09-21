@@ -5,6 +5,7 @@ from flask import session
 from flask_app import gk
 from os.path import expanduser
 from os import path
+from time import time as ctime
 import os
 from configparser import ConfigParser
 import hashlib
@@ -48,24 +49,28 @@ def irc_proxies():
 @auth.route("/login.html", methods=["POST", "GET"])
 def login():
     gk.report()
+    try:
+        client_ip = get_ip_checked(request)
+    except Exception:
+        session['logged_in'] = False
+        return redirect('/index.html', code=307)
     if 'logged_in' in session.keys() and session['logged_in'] is True:
         session['logged_in'] = False
-        session['username'] = None
     if request.method == "POST":
         # record the user name
         username = request.form.get("username")
-        passw = request.form.get("password")
-        if not passw: passw = ''
+        passwd = request.form.get("password")
+        if not passwd: passwd = ''
         if not username: username = ''
-        username = strip_html(username)
-        passw = strip_html(passw)
-        if not passw[0] or not username[0]:
-            flash('UserName or Password fields are blank?', category='error')
-        elif username[1] or passw[1]:
-            flash("UserName and Password fields must be alphanumeric only.", category='error')
+        username = username.strip(' \n\0x5\t\f')
+        passwd = passwd.strip(' \n\0x5\t\f')
+        user_pass = username + ':' + passwd
+        user_pass = validate_email_or_login(user_pass, email = False)
+        if not user_pass:
+            flash('UserName and/or Password field is NOT valid.', category='error')
         else:
-            load_users_ini(username[0].lower())
-            return login_user_post(username[0], passw[0])
+            load_users_ini(username)
+            return login_user_post(username, passwd)
     return make_response(render_template("login.html"), 401)
 
 
@@ -90,14 +95,39 @@ def delete_file(file_path: str) -> bool:
         return False
     return True
 
-def read_json_into_config(json_data,config):
-    for key, value in json_data.items():
-        # If value is a dictionary, create a section
-        if isinstance(value, dict):
-            config[key] = value
-        else:
-            # If not a dictionary, treat it as a key-value pair at the root
-            config["DEFAULT"][key] = str(value)
+import json
+
+def dict_to_configparser(data_dict):
+    config = ConfigParser()
+    config['DEFAULT'] = {}
+    try:
+        for section, options in data_dict.items():
+            if type(options) is dict:
+                config.add_section(section)
+                for key, value in options.items():
+                    if type(value) is dict:
+                        config.add_section(f"{section}.{key}")
+                        for sect,val in value.items():
+                            if type(val) is dict:
+                                config.add_section(f"{section}.{key}.{sect}")
+                                for sect3,val3 in val.items():
+                                    config.set(f"{section}.{key}.{sect}", str(sect3), str(val3))
+                            else:
+                                config.set(f"{section}.{key}", str(sect), str(val))
+                    else:
+                        config.set(section, key, str(value))  # Ensure value is a string
+            elif options is None:
+                config.set('DEFAULT', section, 'None')
+            elif type(options) is str or type(options) is bool:
+                config.set('DEFAULT',section,str(options))
+            else:
+                config.add_section('dummy')
+                config['dummy']['key.for'] = 'section: '+str(section)+' options_type: '+str(type(options))
+    except Exception:
+        config['dummy']['key.except'] = str(data_dict)
+    finally:
+        config['DEFAULT']['last.update'] = ctime()
+    return config
 
 
 def ip_to_hash_filename(ip):
@@ -105,13 +135,88 @@ def ip_to_hash_filename(ip):
     for use with ip_info in /register.html
     """
     # Encode the IP address to bytes
-    ip_bytes = ip.encode('utf-8')
+    ip_bytes: bytes = ip.encode('utf-8')
     # Create a SHA-256 hash object
-    hash_object = hashlib.sha256(ip_bytes)
+    hash_object: hashlib = hashlib.sha256(ip_bytes)
     # Get the hexadecimal representation of the hash
     hash_filename = hash_object.hexdigest()
+    f_file: str = path.join(expanduser('~'),'www','app','ip_reg',hash_filename + '.ini')
+    return f_file
 
-    return hash_filename + '.ini'
+def ip_reg_check(client_ip) -> ConfigParser:
+    """Downloads IP information and checks for threat.
+    Updates the data after 15 hours prior to a check.
+    Saves the data in a IP hashlib ini filename
+    located in ~/wwww/app/ip_reg/iphashes-filenames.ini
+    and settings file such as API_KEY in ~/www/app/ipreg.ini
+    """
+    for letter in client_ip:
+        if letter.isalnum() or letter == '-' or letter == '_' or letter == '.':
+            pass
+    else:
+        return
+    ip_info: ConfigParser = ConfigParser()
+    ip_file: str = ip_to_hash_filename(client_ip)
+    try:
+        ip_info.read(ip_file)
+        if 'DEFAULT' in ip_info.keys():
+            if ip_info['DEFAULT'].has_section('last.update'):
+                if ip_is_bad(ip_info):
+                    raise IP_is_Bad
+                if int(ctime()) - int(ip_info['DEFAULT']['last.update']) > 60 * 15:
+                    if delete_file(ip_file) is False:
+                        # There was an error deleting the file
+                        # and it probably cannot be written to.
+                        pass
+                    else:
+                        j_data: dict = get_ip_info(client_ip)
+                        ip_info = dict_to_configparser(j_data)
+        if ip_info:
+            with open(ip_file,'w') as fp:
+                ip_info.write(fp, space_around_delimiters = True)
+            flash('It Worked!! Attacker is: '+ip_info['security']['is_attacker'])
+        else:
+            pass
+    except IP_is_Bad:
+        raise
+    except Exception:
+        pass
+    return ip_info
+
+
+def ip_is_bad(ip_info):
+    if str(ip_info['security']['is_attacker']).lower() == 'true' \
+    or str(ip_info['security']['is_abuser']).lower() == 'true' \
+    or str(ip_info['security']['is_threat']).lower() == 'true' \
+    or str(ip_info['security']['is_bogon']).lower() == 'true':
+        raise IP_is_Bad
+
+class IP_is_Bad(Exception):
+    pass
+
+
+def get_ip_checked(req):
+    # Get IP from 'X-Forwarded-For' header
+    client_ip = req.headers.get('X-Forwarded-For')
+    if client_ip:
+        # If there are multiple IPs, take the first one
+        xsplit = client_ip.split(',')
+        if len(xsplit) > 3:
+            ip_reg_check(xsplit[0])
+        else:
+            for ip in xsplit:
+                ip_reg_check(ip)
+
+    client_ip = req.headers.get('X-Real-IP')
+    if client_ip:
+        ip_reg_check(client_ip)
+
+    client_ip = req.headers.get('Forwarded')
+    if client_ip:
+        ip_reg_check(client_ip)
+
+    ip_reg_check(req.remote_addr)
+    return client_ip
 
 @auth.route('/register/index.html', methods=['GET', 'POST'])
 @auth.route('/register/', methods=['GET', 'POST'])
@@ -121,21 +226,13 @@ def ip_to_hash_filename(ip):
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
     gk.report()
-    client_ip = request.remote_addr
-    ip_info = ConfigParser()
-    ip_file = path.join(expanduser('~'),'www','app','ip_reg',ip_to_hash_filename(client_ip))
-    if delete_file(ip_file) is False:
+    try:
+        client_ip = get_ip_checked(request)
+    except IP_is_Bad:
+        flash('You are not allowed to login nor register')
+        return redirect('/index.html', code=307)
+    except Exception:
         pass
-    else:
-        json_data = get_ip_info(client_ip)
-        if json_data:
-            read_json_into_config(json_data,ip_info)
-            with open(ip_file,'w') as fp:
-                ip_info.write(fp, space_around_delimiters = True)
-        else:
-            with open(ip_file,'w') as fp:
-                fp.write(str(json_data))
-
     if request.method == 'POST':
         session['logged_in'] = False
         email: [bool, str] = request.form.get('email')

@@ -6,7 +6,10 @@ from os.path import expanduser
 # Reading the API key from the config file
 config = ConfigParser()
 config.read(expanduser(path.join('~','www','app','ipreg.ini')))
-api_key = config['ipreg']['api_key']
+try:
+    api_key = config['ipreg']['api_key']
+except KeyError:
+    config['ipreg']['api_key'] = 'Get an account at www.ipregistry.co'
 
 def get_ip_info(ip_address, api_key = api_key) -> str | bool:
     url = f'https://api.ipregistry.co/{ip_address}?key={api_key}'
