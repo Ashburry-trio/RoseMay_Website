@@ -9,11 +9,11 @@
 		<form method="post">
 			<p>
 				<label>Username:</label>
-				<input type="text" name="username" id="username">
+				<input type="text" name="username" id="username" placeholder="UserName Here">
 			</p>
 			<p>
 				<label>Password:</label>
-				<input type="password" name="password" id="password">
+				<input type="password" name="password" id="password" placeholder="Password Here">
 				<i class="bi bi-eye-slash" id="togglePassword"></i>
 			</p>
 			<button type="submit" id="submit" class="btn btn-primary">
@@ -36,6 +36,7 @@
 			password.setAttribute('type', type);
 			// Toggle the eye and bi-eye icon
 			this.classList.toggle('bi-eye');
+			this.classList.toggle('bi-eye-slash');
 		});
 	</script>
 {% endblock content %}

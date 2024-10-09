@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import smtplib, ssl
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from configparser import ConfigParser
@@ -10,15 +11,15 @@ from time import time
 def random_string(length):
     return secrets.token_urlsafe(length)
 
-
 config = ConfigParser()
-config.read('secrets.ini')
+config.read('~/secrets.ini')
 if not config.has_section('email') or not 'from' in config['email'].keys() \
-        or not 'smtp_server' in config['email'].keys() or not 'password' in config['email'].keys():
+        or not 'smtp_server' in config['email'].keys() or not 'password' in \
+                                                config['email'].keys():
     config['email'] = {}
     config['email']['from'] = 'from email'
-    config['email']['password'] = 'your email password'
-    config['email']['smtp_server'] = 'smtp.gmail.com'
+    config['email']['password'] = 'SECreT PasSWOrd'
+    config['email']['smtp_server'] = 'smtp.privateemail.com'
     raise BaseException('Missing email configuration in www/app/secrets.ini')
 
 sender_email = config['email']['from']
