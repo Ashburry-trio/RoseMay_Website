@@ -12,7 +12,7 @@ import hashlib
 from website.ipreg import get_ip_info
 
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
-from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, users, fetch_user_by_detail
+from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, fetch_user_by_detail
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
@@ -36,11 +36,19 @@ def proxy_scripts():
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
     gk.report()
-    global users
     if 'logged_in' in session.keys() and session['logged_in'] is True:
         proxy_list: dict[str, str]
         users = load_users_ini(session['username'])
-        proxy_list = users['proxy']
+        # nothing here
+        if users.has_section('proxy'):
+            proxy_list = users['proxy']
+        else:
+            proxy_list = dict()
+            proxy_list['proxy'] = {}
+            proxy_list['proxy']['0.0.0.1'] = 'soem,thi9ng new'
+            users = dict()
+            users['passcode'] = {}
+            users['passcode']['secret'] = 'hell_no-This_does_not_work'
         return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
     else:
         return render_template('proxy-login.html')
@@ -50,18 +58,16 @@ def irc_proxies():
 def login():
     gk.report()
     try:
-        client_ip = get_ip_checked(request)
+        pass
+#        client_ip: str = get_ip_checked(request)
     except Exception:
         session['logged_in'] = False
         return redirect('/index.html', code=307)
-    if 'logged_in' in session.keys() and session['logged_in'] is True:
-        session['logged_in'] = False
+    session['logged_in'] = False
     if request.method == "POST":
         # record the user name
-        username = request.form.get("username")
-        passwd = request.form.get("password")
-        if not passwd: passwd = ''
-        if not username: username = ''
+        username: str = request.form.get("username", '')
+        passwd: str = request.form.get("password", '')
         username = username.strip(' \n\0x5\t\f')
         passwd = passwd.strip(' \n\0x5\t\f')
         user_pass = username + ':' + passwd
@@ -69,7 +75,6 @@ def login():
         if not user_pass:
             flash('UserName and/or Password field is NOT valid.', category='error')
         else:
-            load_users_ini(username)
             return login_user_post(username, passwd)
     return make_response(render_template("login.html"), 401)
 
@@ -156,7 +161,7 @@ def ip_reg_check(client_ip) -> ConfigParser:
     else:
         return
     ip_info: ConfigParser = ConfigParser()
-    ip_file: str = ip_to_hash_filename(client_ip)
+    ip_file: str = ip_to_hash_filename(client_ip)   # Hashes the IP for filename
     try:
         ip_info.read(ip_file)
         if 'DEFAULT' in ip_info.keys():
@@ -225,14 +230,14 @@ def get_ip_checked(req):
 @auth.route('/registry/index.html', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
 def register():
-    gk.report()
-    try:
-        client_ip = get_ip_checked(request)
-    except IP_is_Bad:
-        flash('You are not allowed to login nor register')
-        return redirect('/index.html', code=307)
-    except Exception:
-        pass
+#    gk.report()
+#    try:
+#        client_ip = get_ip_checked(request)
+#    except IP_is_Bad:
+#        flash('You are not allowed to login nor register')
+#        return redirect('/index.html', code=307)
+#    except Exception:
+#        pass
     if request.method == 'POST':
         session['logged_in'] = False
         email: [bool, str] = request.form.get('email')

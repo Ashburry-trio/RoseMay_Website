@@ -20,13 +20,12 @@ virtualenvs/*
 *secret.txt
 reload.py
 api_*.py
-flask_session*/
+flask_session_*/*
 pany*
 .*
-.gitignore
 www/app/ip_reg/*
 www/website/templates/users/*
-!www/website/static/users/*
+www/website/static/users/*
 www_proxy/*
 www2/*
 README.txt

@@ -16,7 +16,7 @@ from chardet import detect
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '..','app')
 
-users: ConfigParser[str,str] = ConfigParser()
+
 casino_user: ConfigParser[str,str] = ConfigParser()
 casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
 casino_app: ConfigParser[str,str] = ConfigParser()
@@ -50,7 +50,13 @@ def usable_decode(text: bytes | str) -> str:
 
 # formerly def checkAlnum()
 def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
-
+    if ':' in word:
+        passwd: str = word.split(':')[1]
+        if passwd == 'nopass':
+            word = word.split(':')[0] + ':nopass123'
+        if passwd == 'nopass123':
+            return False
+        del passwd
     passwd: str
     login: str
     client_name: str
@@ -59,18 +65,16 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
     word_len: int = len(word)
     word = word.lower()
     word = word.split()[0]
-    word = word.strip()
     word = word.strip(' @.:\x0c\f\n\t')
-    if (word_len > len(word)) or (len(word) < 9) or (' ' in word):
+    word = word.strip()
+    if (word_len > len(word)) or (' ' in word):
         return False
     username: str
-    hostname: str
-    if email is True and '@' in word:
+    hostname: str = ''
+    if email is True:
         if fnmatch(word,"*???@???*.?*"):
             username = word.split('@')[0].strip()
             hostname = word.split('@')[1].strip()
-            if '1' in username or '0' in username:
-                return False
         else:
             return False
         word = username + '@' + hostname
@@ -81,9 +85,9 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
               or hostname[0] in '_-.':
             return False
         if (fnmatch(word,'???*@???*.?*') is False) \
-                or (len(word) > 63 or len(word) < 9) or (len(username) > 30 \
+                or (len(word) > 63 or len(word) < 9) or (len(username) > 20 \
                 or len(username) < 3) or (len(hostname) > 32 \
-                or len(hostname) < 5) or username.count('.') > 0 \
+                or len(hostname) < 5) \
                 or (word.count('@') != 1 or hostname.count('.') == 0) \
                 or ':' in word or '..' in word or '--' in hostname \
                 or '__' in word or '-_' in hostname or '_-' in hostname:
@@ -95,7 +99,7 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
 
     elif not email:
         if fnmatch(word,'???*:????????*') and word.count(':') == 1:
-            if fnmatch(word,'?*@?*') and word.count('@') == 1:
+            if fnmatch(word,'*@*') and word.count('@') == 1:
                 client_name = word.split('@')[1]
                 if not client_name.isalnum() or len(client_name) > 20 \
                       or len(client_name) < 2 \
@@ -119,9 +123,8 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
         if not passwd or passwd.startswith('javascript') \
           or passwd.startswith('return') or passwd.startswith('style') \
           or passwd.startswith('script') or '.' in passwd \
-          or passwd.startswith('input') \
-          or ':' in passwd or '@' in passwd \
-          or profanity.contains_profanity(username):
+          or passwd.startswith('input') or passwd == 'pass' \
+          or ':' in passwd or '@' in passwd:
             return False
 
     if not username or username.startswith('javascript') \
@@ -204,12 +207,15 @@ def colourstrip(data_in: str | bytes) -> str:
 class NoSuchUser(BaseException):
     pass
 
-def writePassword(secret: str) -> None:
+def writePassword(secret: str, users: ConfigParser) -> None:
     users['passcode']['secret'] = secret
-    save_user()
+    try:
+        save_user(users)
+    except NoSuchUser:
+        pass
     return None
 
-def checkPassword(secret) -> bool:
+def checkPassword(secret,users) -> bool:
     if not secret:
         return False
     if users.has_section('passcode') and 'secret' in users['passcode'].keys():
@@ -309,24 +315,25 @@ def save_casino_app():
     casino_last_update[0] = int(secstime())
 
 def load_users_ini(username: str | None = None) -> ConfigParser | None:
-    global users
-    users.clear()
+    users: ConfigParser = ConfigParser()
     if username == None:
         if 'username' in session.keys():
             username = session['username']
         else:
-            raise NoSuchUser
+            raise NoSuchUser('No username provided')
+    username_low = username.lower()
     username_check: str | bool = username + ':nopass'
     username_check = validate_email_or_login(username_check)
-    username_low = username.lower()
-    del username
+    if username_check is False:
+        raise NoSuchUser('Invalid username')
+
     if set_paths(username_low):
         try:
             users.read(user_file[0])
-            if not 'main' in users.sections():
+            if not users.has_section('passcode'):
                 raise NoSuchUser
-        except (FileNotFoundError, KeyError, ValueError):
-            raise NoSuchUser
+        except (FileNotFoundError, KeyError, ValueError) as e:
+            raise NoSuchUser(str(e.args))
     return users
 
 def fetch_user_by_detail(detail) -> [bool | str, bool | str, [bool | str, bool | str], [bool | str, bool | str]]:
@@ -353,35 +360,43 @@ def fetch_user_by_detail(detail) -> [bool | str, bool | str, [bool | str, bool |
                 return [False, False, [False, False], [False, False]]
         else:
             try:
-                users = load_users_email(detail)
+                users = load_users_email(username = None, email = detail)
                 return [users['main']['username'], users['main']['email'], [users['main']['q1_q'], users['main']['q1_a']], [users['main']['q2_q'], users['main']['q2_a']]]
 
             except NoSuchUser:
                 return [False, False, [False, False], [False, False]]
+    else:
+        try:
+            users = load_users_ini(detail.split(':')[0])
+            return [users['main']['username'], users['main']['email'], [users['main']['q1_q'], users['main']['q1_a']], [users['main']['q2_q'], users['main']['q2_a']]]
+        except NoSuchUser:
+            return [False, False, [False, False], [False, False]]
 
-def load_users_email(username: str, email = None) -> [ConfigParser,bool]:
-    global users, email_file
-    users.clear()
+
+def load_users_email(username: str | None = None, email: str | None = None) -> [ConfigParser,bool]:
+    global email_file
+    users: ConfigParser = ConfigParser()
     if email is None:
         if 'username' in session.keys():
             username = session['username']
-            try:
-                users = load_users_ini(username.lower())
-            except NoSuchUser:
+        try:
+            if username:
+                users = load_users_ini(username.lower())    # raises NoSuchUser
+            else:
                 raise NoSuchUser
-            email = users['main']['email']
-        else:
-            raise NoSuchUser
-    users.clear()
+        except NoSuchUser:
+            raise
+        email = users['main']['email']
+    if not email:
+        raise NoSuchUser
     users.read(email_file)
     username = users['email'][email]
     if not username:
         raise NoSuchUser
-    users.clear()
     return load_users_ini(username)
 
 def login_user_post(username: str, password: str):
-    global users
+    users: ConfigParser
     clear_session()
     try:
         session['logged_in'] = False
@@ -392,7 +407,7 @@ def login_user_post(username: str, password: str):
         username_low: str = username.lower()
         del user_pass, username
         users = load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0])
-        if checkPassword(password):
+        if checkPassword(password,users):
             session['logged_in'] = True
             user_up: str = str(users['main']['username'])
             session['username'] = user_up
@@ -400,39 +415,34 @@ def login_user_post(username: str, password: str):
             flash("You have logged-in successfully.", category='success')
             return redirect('/irc/proxies.html', code='307')
         else:
-            flash("Bad Password!", category='error')
+            flash("Bad Password for UserName.", category='error')
             return make_response(render_template('login.html'), 401)
     except (ValueError, KeyError, FileNotFoundError, NoSuchUser) as exp:
         flash("Unknown UserName.", category="error")
         return make_response(render_template("login.html"), 401)
 
 
-def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str, q2_a: str,power = 'normal'):
+def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str, q2_a: str, power: str = 'normal'):
     clear_session()
-    global users
+    users: ConfigParser
     q1_q = q1_q.strip()
     q1_a = q1_a.strip()
     q2_q = q2_q.strip()
     q2_a = q2_a.strip()
     username = username.strip(' \n\x03\t\f')
-    username = username.strip()
-    username = username.strip(' \n\x03\t\f')
     passwd = passwd.strip(' \n\x03\t\f')
-    passwd = passwd.strip()
-    passwd = passwd.strip(' \n\x03\t\f')
-
+    session['logged_in'] = False
     password = passwd
-    users.clear()
     user_pass: str | bool = username + ':' + passwd
     user_pass = validate_email_or_login(user_pass)
-    if not user_pass:
-        # flash("Login must be <u><a href="https://simple.wikipedia.org/wiki/Alphanumeric" target="alphanumeric">alphanumeric</a></u> <b>without</b> <u>banned</u> words.")
+    if False is user_pass:
+        flash("Username must be <u><a href='https://simple.wikipedia.org/wiki/Alphanumeric' target='alphanumeric'>alphanumeric</a></u> <b>without</b> <a href='banned.html'>banned words</a>.", category='error')
         return make_response(render_template('register.html'), 401)
     del user_pass
     username_low: str = username.lower()
     try:
         users = load_users_ini(username_low)
-        if 'main' in users.sections():
+        if checkPassword(password,users) is True:
             users['main']['username'] = username
             if q1_q:
                 users['main']['q1_q'] = q1_q.strip()
@@ -443,22 +453,23 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
             if q2_a:
                 users['main']['q2_a'] = q2_a.strip()
             # User already exists and they know the password
-            session['logged_in'] = False
-            session['username'] = username
-            if checkPassword(passwd) is True:
-                user_up: str = users["main"]["username"]
-                session['username'] = user_up
-                session['power'] = users['main']['power'].lower() or power.lower()
-                session['logged_in'] = True
-                flash(f"You have logged-in as \'{user_up}\'.", category='success')
-                del user_up
-                return redirect(url_for('auth.irc_proxies'), code='307')
-            else:
-                flash('UserName is taken, bad Password. Try a different one.', category='error')
-                clear_session()
-                return make_response(render_template('register.html'), 401)
+            session['username'] = user_up
+            session['power'] = power.lower()
+            session['logged_in'] = True
+            users['main']['username'] = username
+            user_up: str = users["main"]["username"]
+            users['passcode']['secret'] = password
+            writePassword(password, users)
+            flash("You have logged-in successfully.", category='success')
+            del user_up
+            return redirect(url_for('auth.irc_proxies'), code='307')
+        elif users.has_section('main'):
+            flash('UserName is taken, bad Password. Try a different one.', category='error')
+            clear_session()
+            return make_response(render_template('register.html'), 401)
         else:
             raise NoSuchUser
+
     except NoSuchUser:
         if not username_low:
             flash("You are missing the UserName to create.", category='error')
@@ -469,9 +480,9 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
         elif not password:
             flash("You MUST enter a Password you can remember.", category='error')
         elif len(password) < 8:
-            flash('Password must be at-least 5 characters.', category='error')
-        elif len(password) > 32:
-            flash('Password must be, at-most, 32 characters.', category='error')
+            flash('Password must be at-least 8 characters.', category='error')
+        elif len(password) > 25:
+            flash('Password must be, at-most, 25 characters.', category='error')
         else:
             src_dir = path.join(path.expanduser("~"), "website_and_proxy", "default_user")
             dst_dir = path.join(path.expanduser("~"), "website_and_proxy","users", username_low)
@@ -490,28 +501,35 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
                 users['main']['power'] = power.lower()
                 session["username"] = username
                 session['logged_in'] = True
-                writePassword(password)  # includes save_user()
-                flash("UserName was just created and saved.", category="success")
-                return redirect('/irc/proxies.html', code='307')
-            except (FileExistsError, NoSuchUser):
-                pass
-        return make_response(render_template('register.html'), 401)
+                users['main']['username'] = username
+                writePassword(password,users)  # includes save_user()
+                return redirect('/irc/proxies.html', code=307)
+            except (FileExistsError) as e:
+                flash('UserName already taken.', category='error')
+    return make_response(render_template('register.html'), 401)
 
-custom_badwords = ['fukk','fukkk','sexx','sexxx','loli','l0li','l@li',
+
+custom_badwords = ['fuskk','fukkk','sexx','sexxx','loli','l0li','l@li',
     'penis','p3n1s','p3nls','p3nis','fukyou','fuckyou','fucku','l4li'
     'fukkyou','fukku','fukkku','fukkkyou','fukkme','fukkkme','fukkkm3',
     'fuckme','fuckm3','fukm3','fukkm3','kkk','focker','f0cker','f@cker',
     'fukkker','fukkk3r','f@kkk3r','f0kkker','suck dick','sukkk dick',
-    'sukkk my dick','sukkk m3 dick','suk m3 dick','suk me d1ck',
-    'suk m3 d1ck','suk m3 dlck','sukkk m3 dlck','suck m3 dlck',
+    'sukkk my dick','suck my dick','sukkk m3 dick','suk m3 dick','suk me d1ck',
+    'suk m3 d1ck','suk m3 dlck','sukkk m3 dlck','suck m3 dlck','suky my dick',
     'suck my dickkk','nud3pics','nud3plcs','nudepics','nudeplcs','nudep1cs',
     'nud3pic','nud3plc','nud3p1c','nudepic','newdpics','n3wdpics','n3wdplc',
     'n3wdp1c','newdplc','newdp1c','newdpic', 'n3wd pics', 'newd pics',
     'newd p1cs','n3wd p1cs','newd plcs','n3wd plcs','n3wd pic', 'n3wd plc',
     'n3wd p1c', 'nude pic','nud3 pic', 'nude p1c','nude plc','nude pics',
     'nud3 pics', 'nud3 plcs','nud3 p1cs','lolicandy','l0licandy','l@licandy',
-    'lolic4ndy','l0lic4ndy','l@lic4ndy','nudeme','nudeself','nud3','klu',
-    'kluk','klukkk','k1u','k1ukkk','k1u','k1uk','nud3s3lf','nud3self']
+    'lolic4ndy','l0lic4ndy','l@lic4ndy','nudeme','nudeself','nud3',
+    'k1ukkks','kkk1uks','k1ux','k1uxk','kluks','nud3s3lf','nud3self', 'ccunt',
+    'kunt','kkunt','klukkks','klux','kkk','lolic@ndy','l0lic@ndy',
+    'sucky my dick', 'your dick', 'ur dick', 'ur a dick', 'ura dick',
+    'your a dick', 'u a dick', 'ua dick', 'uri dick', 'ur i dick','white power',
+    'nigger','niggers','n1gger','n1ggers','nlgger','nlggers','black power',
+    'white supremecy','white superemecy','white supremacy','white superemacy']
+
 profanity.add_censor_words(custom_badwords)
 
 def save_casino_user(username: str | None = None) -> None:
@@ -532,20 +550,19 @@ def save_casino_user(username: str | None = None) -> None:
     return None
 
 
-def save_user() -> None:
+def save_user(users) -> None:
     try:
-        global users
         user = users['main']['username'] + ':nopass'
         username = validate_email_or_login(user, email = False)
         if not username:
-            return None
-        username = users['main']['username']
+            return NoSuchUser
         if not users.has_section('main'):
             raise NoSuchUser
+        username = users['main']['username']
         for opt, val in session.items():
             opt = str(opt).lower()
             val = str(val)
-            if opt and val and not opt.startswith('_') and opt != 'secret':
+            if opt and val and not opt.startswith('_'):
                 users['main'][opt] = val
         with open(user_file[0], 'w') as fp:
             users.write(fp, space_around_delimiters = True)
@@ -553,10 +570,17 @@ def save_user() -> None:
         clear_session()
         users.clear()
         return None
-    logged = bool(session['logged_in'])
-    power = session['power'].lower()
+    if 'logged_in' in session:
+        logged = bool(session['logged_in'])
+    else:
+        logged = False
+    if 'power' in session:
+        power = session['power'].lower()
+    else:
+        power = 'normal'
     clear_session()
     session['logged_in'] = logged
     if logged is True:
         session['username'] = username
         session['power'] = power
+
