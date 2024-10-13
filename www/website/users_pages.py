@@ -53,12 +53,12 @@ def user_index_pages(user):
 @users_pages.route('/user/', methods=['GET'])
 def no_user_page():
     gk.report()
-    has_page: bool
-    user_low: str
+    has_page: bool = None
+    user_up: str = None
     if 'username' in session.keys():
-        user_low = session['username'].lower()
-    asset_list: tuple[tuple[str, str, tuple[str] | None], tuple[str, str, tuple[str] | None]] = get_user_pages()
-    return render_template('nobody.html', has_page=None, assets=asset_list)
+        user_up = session['username']
+    asset_list: tuple[tuple[str, str, tuple[str]], tuple[str, str, tuple[str]]] = get_user_pages()
+    return render_template('users/nobody.html', user_up=user_up, has_page=has_page, assets=asset_list)
 
 
 @users_pages.route('/user/', methods=['GET'])
@@ -68,4 +68,4 @@ def no_user_page():
 def user_create_page():
     gk.report()
     has_page: bool
-
+    # return Response("This page has not been created, yet; much like all of this site. But eventually it will be finished and it will be large")

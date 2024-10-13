@@ -14,6 +14,8 @@
     <link rel="canonical" href="https://www.myproxyip.com/">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
 	form i {
 		margin-left: -30px;
@@ -28,12 +30,13 @@
     <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='android-chrome-512x512.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.ico') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
   <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
   <meta property="og:title" content="Machine-Gun mSL script named Bauderr for Trio-Ircproxy.py">
   <meta property="og:description" content="Where can I get a proxy server list for IRC? Proxy server/vhost list for IRC clients, click here/tap.">
   <meta name="theme-color" content="#DAA520">
+  {% block head %}
+  {% endblock head %}
   <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
     <style>
 
@@ -259,22 +262,36 @@
   <li class="nav-item">
     <a class="nav-link disabled" aria-disabled="true"  title="Log-out of website">logout</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true"  title="Configure service">setup</a>
+  </li>
 {%- else -%}
   <li class="nav-item">
     <a class="nav-link" href="/logout.html" title="Log-out of website">logout</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/config/index.html" title="Configure service">setup</a>
+  </li>
 {%- endif -%}
 </ul>
-    <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="XDCC  Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
+<form method="POST" action="/index.html">
+    {{ xsearch.hidden_tag() }}
+<div class="form-group row">
+    <div class="col-sm-8">
+        {{ xsearch.search() }}
+    </div>
+    <div class="col-sm-4">
+        {{ xsearch.search_button() }}
+    </div>
+</div>
+</form>
+
       </div>
     </div>
   </nav>
 </header>
 <!-- Begin page content -->
-<main class="flex-shrink-0" style="padding-left:20px;padding-top:8px;padding-right:20px;">
+<main class="flex-shrink-0" style="margin-top:35px;padding-left:20px;padding-top:8px;padding-right:20px;">
 {% with msg = get_flashed_messages(with_categories=true) %}
 {% if msg %}
 {% for category, message in msg %}

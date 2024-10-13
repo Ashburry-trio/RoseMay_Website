@@ -1,1 +1,38 @@
-cp -R ~/www ~/www_proxy
+Below I show you how to copy the RoseMay_Website/* folder 
+to the home directory where it can be used by the Flask
+webserver. It is important you create the filesystem exactly
+as-is when created by myself on my PA filesystem.
+
+Unfortunatly when you use the GIT command to copy
+the website folder to your Home Directory it puts all
+the files in a subdirectory probably named "~/RoseMay_Website/"
+
+I will show you how to copy those files out of that subdirectory
+into your home directory as it should be,
+
+Be Carefull this command will overwrite any existing files you may
+have already created.
+
+First you need to open a console.
+Once it opens and loads, type the following commands:
+
+cd ~/
+cp -rf ~/RoseMay_Website/* ~/*
+
+That is all.
+
+After this you need to edit your /var/www/website_com.wsgi file
+then edit your "/www/flask_app.py" file and change to:
+    
+    config['SERVER_NAME'] = 'username.pythonanywhere.com'
+
+Change the username.pythonanywhere,com with the www.website.com of your webserver.
+
+Under the WEB tab where the STATIC section is add the following two locations:
+
+    /static/    ~/www/website/static/
+    /css/       ~/www/website/static/css
+
+This is because sometimes I may use /css/ for the css files instead of url_for('static','css/normal_index.css')
+instead I can just put "/css/normal_index.css" or "/static/css/normal_index.css"
+

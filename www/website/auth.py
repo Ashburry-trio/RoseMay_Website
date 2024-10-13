@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, make_response
 from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
-from flask_app import gk
+from flask_app import gk, limiter
 from os.path import expanduser
 from os import path
 from time import time as ctime
@@ -10,9 +10,9 @@ import os
 from configparser import ConfigParser
 import hashlib
 from website.ipreg import get_ip_info
+from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, fetch_user_by_detail
 
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
-from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, fetch_user_by_detail
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
 @auth.route("/irc/scripts.html", methods=["POST", "GET"])
@@ -55,6 +55,7 @@ def irc_proxies():
 
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
+@limiter.limit("13 per minute")
 def login():
     gk.report()
     try:
@@ -168,7 +169,7 @@ def ip_reg_check(client_ip) -> ConfigParser:
             if ip_info['DEFAULT'].has_section('last.update'):
                 if ip_is_bad(ip_info):
                     raise IP_is_Bad
-                if int(ctime()) - int(ip_info['DEFAULT']['last.update']) > 60 * 15:
+                if int(ctime()) - int(ip_info['DEFAULT']['last.update']) > 60 * 60 * 15:
                     if delete_file(ip_file) is False:
                         # There was an error deleting the file
                         # and it probably cannot be written to.
@@ -229,8 +230,9 @@ def get_ip_checked(req):
 @auth.route('/registry/register.html', methods=['GET', 'POST'])
 @auth.route('/registry/index.html', methods=['GET', 'POST'])
 @auth.route('/register.html', methods=['GET', 'POST'])
+@limiter.limit("16 per minute")
 def register():
-#    gk.report()
+    gk.report()
 #    try:
 #        client_ip = get_ip_checked(request)
 #    except IP_is_Bad:

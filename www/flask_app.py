@@ -10,7 +10,8 @@ from flask_gatekeeper import GateKeeper
 from os.path import expanduser
 import os
 import sys
-
+from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
 
 mykey: str | bool | bytes
 
@@ -67,6 +68,19 @@ def test_key_len():
 app = Flask(__name__)
 init_mykey()
 app.secret_key = mykey
+csrf = CSRFProtect(app)
+limiter = Limiter(app)
+
+@app.after_request
+def set_csp_headers(response):
+    # Set a Content Security Policy header allowing Bootstrap's JavaScript CDN
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "  # Default to only allowing content from the same origin
+        "script-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/; "  # Allow Bootstrap CDN
+        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "  # Allow Bootstrap styles, and inline styles
+        "img-src 'self' https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/;"  # Only allow images from the same origin
+    )
+    return response
 
 app.config['SERVER_NAME'] = 'ashburry.pythonanywhere.com'
 app.config["SESSION_PERMANENT"] = True
@@ -85,8 +99,10 @@ from website.auth import auth
 from website.navfix import navfix
 from website.users_pages import users_pages
 from website.casino import casino
+from website.config import config
 app.register_blueprint(users_pages, url_prefix='/')
 app.register_blueprint(views, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
 app.register_blueprint(navfix, url_prefix='/')
 app.register_blueprint(casino, url_prefix='/')
+app.register_blueprint(config, url_prefix='/')
