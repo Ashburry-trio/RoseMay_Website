@@ -8,7 +8,11 @@ maintaining the privacy and security of your personal data.
 Information We Collect
 When you visit our Site, we may collect the following types of information:
 
-Visitor Logs: We log basic information about visitors, including:
+Our web-server logs basic information such as your IP and your user agent web-browser client
+and the time and page you have visited. These logs cannot be erased by myself and asking me to
+ask the PythonAnywhere staff to delete such log entries will be ignored.
+
+Other data collected includes:
 
 Nickname
 Voluntary data related to IRC (Internet Relay Chat), which may include:
@@ -23,7 +27,7 @@ Email address
 Password (encrypted)
 IP address
 Device type
-This data will be saved in a cookie for user convenience and login management.
+This data will be saved on the server and linked to a cookie for user convenience and login management.
 
 Use of Information
 The data we collect is used solely for the following purposes:

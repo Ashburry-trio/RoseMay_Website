@@ -2,10 +2,21 @@ from flask import (
     Blueprint, render_template, make_response, Response, jsonify, redirect, send_file, url_for
     )
 from werkzeug.exceptions import TooManyRequests
-from flask_app import gk, app
 from os.path import expanduser
+from markupsafe import escape
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import Length, DataRequired
+from flask_app import gk, app
 
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
+
+
+class xSearchForm(FlaskForm):
+    search = StringField('XDCC Search',
+                         render_kw={"class": "form-control me-2", "placeholder": "XDCC Search", "aria-label": "Search"},
+                         validators=[DataRequired()])
+    search_button = SubmitField('Search', render_kw={"class": "btn btn-outline-success", "type": "submit"})
 
 @views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
 def mywotddd():
@@ -24,14 +35,8 @@ def handle_rate_limit_exceeded(e):
 @app.errorhandler(404)
 def no_found(e):
     gk.report()
-    return render_template('404.html'), 404
-
-@views.route('/casino.html', methods=['GET', 'POST'])
-@gk.specific(rate_limit_rules=[{"count":1,"window":100,"duration":2400}])
-def skinners_version_ignore():
-    gk.report()
-    response = Response('You have been banned for visiting this page. You probably found this page in someones "/ctcp bauderr_ version" reply. If you received this webpage in a version reply from a user on IRC; consider that person as dangerous whom you should ignore.', status=403, mimetype='text/plain')
-    return response
+    xsearch = xSearchForm()
+    return render_template('404.html', xsearch=xsearch), 404
 
 @views.route('/.well-known/apple-developer-merchantid-domain-association', methods=['GET'])
 def apple_deveoper_merch():
@@ -103,26 +108,55 @@ def well_known_trap():
 def fixbiome():
     return redirect('https://shop.fixbiome.com/ref/31/', code=302)
 
-@views.route('/index.htm', methods=['GET'])
-@views.route('/', methods=['GET'])
-@views.route('/index.html', methods=['GET'])
+@views.route('/home.html', methods=['GET', "POST"])
+@views.route('/index/', methods=['GET', "POST"])
+@views.route('/index.htm', methods=['GET', "POST"])
+@views.route('/', methods=['GET', "POST"])
+@views.route('/index.html', methods=['GET', "POST"])
 def index_home():
     gk.report()
-    return render_template('index.html')
+    xsearch = xSearchForm()
+    return render_template('index.html', xsearch=xsearch)
 
+
+@views.route('/search.html', methods=['GET', 'POST'])
+    xsearch = xSearchForm()
+    if xsearch.validate_on_submit():
+        filesearch = escape(xsearch.search.data)
+        if len(filesearch) < 3 or len(filesearch) > 74:
+            flash("Search terms must be at least 3 characters and a maximum of 75 characters")
+            return render_template("search/search.html", xsearch=xsearch, search_results={}, found=False, error=True)
+        else:
+            search_results = {}
+            search_results['rizon'] = {}
+            search_results['rizon']['net'] = 'Rizon'
+            search_results['rizon']["filename.xyz-MyProxyIPcom"] = {}
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['desc'] = "filename.xyz-MyProxyIPcom"
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots'] = {}
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]'] = {}
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['nick'] = 'XdccBot[01]'
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['gets'] = '101x'
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['pack'] = "#12"
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]'] = {}
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['nick'] = "XDccBot[333]"
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['gets'] = "68x"
+            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['pack'] = "#454"
+    return render_template("search/search.html", xsearch=xsearch, search_results=search_results, found=True, error=False)
 
 @views.route('/policy.html', methods=['GET'])
 @views.route('/policy/', methods=['GET'])
 def policy_wwww():
     gk.report()
-    return render_template('policy.html')
+    xsearch = xSearchForm()
+    return render_template('policy.html', xsearch=xsearch)
 
 
 @views.route('/hosted.html', methods=['GET'])
 @views.route('/hosted/', methods=['GET'])
 def hosted_info():
     gk.report()
-    return render_template('hosted.html')
+    xsearch = xSearchForm()
+    return render_template('hosted.html', xsearch=xsearch)
 
 
 @views.route('/license/zero-bsd.html', methods=['GET'])
@@ -130,7 +164,8 @@ def hosted_info():
 @views.route('/zero-bsd.html', methods=['GET'])
 def zero_bsd():
     gk.report()
-    return render_template('zero-bsd.html')
+    xsearch = xSearchForm()
+    return render_template('zero-bsd.html', xsearch=xsearch)
 
 
 @views.route('/coc/code_of_conduct.html', methods=['GET'])
@@ -139,7 +174,8 @@ def zero_bsd():
 @views.route('/coc.html', methods=['GET'])
 def coc():
     gk.report()
-    return render_template('coc.html')
+    xsearch = xSearchForm()
+    return render_template('coc.html', xsearch=xsearch)
 
 
 @views.route('/contributing/', methods=['GET'])
@@ -148,7 +184,8 @@ def coc():
 @views.route('/contrib.html', methods=['GET'])
 def contrib():
     gk.report()
-    return render_template('contributing.html')
+    xsearch = xSearchForm()
+    return render_template('contributing.html', xsearch=xsearch)
 
 @views.route('/privacypolicy/', methods=['GET'])
 @views.route('/policy/', methods=['GET'])
@@ -156,20 +193,21 @@ def contrib():
 @views.route('/policy.html', methods=['GET'])
 def policy():
     gk.report()
-    return render_template('policy.html')
+    xsearch = xSearchForm()
+    return render_template('policy.html', xsearch=xsearch)
 
 @views.route('/security.html', methods=['GET'])
 @views.route('/security/', methods=['GET'])
 def security():
     gk.report()
-    return render_template('security.html')
+    xsearch = xSearchForm()
+    return render_template('security.html', xsearch=xsearch)
 
 
 @views.route('/download.html', methods=['GET'])
 @views.route('/download/', methods=['GET'])
 def download_msl():
     gk.report()
-    return render_template('download.html')
-
-
+    xsearch = xSearchForm()
+    return render_template('download.html', xsearch=xsearch)
 
