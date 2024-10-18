@@ -10,31 +10,6 @@ from flask_app import gk, app
 from website import xSearchForm
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
-@views.route('/enc_test.html')
-def enc_test():
-    xsearch = xSearchForm()
-    secret_key = Fernet.generate_key().decode()
-    session['secret_key'] = "supersecretkey"
-    return render_template('enc_test.html', secret_key=secret_key, xsearch=xsearch)
-
-@app.route('/decrypt', methods=['POST'])
-def decrypt_data():
-    req_data = request.get_json()
-
-    encrypted_data = req_data['encryptedData']
-    data3 = req_data['data3']
-    data4 = req_data['data4']
-
-    fernet = Fernet(b'supersecretkey')
-    decrypted_data = fernet.decrypt(encrypted_data.encode()).decode()
-
-    response_data = {
-        "decryptedData": decrypted_data,
-        "data3": data3,
-        "data4": data4
-    }
-
-    return jsonify(response_data)
 
 
 @views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
@@ -138,30 +113,86 @@ def index_home():
     return render_template('index.html', xsearch=xsearch)
 
 
+@views.route('/search.htm', methods=['GET', 'POST'])
+@views.route('/xdcc/search.htm', methods=['GET', 'POST'])
 @views.route('/search.html', methods=['GET', 'POST'])
+@views.route('/xdcc/search.html', methods=['GET', 'POST'])
 def xsearch_page():
     xsearch = xSearchForm()
     if xsearch.validate_on_submit():
         filesearch = escape(xsearch.search.data)
-        if len(filesearch) < 3 or len(filesearch) > 74:
-            flash("Search terms must be at least 3 characters and a maximum of 75 characters")
-            return render_template("search/search.html", xsearch=xsearch, search_results={}, found=False, error=True)
+        filesearch = parse_xsearch_filename(filesearch)
+        if len(filesearch) < 3 or len(filesearch) > 75:
+            flash("Search term must be at least 3 characters and a max of 75 characters: " + str(len(filesearch)) + ' chars')
+            return render_template("/search/search.html", locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
         else:
             search_results = {}
             search_results['rizon'] = {}
-            search_results['rizon']['net'] = 'Rizon'
-            search_results['rizon']["filename.xyz-MyProxyIPcom"] = {}
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['desc'] = "filename.xyz-MyProxyIPcom"
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots'] = {}
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]'] = {}
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['nick'] = 'XdccBot[01]'
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['gets'] = '101x'
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[01]']['pack'] = "#12"
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]'] = {}
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['nick'] = "XDccBot[333]"
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['gets'] = "68x"
-            search_results['rizon']["filename.xyz-MyProxyIPcom"]['bots']['xdccbot[333]']['pack'] = "#454"
-    return render_template("search/search.html", xsearch=xsearch, search_results=search_results, found=True, error=False)
+            search_results['rizon']['net_up'] = 'Rizon'
+            search_results['rizon']['files'] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['desc_up'] = "FileName XyZ-MyProxyIPcom"
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['desc_low'] = "filename.xyz.myproxyipcom"
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez'] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['chan_up'] = '#EliteWarez'
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots'] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]'] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['nick'] = 'XdccBot[01]'
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['gets'] = '101x'
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['pack'] = "#12"
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]'] = {}
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['nick'] = "XDccBot[333]"
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['gets'] = "68x"
+            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['pack'] = "#454"
+    return render_template("/search/search.html", xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
+
+
+def parse_xsearch_filename(filesearch_no_space: str):
+    filesearch_no_space = escape(filesearch_no_space)
+    filesearch_no_space = filesearch_no_space.strip()
+    filesearch_no_space = '*' + filesearch_no_space
+    filesearch_no_space = filesearch_no_space.replace('  ', ' ')
+    filesearch_no_space = filesearch_no_space.replace(' - ',' -')
+
+    excluded_terms = filesearch_no_space[filesearch_no_space.find(' -',3):len(filesearch_no_space)].split('-')
+    excluded_finished = []
+    for fn in excluded_terms:
+        excluded_finished.append(fn.strip())
+    del fn
+    filesearch_no_space = filesearch_no_space[0:filesearch_no_space.find(' -',3)]
+    filesearch_no_space = filesearch_no_space.replace('~','')
+    filesearch_no_space = filesearch_no_space.replace('-','.')
+    filesearch_no_space = filesearch_no_space.replace(' ','.')
+    filesearch_no_space = filesearch_no_space.replace('_','.')
+    filesearch_no_space = filesearch_no_space.replace('\\','.')
+    filesearch_no_space = filesearch_no_space.replace('/','.')
+    filesearch_no_space = filesearch_no_space.replace(',','.')
+    filesearch_no_space = filesearch_no_space.replace(';','.')
+    filesearch_no_space = filesearch_no_space.replace('?','.')
+    filesearch_no_space = filesearch_no_space.replace(':','.')
+    filesearch_no_space = filesearch_no_space.replace('\"','')
+    filesearch_no_space = filesearch_no_space.replace('\'','')
+    filesearch_no_space = filesearch_no_space.replace('[','.')
+    filesearch_no_space = filesearch_no_space.replace(']','.')
+    filesearch_no_space = filesearch_no_space.replace('{','.')
+    filesearch_no_space = filesearch_no_space.replace('}','.')
+    filesearch_no_space = filesearch_no_space.replace('(','.')
+    filesearch_no_space = filesearch_no_space.replace(')','.')
+    filesearch_no_space = filesearch_no_space.replace('+','.')
+    filesearch_no_space = filesearch_no_space.replace('=','.')
+    filesearch_no_space = filesearch_no_space.replace('!','.')
+    filesearch_no_space = filesearch_no_space.replace('&','and')
+    filesearch_no_space = filesearch_no_space.replace('^','.')
+    filesearch_no_space = filesearch_no_space.replace('\`','')
+    filesearch_no_space = filesearch_no_space.replace('**','*')
+    filesearch_no_space = filesearch_no_space.replace(' ','*')
+    filesearch_no_space = filesearch_no_space.replace('*-','* -')
+    if not filesearch_no_space:
+        return None
+    return filesearch_no_space
+
+filesearch_no_space = filesearch_no_space.replace('~',' -')
+    return filesearch_no_space
 
 @views.route('/policy.html', methods=['GET'])
 @views.route('/policy/', methods=['GET'])
