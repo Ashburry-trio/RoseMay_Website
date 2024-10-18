@@ -11,7 +11,7 @@ from time import time as timesecs
 _dir = path.dirname(path.abspath(__file__))
 # if not _dir in syspath:
 #     syspath.append(_dir)
-from website import load_casino_user, save_casino_app, load_casino_app
+from website import load_casino_user, save_casino_app, load_casino_app, xSearchForm
 from .date_func import update_today
 from decimal import Decimal
 casino = Blueprint('casino', __name__, template_folder='templates', static_folder='static')
@@ -47,6 +47,7 @@ def casino_home():
     update_today()
     load_stash()
     casino_user = load_casino_user()
+    xsearch = xSearchForm()
     global stash
     if casino_user is False:
         cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
@@ -56,7 +57,7 @@ def casino_home():
         cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
         prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
         remaining_pages = int(casino_user['main']['remaining_pages'])
-    return render_template('/casino/index.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+    return render_template('/casino/index.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
 
 
 @casino.route('/casino/prizes.html', methods=['GET'])
@@ -65,6 +66,7 @@ def casino_home():
 def peak_prizes():
     gk.report()
     try:
+        xsearch = xSearchForm()
         load_stash()
         update_today()
         casino_user = load_casino_user()
@@ -73,17 +75,17 @@ def peak_prizes():
             cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
             prize_cash = 'unknown money amount'
             remaining_pages = 9
-            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
         else:
             cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
             prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
             remaining_pages = int(casino_user['main']['remaining_pages'])
-            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
     except (KeyError, ValueError):
         cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
         prize_cash = 'unknown money amount'
         remaining_pages = 9
-        return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        return render_template('/casino/prizes.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
 
 @casino.route('/casino/locked/', methods=['GET'])
 @casino.route('/casino/locked/games.html', methods=['GET'])
@@ -92,25 +94,26 @@ def lockedASAD_games():
     load_stash()
     update_today()
     casino_user = load_casino_user()
+    xsearch = xSearchForm()
     if casino_user is False:
         cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
         prize_cash = 'unknown money amount'
         remaining_pages = 9
         flash('you must sign-in to view the locked games.')
-        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
     elif 'username' in session.keys():
         cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
         prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
         remaining_pages = int(casino_user['main']['remaining_pages'])
         if remaining_pages >= 1:
-            return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
         elif remaining_pages <= 0:
-            return render_template('/casino/unlocked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/unlocked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
     else:
         cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
         prize_cash = 'unknown money amount'
         remaining_pages = 9
-        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        return render_template('/casino/locked.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
 
 @casino.route('/casino/bank.html', methods=['GET'])
 @casino.route('/casino/banker.html', methods=['GET'])
@@ -119,6 +122,7 @@ def lockedASAD_games():
 def casino_banker():
     gk.report()
     try:
+        xsearch = xSearchForm()
         load_stash()
         update_today()
         if 'username' in session.keys():
@@ -126,12 +130,12 @@ def casino_banker():
             cash = '$' + str(casino_user['main']['cash_in']) + ' CAD'
             prize_cash = '$' + str(casino_user['main']['prize_cash']) + ' CAD'
             remaining_pages = int(casino_user['main']['remaining_pages'])
-            return render_template('/casino/bank.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+            return render_template('/casino/bank.html', stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
         else:
             raise KeyError
     except KeyError:
         cash = '<a href=\"/login.html\" alt=\"click to sign-in to mSLscript.com account.\">to Log-in</a>'
         prize_cash = 'unknown money amount'
         remaining_pages = 9
-        return render_template("/casino/bank.html", stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages)
+        return render_template("/casino/bank.html", stash=stash[0], cash=cash, prize_cash=prize_cash,remaining_pages=remaining_pages, xsearch=xsearch)
 

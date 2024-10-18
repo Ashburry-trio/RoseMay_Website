@@ -12,6 +12,9 @@ from os import path, rename, rmdir, walk
 from os.path import isdir, isfile
 from configparser import ConfigParser
 from chardet import detect
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import Length, DataRequired
 
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '..','app')
@@ -24,6 +27,13 @@ casino_last_update: list[int] = [0]
 email_file = path.join(path.expanduser("~"), "website_and_proxy", "email.ini")
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
+
+class xSearchForm(FlaskForm):
+    search = StringField('XDCC Search',
+                         render_kw={"class": "form-control me-2", "placeholder": "XDCC Search", "aria-label": "Search"},
+                         validators=[DataRequired()])
+    search_button = SubmitField('Search', render_kw={"class": "btn btn-outline-success", "type": "submit"})
+
 
 def usable_decode(text: bytes | str) -> str:
     """Decode the bytes so it can be used.
@@ -398,12 +408,13 @@ def load_users_email(username: str | None = None, email: str | None = None) -> [
 def login_user_post(username: str, password: str):
     users: ConfigParser
     clear_session()
+    xsearch = xSearchForm()
     try:
         session['logged_in'] = False
         user_pass = username + ':' + password
         if not validate_email_or_login(user_pass, email = False):
             flash("Not a valid UserName or Password.", category="error")
-            return make_response(render_template('login.html'), 401)
+            return make_response(render_template('login.html', xsearch=xsearch), 401)
         username_low: str = username.lower()
         del user_pass, username
         users = load_users_ini(username_low)    # Sets Paths (user_dir[0], user_file[0])
@@ -416,10 +427,10 @@ def login_user_post(username: str, password: str):
             return redirect('/irc/proxies.html', code='307')
         else:
             flash("Bad Password for UserName.", category='error')
-            return make_response(render_template('login.html'), 401)
+            return make_response(render_template('login.html', xsearch=xsearch), 401)
     except (ValueError, KeyError, FileNotFoundError, NoSuchUser) as exp:
         flash("Unknown UserName.", category="error")
-        return make_response(render_template("login.html"), 401)
+        return make_response(render_template("login.html", xsearch=xsearch), 401)
 
 
 def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str, q2_a: str, power: str = 'normal'):
@@ -429,6 +440,7 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
     q1_a = q1_a.strip()
     q2_q = q2_q.strip()
     q2_a = q2_a.strip()
+    xsearch = xSearchForm()
     username = username.strip(' \n\x03\t\f')
     passwd = passwd.strip(' \n\x03\t\f')
     session['logged_in'] = False
@@ -437,7 +449,7 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
     user_pass = validate_email_or_login(user_pass)
     if False is user_pass:
         flash("Username must be <u><a href='https://simple.wikipedia.org/wiki/Alphanumeric' target='alphanumeric'>alphanumeric</a></u> <b>without</b> <a href='banned.html'>banned words</a>.", category='error')
-        return make_response(render_template('register.html'), 401)
+        return make_response(render_template('register.html', xsearch=xsearch), 401)
     del user_pass
     username_low: str = username.lower()
     try:
@@ -466,7 +478,7 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
         elif users.has_section('main'):
             flash('UserName is taken, bad Password. Try a different one.', category='error')
             clear_session()
-            return make_response(render_template('register.html'), 401)
+            return make_response(render_template('register.html', xsearch=xsearch), 401)
         else:
             raise NoSuchUser
 
@@ -506,7 +518,7 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
                 return redirect('/irc/proxies.html', code=307)
             except (FileExistsError) as e:
                 flash('UserName already taken.', category='error')
-    return make_response(render_template('register.html'), 401)
+    return make_response(render_template('register.html', xsearc=xsearch), 401)
 
 
 custom_badwords = ['fuskk','fukkk','sexx','sexxx','loli','l0li','l@li',

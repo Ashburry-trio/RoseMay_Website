@@ -76,9 +76,10 @@ def set_csp_headers(response):
     # Set a Content Security Policy header allowing Bootstrap's JavaScript CDN
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "  # Default to only allowing content from the same origin
-        "script-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/; "  # Allow Bootstrap CDN
+        "script-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/ https://cdnjs.cloudflare.com https://ashburry.pythonanywhere.com 'unsafe-inline'; "  # Allow Bootstrap CDN
         "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "  # Allow Bootstrap styles, and inline styles
         "img-src 'self' https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/;"  # Only allow images from the same origin
+        "font-src 'self' https://ashburry.pythonanywhere.com"
     )
     return response
 
@@ -90,9 +91,9 @@ app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
 sess = Session()
 sess.init_app(app)
-gk = GateKeeper(app, ban_rule={"count":15, "window":3, "duration":60}, \
-        rate_limit_rules=[{"count":20, "window":10, "duration":45}, \
-                        {"count":15, "window":7, "duration":35}])
+gk = GateKeeper(app, ban_rule={"count":25, "window":5, "duration":220}, \
+        rate_limit_rules=[{"count":30, "window":6, "duration":245}, \
+                        {"count":20, "window":3, "duration":235}])
 
 from website.views import views
 from website.auth import auth
@@ -106,3 +107,4 @@ app.register_blueprint(auth, url_prefix='/')
 app.register_blueprint(navfix, url_prefix='/')
 app.register_blueprint(casino, url_prefix='/')
 app.register_blueprint(config, url_prefix='/')
+

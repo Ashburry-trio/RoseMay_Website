@@ -12,7 +12,7 @@ import hashlib
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, EmailField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, NumberRange, Regexp
-from website import save_user, load_users_ini
+from website import save_user, load_users_ini, xSearchForm
 
 config = Blueprint('config', __name__, template_folder='templates', static_folder='static')
 
@@ -84,6 +84,7 @@ def config_server():
 
     """
     gk.report()
+    xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] == True:
         pass
     else:
@@ -100,4 +101,4 @@ def config_server():
         password = form.password.data
         # Save or process the data
         return "Form submitted successfully!"
-    return render_template('config/server.html', form=form)
+    return render_template('config/server.html', form=form, xsearch=xsearch)
