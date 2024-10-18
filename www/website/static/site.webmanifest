@@ -1,11 +1,11 @@
 {
   "name": "Machine-Gun script named Bauderr",
   "short_name": "MG",
-  "start_url": "https://www.mSLscript.com/",
+  "start_url": "https://ashburry.pythonanyhwere.com/",
   "display": "browser",
   "background_color": "#DAA520",
   "theme_color": "#DAA520",
-  "description": "An mSL script for mIRC and Adiirc that links to a remote proxy-server for functionality.",
+  "description": "An mSL script for mIRC and Adiirc chat clients that connects to a remote proxy-server for quick functionality.",
   "icons": [
     {
       "src": "/android-chrome-192x192.ico",
@@ -16,17 +16,17 @@
       "src": "/android-chrome-512x512.ico",
       "sizes": "512x512",
       "type": "image/ico"
-    }
+    },
     {
       "src": "/apple-touch-icon.ico",
       "sizes": "180x180",
       "type": "image/ico"
-    }
+    },
     {
       "src": "/mstile-144x144.ico",
       "sizes": "144x144",
       "type": "image/ico"
-    }
+    },
     {
       "src": "/favicon.ico",
       "sizes": "16x16",

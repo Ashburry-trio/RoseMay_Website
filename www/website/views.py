@@ -1,22 +1,41 @@
+from cryptography.fernet import Fernet
 from flask import (
-    Blueprint, render_template, make_response, Response, jsonify, redirect, send_file, url_for
+    Blueprint, render_template, make_response, Response, jsonify, redirect,
+    send_file, url_for, session, request
     )
 from werkzeug.exceptions import TooManyRequests
 from os.path import expanduser
 from markupsafe import escape
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import Length, DataRequired
 from flask_app import gk, app
-
+from website import xSearchForm
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
+@views.route('/enc_test.html')
+def enc_test():
+    xsearch = xSearchForm()
+    secret_key = Fernet.generate_key().decode()
+    session['secret_key'] = "supersecretkey"
+    return render_template('enc_test.html', secret_key=secret_key, xsearch=xsearch)
 
-class xSearchForm(FlaskForm):
-    search = StringField('XDCC Search',
-                         render_kw={"class": "form-control me-2", "placeholder": "XDCC Search", "aria-label": "Search"},
-                         validators=[DataRequired()])
-    search_button = SubmitField('Search', render_kw={"class": "btn btn-outline-success", "type": "submit"})
+@app.route('/decrypt', methods=['POST'])
+def decrypt_data():
+    req_data = request.get_json()
+
+    encrypted_data = req_data['encryptedData']
+    data3 = req_data['data3']
+    data4 = req_data['data4']
+
+    fernet = Fernet(b'supersecretkey')
+    decrypted_data = fernet.decrypt(encrypted_data.encode()).decode()
+
+    response_data = {
+        "decryptedData": decrypted_data,
+        "data3": data3,
+        "data4": data4
+    }
+
+    return jsonify(response_data)
+
 
 @views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
 def mywotddd():
@@ -120,6 +139,7 @@ def index_home():
 
 
 @views.route('/search.html', methods=['GET', 'POST'])
+def xsearch_page():
     xsearch = xSearchForm()
     if xsearch.validate_on_submit():
         filesearch = escape(xsearch.search.data)

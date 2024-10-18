@@ -11,7 +11,7 @@ from configparser import ConfigParser
 import hashlib
 from website.ipreg import get_ip_info
 from website import login_user_post, register_user_post, save_user, load_users_ini, validate_email_or_login, fetch_user_by_detail
-
+from website import xSearchForm
 auth = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
 @auth.route("/irc/script.html", methods=["POST", "GET"])
@@ -22,10 +22,11 @@ auth = Blueprint('auth', __name__, template_folder='templates', static_folder='s
 @auth.route("/scripts.html", methods=["POST", "GET"])
 def proxy_scripts():
     gk.report()
+    xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] is True:
-            return render_template(path.join('scripts', 'scripts.html'))
+            return render_template(path.join('scripts', 'scripts.html'), xsearch=xsearch)
     else:
-        return make_response(render_template(path.join('scripts', 'no-scripts.html')), 401)
+        return make_response(render_template(path.join('scripts', 'no-scripts.html'), xsearch=xsearch), 401)
 
 
 @auth.route("/proxies/", methods=["POST", "GET"])
@@ -36,6 +37,7 @@ def proxy_scripts():
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
     gk.report()
+    xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] is True:
         proxy_list: dict[str, str]
         users = load_users_ini(session['username'])
@@ -49,15 +51,16 @@ def irc_proxies():
             users = dict()
             users['passcode'] = {}
             users['passcode']['secret'] = 'hell_no-This_does_not_work'
-        return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'])
+        return render_template('proxies.html', bnc_list=proxy_list, passcode=users['passcode']['secret'], xsearch=xsearch)
     else:
-        return render_template('proxy-login.html')
+        return render_template('proxy-login.html', xsearch=xsearch)
 
 @auth.route("/login/", methods=["POST", "GET"])
 @auth.route("/login.html", methods=["POST", "GET"])
 @limiter.limit("13 per minute")
 def login():
     gk.report()
+    xsearch = xSearchForm()
     try:
         pass
 #        client_ip: str = get_ip_checked(request)
@@ -76,8 +79,9 @@ def login():
         if not user_pass:
             flash('UserName and/or Password field is NOT valid.', category='error')
         else:
+            # Put xsearch in below
             return login_user_post(username, passwd)
-    return make_response(render_template("login.html"), 401)
+    return make_response(render_template("login.html", xsearch=xsearch), 401)
 
 
 
@@ -211,6 +215,7 @@ def get_ip_checked(req):
             ip_reg_check(xsplit[0])
         else:
             for ip in xsplit:
+                ip = ip.strip()
                 ip_reg_check(ip)
 
     client_ip = req.headers.get('X-Real-IP')
@@ -233,6 +238,7 @@ def get_ip_checked(req):
 @limiter.limit("16 per minute")
 def register():
     gk.report()
+    xsearch=xSearchForm()
 #    try:
 #        client_ip = get_ip_checked(request)
 #    except IP_is_Bad:
@@ -254,17 +260,18 @@ def register():
         email_check = validate_email_or_login(email, email = True)
         if not email_check:
             flash("You must enter your real email address; to verify it.")
-            return render_template("register.html")
+            return render_template("register.html", xsearch=xsearch)
         elif not username_check:
-            flash('Minimum <b>EiGhT</b> <u>alphanumeric</u> characters; no <u>banned</u> words/ones/zeros.', category='error')
-            return render_template("register.html")
+            flash('Minimum <b>EiGhT</b> <u>alphanumeric</u> characters; no <u>banned</u> words/ones or zeros.', category='error')
+            return render_template("register.html", xsearch=xsearch)
         else:
             del user_pass
             del username_check
             del email_check
+            # put xsearch below: done
             # return Response('These are the items username='+username+' passwd='+passwd+' q1_q='+q1_q+' q1_a='+q1_a+' q2_q='+q2_q+' q2_a='+q2_a, status=200, mimetype='text/plain')
             return register_user_post(username, passwd, email, q1_q, q1_a, q2_q, q2_a, power='normal')
-    return render_template("register.html")
+    return render_template("register.html", xsearch=xsearch)
 
 
 @auth.route('/quest.html', methods=['GET', 'POST'])
@@ -281,6 +288,7 @@ def question_form():
         via 'answered.html'
     """
     gk.report()
+    xsearch=xSearchForm()
     if request.method == 'POST':
         session['logged_in'] = False
         user_email: str = request.form.get('user_email')
@@ -297,6 +305,6 @@ def question_form():
                 flash("No user accounts match your input")
                 # render forgot.html
             else:
-                return render_template("questions.html", user=found_user, email=found_email, q1_q=found_q1[0], q2_q=found_q2[0])
-    return render_template("forgot.html")
+                return render_template("questions.html", user=found_user, email=found_email, q1_q=found_q1[0], q2_q=found_q2[0], xsearch=xsearch)
+    return render_template("forgot.html", xsearch=xsearch)
 
