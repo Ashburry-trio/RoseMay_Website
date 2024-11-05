@@ -3,6 +3,7 @@ from flask import (
     Blueprint, render_template, make_response, Response, jsonify, redirect,
     send_file, url_for, session, request
     )
+from flask_wtf.csrf import CSRFError
 from werkzeug.exceptions import TooManyRequests
 from os.path import expanduser
 from markupsafe import escape
@@ -21,6 +22,12 @@ def mywotddd():
 def flexoffers():
     # This is to verify flexoffers.com account
     return send_file(expanduser('~/www/website/static/fo-verify.html')), 200
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    gk.report()
+    xsearch = xSearchForm()
+    return render_template('csrf_error.html', xsearch=xsearch), 400
 
 @app.errorhandler(TooManyRequests)
 def handle_rate_limit_exceeded(e):
@@ -110,7 +117,7 @@ def fixbiome():
 def index_home():
     gk.report()
     xsearch = xSearchForm()
-    return render_template('index.html', xsearch=xsearch)
+    return render_template('index.html', xsearch=xsearch, content_page_name='home')
 
 
 @views.route('/search.htm', methods=['GET', 'POST'])
@@ -124,7 +131,7 @@ def xsearch_page():
         filesearch = parse_xsearch_filename(filesearch)
         if len(filesearch) < 3 or len(filesearch) > 75:
             flash("Search term must be at least 3 characters and a max of 75 characters: " + str(len(filesearch)) + ' chars')
-            return render_template("/search/search.html", locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
+            return render_template("/search/search.html", content_page_name='search', locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
         else:
             search_results = {}
             search_results['rizon'] = {}
@@ -144,7 +151,7 @@ def xsearch_page():
             search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['nick'] = "XDccBot[333]"
             search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['gets'] = "68x"
             search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['pack'] = "#454"
-    return render_template("/search/search.html", xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
+    return render_template("/search/search.html", content_page_name='search', xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
 
 
 def parse_xsearch_filename(filesearch_no_space: str):
@@ -191,8 +198,8 @@ def parse_xsearch_filename(filesearch_no_space: str):
         return None
     return filesearch_no_space
 
-filesearch_no_space = filesearch_no_space.replace('~',' -')
-    return filesearch_no_space
+#filesearch_no_space = filesearch_no_space.replace('~',' -')
+#   return filesearch_no_space
 
 @views.route('/policy.html', methods=['GET'])
 @views.route('/policy/', methods=['GET'])
@@ -260,5 +267,5 @@ def security():
 def download_msl():
     gk.report()
     xsearch = xSearchForm()
-    return render_template('download.html', xsearch=xsearch)
+    return render_template('download.html', content_page_name='download', xsearch=xsearch)
 

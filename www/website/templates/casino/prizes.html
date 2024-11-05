@@ -30,94 +30,51 @@ h1,h2,h3,h4,h5,h6 {
   font-family: "Hellounicorn", sans-serif;
 }
 {% endblock css %}
-{% block title %}casino, basic games, fair pay-out, also play on IRC!{% endblock title %}
-{% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
-{% block linklist %}
-          <li class="nav-item">
-            <a class="nav-link" href="/">home</a>
-          </li>
-         {% if session.logged_in == True %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/irc/proxies.html">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout.html">sign-out</a>
-          </li>
-         {% else %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/nobody.html">user-pages</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/casino/games.html">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" href="#">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/register.html">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login.html">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
-          </li>
-          {% endif %}
-{% endblock linklist %}
-{% block h1 %}The Casino Prizes List{% endblock h1 %}
+{% block title %}games, basic games, fair pay-out, also play on IRC!{% endblock title %}
+{% block desc %}ascii-art games, basic games, play on IRC. find out more...{% endblock desc %}
+
+{% block h1 %}The games Prizes List{% endblock h1 %}
 {% block lead %}House-hold Safe: {{ stash }}{% endblock lead %}
 {% block content %}
-<hr><a href="/casino/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br>
+<hr><a href="/games/bank.html">Your Banker*</a> - You have <b>{{ cash|safe }}</b> to play-in. You have <b>{{ prize_cash or '$5.00 CAD' }}</b> to spend on gifts.<br>
 {% if remaining_pages > 0 %}
-You have <u><strong>{{ remaining_pages or 9 }}</strong></u> hidden pages left to visit before unlocking <a href="/casino/locked/games.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
+You have <u><strong>{{ remaining_pages or 9 }}</strong></u> hidden pages left to visit before unlocking <a href="/games/locked/index.html" alt="description of 2 games you can unlock by visiting 9 specific pages">these 2 secret games</a>.</p>
 {% else %}
-You have unlocked <a href="/casino/locked/games.html" alt="Access to two secret high paying games; unlocked.">these 2 secret games</a>!
+You have unlocked <a href="/games/locked/index.html" alt="Access to two secret high paying games; unlocked.">these 2 secret games</a>!
 {% endif %}
 </p>
 <center>
-<p><a href="/casino/buy/essentialoil.html">Buy 15ml Essential Oil - Summer Nights and Tranquil Garden by ScentSational $20 for you</a> <small>(at cost to me: $35)</small></p>
+<p><a href="/games/buy/essentialoil.html">Buy 15ml Essential Oil - Summer Nights and Tranquil Garden by ScentSational $20 for you</a> <small>(at cost to me: $35)</small></p>
 
 <p class="h6">To request items to add to the Prizes give me the URLs to websites with the names, descriptions and prices of the items you want. If I think they are a good choice I will add them to the available prizes list at a discounted cost.</p>
 <p class="h3"><strong>Illicit Drugs</strong> - Tested Every Thursday, at-least one Thursday.</p>
-<p class="h6">I am a Licensed Provider, and have been accepted since the age of 3 years-old (trusted) to sell/give Crystal-Meth, Fyntenol, Cannabis, cocain powder, cocain rock, and thats all that I remember.
-I have a Masters degree with Grade 10 and a half, and a PhD. from Harvard University. I am retired from the Military where I carried the hat of a Bunnery Instructor (GI) with 10,000 troops at my disposal (all are alive and healthy)</p>
-<p>The drug Crystal-Meth, available here, is carefully crafted using only high-grade ingredients and is completely safe; however it has a 2 month withdrawl period with a painful kick in nut (worse?) at the end of your
-3rd month (if you over-use this drug, the kick in the nut will happen to you!). So, for the LAST 3 months of running out of supply make sure you use it only on Wednesdays (1/10 gram only which is 0.1g only). I know I said it only has 2 months of withdrawl, however for your 3rd month you feel awesome, until the END of the 3rd month when you will be in URGENT need to use crystal-meth immediately!! If you have to use crystal-meth at all this 4th month IS THE RIGHT TIME. For relaxed and empowering feelings, facing the world forever with a new and improved
-brain chemistry: By damaging 3 special parts of brain which <strong>function</strong> only when damaged. If you think you need something to step up your game <strong>quitting this drug</strong> might
-be your best and cheapest way to go (and most entertaining). This Cystal-Meth may be SMOKED ONLY. Do NOT inject NOR snort this crystal-meth (smoke only on tinfoil or better yet in a fresh Pyrex bowl pipe [2-5 bowl pipes included]).
+<p class="h6">I am a Licensed Provider, and have been accepted since the age of 3 1/2 years-old (trusted) to sell/give Crystal-Meth, Fyntenol, Cannabis, cocain powder, cocain rock, paraphenelia and thats all that I remember. I do not have to pay taxes, because if I did then food would be taxable.
+I have a Masters degree (for which I had to provide an answer to a problem that nobody has the answer to; related to reseed of the seed of life), with Grade 10 and a half education, and a PhD. from Harvard University all at the age of 3 1/2 years old. I am retired from the Military; where I carried the hat of a Gunnery Instructor (GI) since age 3 1/2 years old to 25 years old I have been in active duty combat with 10,000 troops under my command (all are alive and healthy, but some close calls). I am also retired from carrying the hat of Sire of the West; for over 20 years. I have spent time in the clink and I am never going back in. I have a scar between my thumb and index finger to prove my initiation.</p>
+<p>
 <hr>
-<p><a href="/casino/buy/14buds.html">Buy 1/4 ounce (7 grams) cannabis buds - $20 for you</a> <small>(at cost to me: $35)</small></p>
-<p><a href="/casino/buy/ouncebuds.html">Buy single ounce (28 grams) cannabis buds - $60 sale for you</a> <small>(at cost to me: $110)</small></p>
+<p><a href="/games/buy/14buds.html">Buy 1/4 ounce (7 grams) cannabis AAAA+ buds - $15 for you</a> <small>(at cost to me: $30)</small></p>
+<p><a href="/games/buy/ouncebuds.html">Buy single ounce (28 grams) cannabis AAAA+ buds - $60 sale for you</a> <small>(at cost to me: $110)</small></p>
 <hr />
-<p><a href="/casino/buy/18meth.html">Buy (2x 8-ball) 1/4th ounce (7 grams) Crystal Meth (comes with 2 bowl pipes) - $60 sale for you</a> <small>(at cost to me: $200)</small></p>
-<p><a href="/casino/buy/ouncemeth.html">Buy ounce Crystal-Meth - (28 grams) (comes with 5 bowl pipes) - $200 sale for you</a> <small>(at cost to me: $500)</small></p>
+<p><a href="/games/buy/scale.html">Buy Small Scale (capable of weighing 0.001g) - $10.00 sale for you</a> <small>(at cost to me: $30)</small></p>
 <hr>
-<p><a href="/casino/buy/scale.html">Buy Small Scale (capable of weighing 0.001g) - $15.00 sale for you</a> <small>(at cost to me: $30)</small></p>
+<p><a href="/games/buy/methpipes.html">Buy Pyrex Meth bowl pipes (regular size with wood push sticks and tinfoil pieces) 12 pack - $9.00 sale for you</a> <small>(at cost to me: $35)</small></p>
+<p><a href="/games/buy/crackpipes.html">Buy Pyrex straight pipes (size wide with screens and brillow, wood push sticks, tinfoil pieces) 12 pack - $7.00</a> <small>(at cost to me: $16)</small></p>
+<p><a href="/games/buy/sacred.html">Buy Sacred Frankenscence essential oil 15ml - $80.00 (from <a href="https://www.youingliving.com/" target="youngliving">YoungLiving.com</a>)</a> <small>(at cost to me: $160)</small></p>
+<p><a href="/games/buy/diffuser.html">Buy Essential Oil Diffuser: Anniversary Edition - $120.00 (from <a href="https://www.youingliving.com/" target="youngliving">YoungLiving.com</a>)</a> <small>(at cost to me: $260)</small></p>
+<p><a href="/games/buy/ylgiftcard.html">Buy $235.00 Young Living gift card - $115 (from <a href="https://www.youingliving.com/" target="youngliving">YoungLiving.com</a>)</a> <small>(at cost to me: $235)</small></p>
 <hr>
-<p><a href="/casino/buy/methpipes.html">Buy Pyrex Meth bowl pipes (normal size with tinfoil pieces) 12 pack - $9.00 sale for you</a> <small>(at cost to me: $35)</small></p>
-<p><a href="/casino/buy/crackpipes.html">Buy Pyrex Crack straight pipes (wide with screens and wood push sticks) 12 pack - $8.00</a> <small>(at cost to me: $30)</small></p>
-<hr>
-<p class="h1"><u>Prizes available</u>:</p>
+<p class="h1"><u>Gift money available:</u>:</p>
 <p class="h3">$1 dollar x 200 prizes</p>
 <p class="h3">$5 x 20 prizes available</p>
-<p class="h3">$10 x 2 prizes available</p>
-<p class="h3">$20 x 5 prizes available</p>
-<p class="h3">$50 x 1 prizes available</p>
-<p class="h3">$100 x 1 prizes available</p>
-<p class="h6">Total: $570 to spend on gifts listed above. 229 prizes are counted. More prizes added every month. More deverse gift selection added every month. Play the <a href="/casino/games/dineout.html" alt="Casino game Dine-out or Shud-up">FoxGlove - Dine-out or Shud-up</a> to win prize money whcih may be spent here.</p>
+<p class="h3">$10 x 10 prizes available</p>
+<p class="h3">$20 x 7 prizes available</p>
+<p class="h3">$50 x 7 prizes available</p>
+<p class="h3">$100 x 7 prizes available</p>
+<p class="h3">$0.10 x 2000 prizes available</p>
+<p class="h6">Total: $1800 to spend on gifts listed above. 229 prizes are counted. More prizes added every month. More deverse gift selection added every month. Play the <a href="/games/dineout.html" alt="games Dine-out or Shud-up">FoxGlove - Dine-out or Shud-up</a> to win prize money whcih may be spent here.</p>
 <p class="h6">The app takes 3 samples and picks a random prize of the 3 samples, unless your first sample is $1 dollar then your prize is $1 dollar. Only if there are $1 prizes left to be won and you pick a $1 prize first from your sample selection.</p>
-<p class="h6">Only money that has ben lost to the house is picked up and used to add money prizes, which you spend on gifts here and I make a small profit from those gift sales via the casino. This is the first casino in the world-wide-web to have such a diversity of gifts on the rack.</p>
+<p class="h6">Only money that has ben lost to the house is picked up and used to add money prizes, which you spend on gifts here and I make a small loss of money from those gift sales via the games. This is the first games in the world-wide-web to have such a diversity of gifts on the rack.</p>
 </center>
+<p>All monies are in Canadian Dollars.</p>
+<p><br>o End of Document.</p>
 {% endblock content %}

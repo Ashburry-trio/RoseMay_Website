@@ -81,7 +81,7 @@ def login():
         else:
             # Put xsearch in below
             return login_user_post(username, passwd)
-    return make_response(render_template("login.html", xsearch=xsearch), 401)
+    return make_response(render_template("login.html", content_page_name='login', xsearch=xsearch), 401)
 
 
 
