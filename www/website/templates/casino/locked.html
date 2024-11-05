@@ -1,55 +1,11 @@
 {% extends 'base_fixednav.html' %}
-{% block title %}real casino, basic games, fair pay-out, also play on IRC{% endblock title %}
-{% block desc %}ascii-art casino, basic games, play on IRC. find out more...{% endblock desc %}
-{% block linklist %}
-          <li class="nav-item">
-            <a class="nav-link" href="/">home</a>
-          </li>
-         {% if session.logged_in == True %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/{{ session.username }}/">user-page</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/irc/proxies.html">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout.html">sign-out</a>
-          </li>
-         {% else %}
-         <li class="nav-item">
-            <a class="nav-link" href="/user/nobody.html">user-pages</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">casino</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link disabled" href="#">proxies</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" href="/register.html">sign-up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login.html">sign-in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true" href="#">sign-out</a>
-          </li>
-          {% endif %}
-{% endblock linklist %}
+{% block title %}real games, basic games, fair pay-out, also play on IRC{% endblock title %}
+{% block desc %}ascii-art games, basic games, play on IRC. find out more...{% endblock desc %}
 {% block h1 %}Secret Games{% endblock h1 %}
-{% block lead %}House-hold Safe: <b>{{ stash }}</b> &nbsp;- Peak at <a href="/casino/prizes.html">prizes</a> you can earn!{% endblock lead %}
+{% block lead %}House-hold Safe: <b>{{ stash }}</b> &nbsp;- Peak at <a href="/games/prizes.html">prizes</a> you can earn!{% endblock lead %}
 {% block content %}
 <hr />
-<p>The games on this page are locked until you visit at-least 9 secret pages. The hidden games have a "number 18 theme" to them. View some more, unique pages,
+<p>The games on this page are locked until you visit at-least 9 secret pages. View some more, unique pages,
 and the games will be unlocked, right here, until January First next year.</p>
 <p>Unique pages remaining to view: {{ pages_count }}</p>
 {% endblock content %}

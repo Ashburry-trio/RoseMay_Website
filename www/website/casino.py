@@ -39,9 +39,13 @@ def apply_stash(amount: str):
 
 
 @casino.route('/casino/', methods=['GET', 'POST'])
-@casino.route('/casino/index.html', methods=['GET', 'POST'])
-@casino.route('/casino/casino.html', methods=['GET', 'POST'])
 @casino.route('/casino/games.html', methods=['GET', 'POST'])
+@casino.route('/games/casino.html', methods=['GET', 'POST'])
+@casino.route('/games/games.html', methods=['GET', 'POST'])
+@casino.route('/games/game.html', methods=['GET', 'POST'])
+@casino.route('/game/game.html', methods=['GET', 'POST'])
+@casino.route('/game/index.html', methods=['GET', 'POST'])
+@casino.route('/games/index.html', methods=['GET', 'POST'])
 def casino_home():
     gk.report()
     update_today()
@@ -50,7 +54,7 @@ def casino_home():
     xsearch = xSearchForm()
     global stash
     if casino_user is False:
-        cash = '<a href="/login.html" alt="click to sign-in to mSLscript.com account.">to Log-in</a>'
+        cash = '<a href="/login.html" alt="click to sign-in to MyProxyIP.com account.">to Log-in</a>'
         prize_cash = 'unknown amount'
         remaining_pages = 9
     else:

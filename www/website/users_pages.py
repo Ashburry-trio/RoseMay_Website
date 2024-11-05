@@ -25,7 +25,7 @@ def user_admin_page(user):
         return redirect("/register.html")
     user_up: str = users['username']
     if user_page_exists(user):
-        return render_template('/users/'+ user + '/admin.html', user_up=user_up, xsearch=xsearch)
+        return render_template('/users/'+ user + '/admin.html', content_page_name='user-pages', user_up=user_up, xsearch=xsearch)
 
 
 @users_pages.route('/user/<user>/', methods=['GET'])
@@ -44,7 +44,7 @@ def user_index_pages(user):
         load_users_ini()
         user_up = users['main']['username']
 
-        return render_template('/users/'+user_low + '/index.html',user_up=user_up, xsearch=xsearch)
+        return render_template('/users/'+user_low + '/index.html',content_page_name='user-pages', user_up=user_up, xsearch=xsearch)
     else:
         return redirect('/user/nobody.html')
 
@@ -61,7 +61,7 @@ def no_user_page():
     if 'username' in session.keys():
         user_up = session['username']
     asset_list: tuple[tuple[str, str, tuple[str]], tuple[str, str, tuple[str]]] = get_user_pages()
-    return render_template('users/nobody.html', user_up=user_up, has_page=has_page, assets=asset_list, xsearch=xsearch)
+    return render_template('users/nobody.html', content_page_name='user-pages', user_up=user_up, has_page=has_page, assets=asset_list, xsearch=xsearch)
 
 
 @users_pages.route('/user/', methods=['GET'])
@@ -72,4 +72,5 @@ def user_create_page():
     gk.report()
     xsearch = xSearchForm()
     has_page: bool
+    # content_page_name='user-pages'
     # return Response("This page has not been created, yet; much like all of this site. But eventually it will be finished and it will be large")

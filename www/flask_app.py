@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_session import Session
 from flask_gatekeeper import GateKeeper
 from os.path import expanduser
@@ -12,7 +12,6 @@ import os
 import sys
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
-
 mykey: str | bool | bytes
 
 def init_mykey():
@@ -53,7 +52,7 @@ def make_key(key2: str | bytes | bool = None):
 def char_is_good(single_char: str | bytes):
     if bytes == type(single_char):
         single_char = bytes.decode(single_char, 'utf-8')
-    if not single_char.isalnum() and not single_char in ' _-,.<>/?;:\'\"' \
+    if not single_char.isalnum() or single_char in ' _-,.<>/?;:\'\"' \
                     + '{}[]()+=!@#$\§%^&*\\|':
         return False
     return True
@@ -63,13 +62,18 @@ def test_key_len():
     from warnings import warn
     if len(mykey) < 90:
         warn("'Your Private Key is Less Than 90 Characters" \
-                + " in Length, Secret can be 100 Characters.")
+                + " in Length. Secret should be 100+ Characters.")
 
 app = Flask(__name__)
 init_mykey()
 app.secret_key = mykey
 csrf = CSRFProtect(app)
 limiter = Limiter(app)
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    session.modified = True
 
 @app.after_request
 def set_csp_headers(response):
@@ -91,9 +95,10 @@ app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
 sess = Session()
 sess.init_app(app)
-gk = GateKeeper(app, ban_rule={"count":25, "window":5, "duration":220}, \
-        rate_limit_rules=[{"count":30, "window":6, "duration":245}, \
-                        {"count":20, "window":3, "duration":235}])
+gk = GateKeeper(app, ban_rule={"count":25, "window":12, "duration":220}, \
+        rate_limit_rules=[{"count":30, "window":12, "duration":245}, \
+                        {"count":20, "window":9, "duration":235}])
+
 
 from website.views import views
 from website.auth import auth
