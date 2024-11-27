@@ -16,12 +16,12 @@ views = Blueprint('views', __name__, template_folder='templates', static_folder=
 @views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
 def mywotddd():
     # Change this to your own Web of Trust file
-    return send_file(expanduser('~/www/website/static/mywotdddf72ca09e4c80ba89a.html')), 200
+    return send_file(expanduser('~/www/website/static/custom/mywotdddf72ca09e4c80ba89a.html')), 200
 
 @views.route('/fo-verify.html', methods=['GET','POST'])
 def flexoffers():
     # This is to verify flexoffers.com account
-    return send_file(expanduser('~/www/website/static/fo-verify.html')), 200
+    return send_file(expanduser('~/www/website/static/custom/fo-verify.html')), 200
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
@@ -41,7 +41,7 @@ def no_found(e):
 
 @views.route('/.well-known/apple-developer-merchantid-domain-association', methods=['GET'])
 def apple_deveoper_merch():
-    return send_file(expanduser('~/www/website/static/apple-developer-merchantid-domain-association')), 200
+    return send_file(expanduser('~/www/website/static/custom/apple-developer-merchantid-domain-association')), 200
 
 @views.route('/_asterisk/', methods=['GET', 'POST'])
 @views.route('/admin/assets/js/views/login.js', methods=['GET', 'POST'])
@@ -131,27 +131,10 @@ def xsearch_page():
         filesearch = parse_xsearch_filename(filesearch)
         if len(filesearch) < 3 or len(filesearch) > 75:
             flash("Search term must be at least 3 characters and a max of 75 characters: " + str(len(filesearch)) + ' chars')
-            return render_template("/search/search.html", content_page_name='search', locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
+            return render_template("/search/search.html", content_page_name='xsearch', locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
         else:
-            search_results = {}
-            search_results['rizon'] = {}
-            search_results['rizon']['net_up'] = 'Rizon'
-            search_results['rizon']['files'] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['desc_up'] = "FileName XyZ-MyProxyIPcom"
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['desc_low'] = "filename.xyz.myproxyipcom"
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez'] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['chan_up'] = '#EliteWarez'
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots'] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]'] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['nick'] = 'XdccBot[01]'
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['gets'] = '101x'
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[01]']['pack'] = "#12"
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]'] = {}
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['nick'] = "XDccBot[333]"
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['gets'] = "68x"
-            search_results['rizon']['files']["filenamexyzmyproxyipcom"]['chans']['#elitewarez']['bots']['xdccbot[333]']['pack'] = "#454"
-    return render_template("/search/search.html", content_page_name='search', xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
+            pass
+    return render_template("/search/search.html", content_page_name='xsearch', xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
 
 
 def parse_xsearch_filename(filesearch_no_space: str):
@@ -177,7 +160,7 @@ def parse_xsearch_filename(filesearch_no_space: str):
     filesearch_no_space = filesearch_no_space.replace(';','.')
     filesearch_no_space = filesearch_no_space.replace('?','.')
     filesearch_no_space = filesearch_no_space.replace(':','.')
-    filesearch_no_space = filesearch_no_space.replace('\"','')
+    filesearch_no_space = filesearch_no_space.replace('"','')
     filesearch_no_space = filesearch_no_space.replace('\'','')
     filesearch_no_space = filesearch_no_space.replace('[','.')
     filesearch_no_space = filesearch_no_space.replace(']','.')
@@ -188,12 +171,22 @@ def parse_xsearch_filename(filesearch_no_space: str):
     filesearch_no_space = filesearch_no_space.replace('+','.')
     filesearch_no_space = filesearch_no_space.replace('=','.')
     filesearch_no_space = filesearch_no_space.replace('!','.')
-    filesearch_no_space = filesearch_no_space.replace('&','and')
+    filesearch_no_space = filesearch_no_space.replace('&','*and*')
     filesearch_no_space = filesearch_no_space.replace('^','.')
     filesearch_no_space = filesearch_no_space.replace('\`','')
-    filesearch_no_space = filesearch_no_space.replace('**','*')
-    filesearch_no_space = filesearch_no_space.replace(' ','*')
-    filesearch_no_space = filesearch_no_space.replace('*-','* -')
+    filesearch_no_space = filesearch_no_space.replace('..',' ')
+    filesearch_no_space = filesearch_no_space.replace('..',' ')
+    filesearch_no_space = filesearch_no_space.replace('..',' ')
+    filesearch_no_space = filesearch_no_space.replace('.',' ')
+    filesearch_no_space = filesearch_no_space.replace('   ',' ')
+    filesearch_no_space = filesearch_no_space.replace('  ',' ')
+    filesearch_no_space = filesearch_no_space.replace('  ',' ')
+    filesearch_no_space = filesearch_no_space.replace('\t',' ')
+    filesearch_no_space = filesearch_no_space.replace('*','')
+    filesearch_no_space = filesearch_no_space.replace('*','')
+    filesearch_no_space = filesearch_no_space.replace('*','')
+    filesearch_no_space = filesearch_no_space.replace('?','')
+    filesearch_no_space = filesearch_no_space.replace('?','')
     if not filesearch_no_space:
         return None
     return filesearch_no_space
