@@ -1,41 +1,61 @@
-{% set content_page_name = 'login' %}
-{% extends "base_fixednav.html" %}
-{% block title %}Login to your account{% endblock title %}
-{% block desc %}Login to your IRC-Proxy account: view proxy list, custom web page, simple casino!{% endblock desc %}
+{%- set content_page_name = 'login' -%}
+{%- extends "base_fixednav.html" -%}
+{%- block title -%}Login to your account{%- endblock title -%}
+{%- block css -%}
+    <style>
+        .submit {
+            margin-top: 10px;
+        }
+        .checkboxlabel,.showPass {
+            width: 20px;
+            height: 20px;
+        
+        }
+    </style>
+{%- endblock css -%}
+{%- block desc -%}Login to your IRC-Proxy account, view proxy list, create webspace, chance games{%- endblock desc -%}
 {%- block h1 -%}Login Here{%- endblock h1 -%}
 {%- block lead -%}Login to your already existing account.{%- endblock lead -%}
-{% block content %}
-	<div class="container">
-		<form method="post">
-			<p>
-				<label>Username:</label>
-				<input type="text" name="username" id="username" placeholder="UserName Here">
-			</p>
-			<p>
-				<label>Password:</label>
-				<input type="password" name="password" id="password" placeholder="Password Here">
-				<i class="bi bi-eye-slash" id="togglePassword"></i>
-			</p>
-			<button type="submit" id="submit" class="btn btn-primary">
-				Log In
-			</button>
-		</form>
-	</div>
+{%- block content -%}
+    <h2>Sign In</h2>
+    <form method="post">
+        <p>
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" style="width:250px;" placeholder="Must be 3+ chars long, maximum 25 chars" autocomplete="section-blue username">
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" style="width:250px;" placeholder="Must be 8+ chars long, maximum 25 chars" autocomplete="section-blue current-password"/>
+            <input type="checkbox" id="showPass" class="showPass" name="checkmark">
+            <label for="showPass" class="checkboxlabel" id="checkboxlabel">Show</label>
+        </p>
+        <button type="submit" id="submit" class="submit" style="width:65px;height:40px;">Log In</button>
+    </form>
+
+    <!-- Inline JavaScript -->
+    <script>
+        // Get references to the password input and label
+        const passwordInput = document.getElementById('password');
+        const checker = document.getElementById('showPass');
+        const checkboxLabel = document.getElementById('checkboxlabel');
+
+        // Add an event listener to the checkbox to toggle password visibility
+        checker.addEventListener('change', function() {
+            if (checker.checked) {
+                passwordInput.type = 'text'; // Change type to text to show the password
+            } else {
+                passwordInput.type = 'password'; // Change type back to password to hide it
+            }
+        });
+
+        // Add an event listener to the label to toggle the checkbox
+        checkboxLabel.addEventListener('click', function() {
+            checker.checked = checker.checked; // Toggle the checkbox state
+            checker.dispatchEvent(new Event('change')); // Trigger change event to update password visibility and label text
+        });
+    </script>
+
+
 <p class="h3">don't have an account??</p>
 <p class="h4"><a href="/register.html" title="create an account to be assigned your proxy server(s)">click here to <u><strong>create</strong></u> an account.</a></p>
-  <script>
-		const togglePassword = document
-			.querySelector('#togglePassword');
-		const password = document.querySelector('#password');
-		togglePassword.addEventListener('click', () => {
-			// Toggle the type attribute using
-			// getAttribure() method
-			const type = password
-				.getAttribute('type') === 'password' ?
-				'text' : 'password';
-			password.setAttribute('type', type);
-			// Toggle the eye and bi-eye icon
-			this.classList.toggle('bi-eye');
-		});
-	</script>
-{% endblock content %}
+{%- endblock content -%}

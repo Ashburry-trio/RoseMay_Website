@@ -11,14 +11,59 @@ from flask_app import gk, app
 from website import xSearchForm
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
+@app.route('/site.webmanifest')
+def manifest():
+    return jsonify({
+        "name": "PyNet Converge script named Bauderr",
+        "short_name": "Pync",
+        "start_url": url_for('views.index_home', _external=True),  # dynamically set start_url
+        "display": "browser",
+        "background_color": "#DAA520",
+        "theme_color": "#DAA520",
+        "description": "An mSL script for mIRC ($20) and Adiirc (FREE) chat clients which will connect to a http/1.0 CONNECT proxy-server (hosted here) for awesome and fast functionality.",
+        "icons": [
+            {
+            "src": "/static/custom/brand/android-chrome-192x192.ico",
+            "sizes": "192x192",
+            "type": "image/ico"
+            },
+            {
+            "src": "/static/custom/brand/android-chrome-512x512.ico",
+            "sizes": "512x512",
+            "type": "image/ico"
+            },
+            {
+            "src": "/static/custom/brand/apple-touch-icon.ico",
+            "sizes": "180x180",
+            "type": "image/ico"
+            },
+            {
+            "src": "/static/custom/brand/mstile-144x144.ico",
+            "sizes": "144x144",
+            "type": "image/ico"
+            },
+            {
+            "src": "/static/custom/brand/favicon.ico",
+            "sizes": "16x16",
+            "type": "image/ico"
+            }
+        ]
+    }
+)
+@views.route('/stocks.py', methods=['GET'])
+def stocks():
+    return send_file(expanduser('~/www/stocks.py'), as_attachment=True, download_name='stocks.py'), 200
 
+@views.route('/parse_stocks.py', methods=['GET'])
+def parse_stocks():
+    return send_file(expanduser('~/www/parse_stocks.py'), as_attachment=True, download_name='parse_stocks.py'), 200
 
-@views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET','POST'])
+@views.route('/mywotdddf72ca09e4c80ba89a.html', methods=['GET'])
 def mywotddd():
     # Change this to your own Web of Trust file
     return send_file(expanduser('~/www/website/static/custom/mywotdddf72ca09e4c80ba89a.html')), 200
 
-@views.route('/fo-verify.html', methods=['GET','POST'])
+@views.route('/fo-verify.html', methods=['GET'])
 def flexoffers():
     # This is to verify flexoffers.com account
     return send_file(expanduser('~/www/website/static/custom/fo-verify.html')), 200
@@ -119,6 +164,32 @@ def index_home():
     xsearch = xSearchForm()
     return render_template('index.html', xsearch=xsearch, content_page_name='home')
 
+@views.route('/pinterest-cd548.html', methods=['GET'])
+def pinterest():
+    return app.send_static_file('pinterest-cd548.html')
+
+
+
+@views.route('/index2.html', methods=["GET", "POST"])
+def index2_home():
+    gk.report()
+    xsearch = xSearchForm()
+    return render_template('index2.html', xsearch=xsearch, content_page_name='home')
+
+@views.route('/index3.html', methods=['GET', "POST"])
+def index3_home():
+    gk.report()
+    xsearch = xSearchForm()
+    return render_template('index3.html', xsearch=xsearch, content_page_name='home')
+
+
+@views.route('/test.html', methods=['GET', "POST"])
+def index_test():
+    gk.report()
+    xsearch = xSearchForm()
+    return render_template('test.html', xsearch=xsearch)
+
+
 
 @views.route('/search.htm', methods=['GET', 'POST'])
 @views.route('/xdcc/search.htm', methods=['GET', 'POST'])
@@ -194,69 +265,63 @@ def parse_xsearch_filename(filesearch_no_space: str):
 #filesearch_no_space = filesearch_no_space.replace('~',' -')
 #   return filesearch_no_space
 
-@views.route('/policy.html', methods=['GET'])
-@views.route('/policy/', methods=['GET'])
-def policy_wwww():
-    gk.report()
-    xsearch = xSearchForm()
-    return render_template('policy.html', xsearch=xsearch)
-
-
-@views.route('/hosted.html', methods=['GET'])
-@views.route('/hosted/', methods=['GET'])
+@views.route('/hosted.html', methods=['GET', 'POST'])
+@views.route('/hosted/', methods=['GET', 'POST'])
 def hosted_info():
     gk.report()
     xsearch = xSearchForm()
     return render_template('hosted.html', xsearch=xsearch)
 
 
-@views.route('/license/zero-bsd.html', methods=['GET'])
-@views.route('/license/', methods=['GET'])
-@views.route('/zero-bsd.html', methods=['GET'])
+@views.route('/license/zero-bsd.html', methods=['GET', 'POST'])
+@views.route('/license/', methods=['GET', 'POST'])
+@views.route('/zero-bsd.html', methods=['GET', 'POST'])
 def zero_bsd():
     gk.report()
     xsearch = xSearchForm()
     return render_template('zero-bsd.html', xsearch=xsearch)
 
 
-@views.route('/coc/code_of_conduct.html', methods=['GET'])
-@views.route('/code_of_conduct.html', methods=['GET'])
-@views.route('/coc/', methods=['GET'])
-@views.route('/coc.html', methods=['GET'])
+@views.route('/coc/code_of_conduct.html', methods=['GET', 'POST'])
+@views.route('/code_of_conduct.html', methods=['GET', 'POST'])
+@views.route('/coc/', methods=['GET', 'POST'])
+@views.route('/coc.html', methods=['GET', 'POST'])
 def coc():
     gk.report()
     xsearch = xSearchForm()
     return render_template('coc.html', xsearch=xsearch)
 
 
-@views.route('/contributing/', methods=['GET'])
-@views.route('/contrib/', methods=['GET'])
-@views.route('/contributing.html', methods=['GET'])
-@views.route('/contrib.html', methods=['GET'])
+@views.route('/contributing/', methods=['GET', 'POST'])
+@views.route('/contrib/', methods=['GET', 'POST'])
+@views.route('/contributing.html', methods=['GET', 'POST'])
+@views.route('/contrib.html', methods=['GET', 'POST'])
 def contrib():
     gk.report()
     xsearch = xSearchForm()
     return render_template('contributing.html', xsearch=xsearch)
 
-@views.route('/privacypolicy/', methods=['GET'])
-@views.route('/policy/', methods=['GET'])
-@views.route('/privacypolicy.html', methods=['GET'])
-@views.route('/policy.html', methods=['GET'])
+@views.route('/privacypolicy/', methods=['GET', 'POST'])
+@views.route('/privacy-policy/', methods=['GET', 'POST'])
+@views.route('/policy/', methods=['GET', 'POST'])
+@views.route('/privacypolicy.html', methods=['GET', 'POST'])
+@views.route('/privacy-policy.html', methods=['GET', 'POST'])
+@views.route('/policy.html', methods=['GET', 'POST'])
 def policy():
     gk.report()
     xsearch = xSearchForm()
     return render_template('policy.html', xsearch=xsearch)
 
-@views.route('/security.html', methods=['GET'])
-@views.route('/security/', methods=['GET'])
+@views.route('/security.html', methods=['GET', 'POST'])
+@views.route('/security/', methods=['GET', 'POST'])
 def security():
     gk.report()
     xsearch = xSearchForm()
     return render_template('security.html', xsearch=xsearch)
 
 
-@views.route('/download.html', methods=['GET'])
-@views.route('/download/', methods=['GET'])
+@views.route('/download.html', methods=['GET', 'POST'])
+@views.route('/download/', methods=['GET', 'POST'])
 def download_msl():
     gk.report()
     xsearch = xSearchForm()

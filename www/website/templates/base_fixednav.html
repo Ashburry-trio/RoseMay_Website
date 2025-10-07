@@ -1,57 +1,78 @@
-{% set url = "https://www.MyProxyIP.com" %}
-{% set longurl = "https://www.MyProxyIP.com" %}
+{% set url = "http://www.MyProxyIP.com" %}
+{% set longurl = "http://www.MyProxyIP.com" %}
 {% set shorturl = "MyProxyIP.com" %}
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
   <head>
+
+<meta http-equiv="Content-Security-Policy" content="
+font-src 'self' cdn.jsdelivr.net data:;
+img-src 'self' cdn.jsdelivr.net jigsaw.w3.org static.mywot.com;
+script-src-elem 'self' static.mywot.com cdn.jsdelivr.net 'unsafe-inline';
+script-src 'self' static.mywot.com cdn.jsdelivr.net 'unsafe-inline';
+style-src-elem 'self' cdn.jsdelivr.net 'unsafe-inline';
+style-src 'self' cdn.jsdelivr.net 'unsafe-inline';
+default-src 'self';
+">
+<!-- Pinterest Tag -->
+<script>
+!function(e){if(!window.pintrk){window.pintrk = function () {
+window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
+  n=window.pintrk;n.queue=[],n.version="3.0";var
+  t=document.createElement("script");t.async=!0,t.src=e;var
+  r=document.getElementsByTagName("script")[0];
+  r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+pintrk('load', '2612657786017', {em: '<user_email_address>'});
+pintrk('page');
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt=""
+  src="https://ct.pinterest.com/v3/?event=init&tid=2612657786017&pd[em]=<hashed_email_address>&noscript=1" />
+</noscript>
+<!-- end Pinterest Tag -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <script async src='https://static.mywot.com/website_owners_badges/websiteOwnersBadge.js'></script>
     <meta name="fo-verify" content="acb4d738-a57e-4b9f-a774-46baeaf0b31a" />
-    <meta name="wot-verification" content="dddf72ca09e4c80ba89a"/>
+    <meta name="wot-verification" content="65788f5dad6eaf46033a"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{% block desc %}Where can I get a proxy server list for IRC clients? Proxy server/vhost list for IRC clients, click/tap here.{% endblock desc %}">
-    <meta name="author" content="Ashburry and Bootstrap contributors">
-    <title>{% block title %}PyNet Converge mSL script named Bauderr for Trio-ircproxy.py{% endblock title %}</title>
-    <link rel="canonical" href="https://www.myproxyip.com/">
-    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="author" content="Ashburry and contributors">
+    <title>{% block title %}PyNet Converge mSL script named Bauderr for Trio-IRCproxy.py{% endblock title %}</title>
+
+    <link rel="canonical" href="https://ashburry.pythonanywhere.com/">
+    <link rel="manifest" href="/site.webmanifest">
+
     <style>
 	form i {
 		margin-left: -30px;
 		cursor: pointer;
 	}
 	</style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"> -->
-    <link rel="mask-icon" href="{{ url_for('static', filename='safari-pinned-tab.svg') }}" color="#DAA520">
-    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='mstile-144x144.ico') }}">
-    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='android-chrome-192x192.ico') }}">
-    <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='android-chrome-512x512.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.ico') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-96x96.ico') }}" type="image/x-icon">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="mask-icon" href="{{ url_for('static', filename='custom/brand/safari-pinned-tab.svg') }}" color="#DAA520">
+    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='custom/brand/mstile-144x144.ico') }}">
+    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='custom/brand/android-chrome-192x192.ico') }}">
+    <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='custom/brand/android-chrome-512x512.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='custom/brand/apple-touch-icon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='custom/brand/favicon-96x96.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='custom/brand/favicon-96x96.ico') }}" type="image/x-icon">
   <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
   <meta property="og:title" content="PyNet Converge script named Bauderr for Trio-Ircproxy.py">
   <meta property="og:description" content="Where can I get a proxy server list for IRC? Proxy server/vhost list for IRC clients, click here/tap.">
   <meta name="theme-color" content="#DAA520">
   {% block head %}
   {% endblock head %}
-  <script src="{{ url_for('static', filename='assets/js/color-modes.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
     <style>
-
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
         -webkit-user-select: none;
         -moz-user-select: none;
         user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
       }
 
       .b-example-divider {
@@ -112,6 +133,7 @@
         z-index: 1500;
       }
    main > .container {
+    min-width: 300px;
     padding: 60px 15px 0;
 
    }
@@ -124,11 +146,6 @@
 {% block css %}
 {% endblock css %}
     </style>
-
-
-    <!-- Custom styles for this template
-    <link href="{{ url_for('static', filename='sticky-footer-navbar.css') }}" rel="stylesheet">
-    -->
 
   </head>
   <body class="d-flex flex-column h-100">
@@ -186,13 +203,15 @@
 
 <header>
   <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-      <a href="/index.html" class="navbar-brand" style="color: #DAA520;">PyNet Converge</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Bauderr</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <svg viewBox="0 0 448 512" width="20" title="Toggle navigation bars">
+    <path fill="white" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" />
+</svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
 {%- if content_page_name == 'home' -%}
   <li class="nav-item">
@@ -203,7 +222,7 @@
     <a class="nav-link" href="/" title="Visit the home page">home</a>
   </li>
 {%- endif -%}
-{%- if content_page_name == 'user-pages' -%}
+{%- if content_page_name == 'userpages' -%}
  <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="/user/nobody.html" title="Create your own web-space for your nicknames and rooms">user-pages*</a>
  </li>
@@ -281,7 +300,7 @@
   </li>
 {%- endif -%}
 </ul>
-<form method="POST" action="/xdcc/search.html">
+<form method="POST" action="https://ashburry.pythonanywhere.com/xdcc/search.html">
     {{ xsearch.hidden_tag() }}
 <div class="form-group row">
     <div class="col-sm-8">
@@ -298,28 +317,28 @@
   </nav>
 </header>
 <!-- Begin page content -->
-<main class="flex-shrink-0" style="margin-top:35px;padding-left:20px;padding-top:8px;padding-right:20px;">
-{% with msg = get_flashed_messages(with_categories=true) %}
-{% if msg %}
-{% for category, message in msg %}
-{% if category == 'error' %}
+<main class="flex-shrink-0;" style="margin-top:35px;padding-left:20px;padding-top:8px;padding-right:20px;">
+{%- with msg = get_flashed_messages(with_categories=true) -%}
+{%- if msg -%}
+{%- for category, message in msg -%}
+{%- if category == 'error' -%}
 <div class="alert alert-danger alert-dismissible fade show" style="top:50px;" role="alert">
   <strong>{{ message[0:110]|safe }}</strong>
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-{% else %}
+{%- else -%}
 <div class="alert alert-success alert-dismissible fade show" style="top:50px;" role="alert">
   <strong>{{ message[0:110]|safe }}</strong>
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-{% endif %}
-{% endfor %}
-{% endif %}
-{% endwith %}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endwith -%}
 <div>
 <!-- Copy and paste this code into your website -->
 <div style="float: left;margin-right:10px;">
-<a id='wot-badge1' class='wot-badge' href='https://www.mywot.com/scorecard/myproxyip.com?wot_badge=1_white' target='_blank' >
+<a id='wot-badge1' class='wot-badge' href='https://www.mywot.com/scorecard/ashburry.pythonanywhere.com?wot_badge=1_white' target='_blank' >
     <div class='wot-logo'></div>
     <div class='wot-shield-container'>
         <div class='wot-shield'></div>
@@ -337,22 +356,34 @@
 </p>
 </div>
 <img src="{{ url_for('static', filename='images/irc-image-100.jpg') }}" alt="IRC dimension" style="margin-right:20px;float:left">
-<p><h1>{%- block h1 -%}<i>Welcome to</i><br>{{ shorturl }}{%- endblock h1 -%}</h1>
-
-
-<p class="lead">{%- block lead -%}Your Gateway to a World of Exciting Python Applications</p>{%- endblock lead -%}
-{% block content %}
-{% endblock content %}
+<h1>{%- block h1 -%}<i>Welcome to</i><br>{{ shorturl }}{%- endblock h1 -%}</h1>
+<p class="lead">{%- block lead -%}Your Gateway to a World of Exciting Python Applications{%- endblock lead -%}</p>
+{%- block content -%}
+{%- endblock content -%}
 </div>
 </main>
 
 <footer class="footer mt-auto py-3 bg-body-tertiary">
   <div class="container">
-    <span class="text-body-secondary">Copyright: <a href="/zero-bsd.html" title="Copyright is to the zero-bsd license">zero-bsd</a> &nbsp; &nbsp; Addr: #403-9810 Foxglove Drive, Surrey, BC, Canada. V3T0P5 &nbsp; &nbsp; Phone: +[1]-Not in Service &nbsp; &nbsp; Email: <a href="mailto:Ashburry-ceo@MyProxyIP.com" title="Send me an email">Ashburry-ceo@MyProxyIP.com</a></span>
-  </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<!-- <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> -->
-<script async src='https://static.mywot.com/website_owners_badges/websiteOwnersBadge.js'></script>
-    </body>
+<script type="module" src="/static/js/jquery-3.6.0.min.js"></script>
+<script type="module" src="/static/js/color-modes.js"></script>
+<script type="module" src="/static/js/index.esm.js"></script>
+<script type="module" src="/static/js/websiteOwnersBadge.js"></script>
+<script type="module" src="/static/js/src/alert.js"></script>
+<script type="module" src="/static/js/src/base-component.js"></script>
+<script type="module" src="/static/js/src/button.js"></script>
+<script type="module" src="/static/js/src/carousel.js"></script>
+<script type="module" src="/static/js/src/collapse.js"></script>
+<script type="module" src="/static/js/src/dropdown.js"></script>
+<script type="module" src="/static/js/src/modal.js"></script>
+<script type="module" src="/static/js/src/offcanvas.js"></script>
+<script type="module" src="/static/js/src/popover.js"></script>
+<script type="module" src="/static/js/src/script.js"></script>
+<script type="module" src="/static/js/src/scrollspy.js"></script>
+<script type="module" src="/static/js/src/tab.js"></script>
+<script type="module" src="/static/js/src/toast.js"></script>
+<script type="module" src="/static/js/src/tooltip.js"></script>
+</body>
+
 </html>

@@ -521,24 +521,24 @@ def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: 
     return make_response(render_template('register.html', xsearc=xsearch), 401)
 
 
-custom_badwords = ['fuskk','fukkk','sexx','sexxx','loli','l0li','l@li',
+custom_badwords = ['fuck','fuckk','fukkk','sexx','sexxx','loli','l0li','l@li',
     'penis','p3n1s','p3nls','p3nis','fukyou','fuckyou','fucku','l4li'
     'fukkyou','fukku','fukkku','fukkkyou','fukkme','fukkkme','fukkkm3',
     'fuckme','fuckm3','fukm3','fukkm3','kkk','focker','f0cker','f@cker',
     'fukkker','fukkk3r','f@kkk3r','f0kkker','suck dick','sukkk dick',
     'sukkk my dick','suck my dick','sukkk m3 dick','suk m3 dick','suk me d1ck',
     'suk m3 d1ck','suk m3 dlck','sukkk m3 dlck','suck m3 dlck','suky my dick',
-    'suck my dickkk','nud3pics','nud3plcs','nudepics','nudeplcs','nudep1cs',
+    'suck my dickkk','suck my dick','nud3pics','nud3plcs','nudepics','nudeplcs','nudep1cs',
     'nud3pic','nud3plc','nud3p1c','nudepic','newdpics','n3wdpics','n3wdplc',
     'n3wdp1c','newdplc','newdp1c','newdpic', 'n3wd pics', 'newd pics',
-    'newd p1cs','n3wd p1cs','newd plcs','n3wd plcs','n3wd pic', 'n3wd plc',
+    'newd p1cs','n3wd p1cs','newd plcs','n3wd plcs','shit',sh1t','shlt','n3wd pic', 'n3wd plc',
     'n3wd p1c', 'nude pic','nud3 pic', 'nude p1c','nude plc','nude pics',
     'nud3 pics', 'nud3 plcs','nud3 p1cs','lolicandy','l0licandy','l@licandy',
     'lolic4ndy','l0lic4ndy','l@lic4ndy','nudeme','nudeself','nud3',
     'k1ukkks','kkk1uks','k1ux','k1uxk','kluks','nud3s3lf','nud3self', 'ccunt',
     'kunt','kkunt','klukkks','klux','kkk','lolic@ndy','l0lic@ndy',
     'sucky my dick', 'your dick', 'ur dick', 'ur a dick', 'ura dick',
-    'your a dick', 'u a dick', 'ua dick', 'uri dick', 'ur i dick','white power',
+    'your a dick', 'u a dick', 'ua dick', 'c0ck', 'cock','white power',
     'nigger','niggers','n1gger','n1ggers','nlgger','nlggers','black power',
     'white supremecy','white superemecy','white supremacy','white superemacy']
 
