@@ -6,6 +6,6 @@ from flask import session
 from os import path
 navfix = Blueprint('navfix', __name__, template_folder='templates', static_folder='static')
 
-from flask_app import gk
+# from flask_app import gk
 
 

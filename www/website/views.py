@@ -7,7 +7,7 @@ from flask_wtf.csrf import CSRFError
 from werkzeug.exceptions import TooManyRequests
 from os.path import expanduser
 from markupsafe import escape
-from flask_app import gk, app
+from flask_app import app
 from website import xSearchForm
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
@@ -70,7 +70,7 @@ def flexoffers():
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('csrf_error.html', xsearch=xsearch), 400
 
@@ -80,7 +80,7 @@ def handle_rate_limit_exceeded(e):
 
 @app.errorhandler(404)
 def no_found(e):
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('404.html', xsearch=xsearch), 404
 
@@ -144,9 +144,9 @@ def apple_deveoper_merch():
 @views.route('/WebInterface/', methods=['GET', 'POST'])
 @views.route('/sabnzbd/', methods=['GET', 'POST'])
 @views.route('/sabnzbd/wizard/', methods=['GET', 'POST'])
-@gk.specific(rate_limit_rules=[{'count': 1, 'window': 60,"duration":2400}])
+# @gk.specific(rate_limit_rules=[{'count': 1, 'window': 60,"duration":2400}])
 def well_known_trap():
-    gk.report()
+#    gk.report()
     return make_response(app.send_static_file('banned.txt'), 403)
 
 
@@ -160,7 +160,7 @@ def fixbiome():
 @views.route('/', methods=['GET', "POST"])
 @views.route('/index.html', methods=['GET', "POST"])
 def index_home():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('index.html', xsearch=xsearch, content_page_name='home')
 
@@ -172,20 +172,20 @@ def pinterest():
 
 @views.route('/index2.html', methods=["GET", "POST"])
 def index2_home():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('index2.html', xsearch=xsearch, content_page_name='home')
 
 @views.route('/index3.html', methods=['GET', "POST"])
 def index3_home():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('index3.html', xsearch=xsearch, content_page_name='home')
 
 
 @views.route('/test.html', methods=['GET', "POST"])
 def index_test():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('test.html', xsearch=xsearch)
 
@@ -268,7 +268,7 @@ def parse_xsearch_filename(filesearch_no_space: str):
 @views.route('/hosted.html', methods=['GET', 'POST'])
 @views.route('/hosted/', methods=['GET', 'POST'])
 def hosted_info():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('hosted.html', xsearch=xsearch)
 
@@ -277,7 +277,7 @@ def hosted_info():
 @views.route('/license/', methods=['GET', 'POST'])
 @views.route('/zero-bsd.html', methods=['GET', 'POST'])
 def zero_bsd():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('zero-bsd.html', xsearch=xsearch)
 
@@ -287,7 +287,7 @@ def zero_bsd():
 @views.route('/coc/', methods=['GET', 'POST'])
 @views.route('/coc.html', methods=['GET', 'POST'])
 def coc():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('coc.html', xsearch=xsearch)
 
@@ -297,7 +297,7 @@ def coc():
 @views.route('/contributing.html', methods=['GET', 'POST'])
 @views.route('/contrib.html', methods=['GET', 'POST'])
 def contrib():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('contributing.html', xsearch=xsearch)
 
@@ -308,14 +308,14 @@ def contrib():
 @views.route('/privacy-policy.html', methods=['GET', 'POST'])
 @views.route('/policy.html', methods=['GET', 'POST'])
 def policy():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('policy.html', xsearch=xsearch)
 
 @views.route('/security.html', methods=['GET', 'POST'])
 @views.route('/security/', methods=['GET', 'POST'])
 def security():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('security.html', xsearch=xsearch)
 
@@ -323,7 +323,7 @@ def security():
 @views.route('/download.html', methods=['GET', 'POST'])
 @views.route('/download/', methods=['GET', 'POST'])
 def download_msl():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     return render_template('download.html', content_page_name='download', xsearch=xsearch)
 

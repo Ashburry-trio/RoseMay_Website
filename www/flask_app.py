@@ -6,7 +6,7 @@ from __future__ import annotations
 from datetime import timedelta
 from flask import Flask, request, session
 from flask_session import Session
-from flask_gatekeeper import GateKeeper
+# from flask_gatekeeper import GateKeeper
 from os.path import expanduser
 import os
 import sys
@@ -87,7 +87,7 @@ def set_csp_headers(response):
     )
     return response
 
-app.config['SERVER_NAME'] = 'ashburry.pythonanywhere.com'
+app.config['SERVER_NAME'] = 'www.myproxyip.com'
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_FILE_DIR"] = expanduser(os.path.join('~','flask_session_cache'))
 app.config["SESSION_TYPE"] = "filesystem"     #  or file
@@ -95,9 +95,9 @@ app.config['SESSION_FILE_THRESHOLD'] = 250
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=200)
 sess = Session()
 sess.init_app(app)
-gk = GateKeeper(app, ban_rule={"count":25, "window":12, "duration":220}, \
-        rate_limit_rules=[{"count":30, "window":12, "duration":245}, \
-                        {"count":20, "window":9, "duration":235}])
+# gk = GateKeeper(app, ban_rule={"count":25, "window":12, "duration":220}, \
+#       rate_limit_rules=[{"count":30, "window":12, "duration":245}, \
+#                        {"count":20, "window":9, "duration":235}])
 
 
 from website.views import views

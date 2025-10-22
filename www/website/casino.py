@@ -15,7 +15,7 @@ from website import load_casino_user, save_casino_app, load_casino_app, xSearchF
 from .date_func import update_today
 from decimal import Decimal
 casino = Blueprint('casino', __name__, template_folder='templates', static_folder='static')
-from flask_app import gk
+# from flask_app import gk
 
 stash: list[str, str] = ['$0.00 CAD', '0.00']
 stash_load: list[int] = [0]
@@ -47,7 +47,7 @@ def apply_stash(amount: str):
 @casino.route('/game/index.html', methods=['GET', 'POST'])
 @casino.route('/games/index.html', methods=['GET', 'POST'])
 def casino_home():
-    gk.report()
+#    gk.report()
     update_today()
     load_stash()
     casino_user = load_casino_user()
@@ -68,7 +68,7 @@ def casino_home():
 @casino.route('/casino/prizes/', methods=['GET'])
 @casino.route('/casino/prizes/index.html', methods=['GET'])
 def peak_prizes():
-    gk.report()
+#    gk.report()
     try:
         xsearch = xSearchForm()
         load_stash()
@@ -94,7 +94,7 @@ def peak_prizes():
 @casino.route('/casino/locked/', methods=['GET'])
 @casino.route('/casino/locked/games.html', methods=['GET'])
 def lockedASAD_games():
-    gk.report()
+#    gk.report()
     load_stash()
     update_today()
     casino_user = load_casino_user()
@@ -124,7 +124,7 @@ def lockedASAD_games():
 @casino.route('/casino/bank/', methods=['GET'])
 @casino.route('/casino/banker/', methods=['GET'])
 def casino_banker():
-    gk.report()
+#    gk.report()
     try:
         xsearch = xSearchForm()
         load_stash()
