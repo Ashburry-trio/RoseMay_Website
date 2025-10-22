@@ -3,7 +3,7 @@ from flask import (
     )
 from flask import redirect, session
 from website import user_page_exists, get_user_pages
-from flask_app import gk
+# from flask_app import gk
 from os import mkdir
 #from .reload import *
 from website import load_users_ini, users, xSearchForm
@@ -12,7 +12,7 @@ users_pages = Blueprint('users_pages', __name__, template_folder='templates', st
 @users_pages.route('/user/<user>/admin.html', methods=['GET'])
 @users_pages.route('/user/<user>/admin/', methods=['GET'])
 def user_admin_page(user):
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     users = load_users_ini()
     user = users['username'].lower()
@@ -31,7 +31,7 @@ def user_admin_page(user):
 @users_pages.route('/user/<user>/', methods=['GET'])
 @users_pages.route('/user/<user>/index.html', methods=['GET'])
 def user_index_pages(user):
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     while '.' in user:
         user = user.replace('.','')
@@ -54,7 +54,7 @@ def user_index_pages(user):
 @users_pages.route('/user/nobody.html', methods=['GET'])
 @users_pages.route('/user/', methods=['GET'])
 def no_user_page():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     has_page: bool = None
     user_up: str = None
@@ -69,7 +69,7 @@ def no_user_page():
 @users_pages.route('/create.html', methods=['GET'])
 @users_pages.route('/create/', methods=['GET'])
 def user_create_page():
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     has_page: bool
     # content_page_name='user-pages'

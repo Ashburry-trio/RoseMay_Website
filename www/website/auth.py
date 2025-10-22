@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, make_response
 from flask import request, flash, redirect
 #from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
-from flask_app import gk, limiter
+from flask_app import limiter
 from os.path import expanduser
 from os import path
 from time import time as ctime
@@ -21,7 +21,6 @@ auth = Blueprint('auth', __name__, template_folder='templates', static_folder='s
 @auth.route("/script.html", methods=["POST", "GET"])
 @auth.route("/scripts.html", methods=["POST", "GET"])
 def proxy_scripts():
-    gk.report()
     xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] is True:
             return render_template(path.join('scripts', 'scripts.html'), xsearch=xsearch)
@@ -36,7 +35,6 @@ def proxy_scripts():
 @auth.route("/proxy.html", methods=["POST", "GET"])
 @auth.route("/proxies.html", methods=["POST", "GET"])
 def irc_proxies():
-    gk.report()
     xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] is True:
         proxy_list: dict[str, str]
@@ -47,7 +45,7 @@ def irc_proxies():
         else:
             proxy_list = dict()
             proxy_list['proxy'] = {}
-            proxy_list['proxy']['0.0.0.1'] = 'soem,thi9ng new'
+            proxy_list['proxy']['0.0.0.1'] = 'some,thi9ng new'
             users = dict()
             users['passcode'] = {}
             users['passcode']['secret'] = 'hell_no-This_does_not_work'
@@ -59,7 +57,6 @@ def irc_proxies():
 @auth.route("/login.html", methods=["POST", "GET"])
 @limiter.limit("13 per minute")
 def login():
-    gk.report()
     xsearch = xSearchForm()
     try:
         pass
@@ -88,7 +85,6 @@ def login():
 @auth.route('/logout/', methods=['GET'])
 @auth.route('/logout.html', methods=['GET'])
 def logout():
-    gk.report()
     if ('logged_in' in session.keys() and session['logged_in'] is not True) or 'logged_in' not in session.keys():
         flash("You ARE NOT logged-in.", category='error')
     else:
@@ -237,7 +233,6 @@ def get_ip_checked(req):
 @auth.route('/register.html', methods=['GET', 'POST'])
 @limiter.limit("16 per minute")
 def register():
-    gk.report()
     xsearch=xSearchForm()
 #    try:
 #        client_ip = get_ip_checked(request)
@@ -287,7 +282,6 @@ def question_form():
         answered, however they are processed with 'def answer_form()'
         via 'answered.html'
     """
-    gk.report()
     xsearch=xSearchForm()
     if request.method == 'POST':
         session['logged_in'] = False

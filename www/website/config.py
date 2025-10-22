@@ -2,7 +2,7 @@ from flask import (
     Blueprint, render_template, make_response, Response, jsonify, redirect, send_file, url_for
     )
 from flask import request, flash, redirect, session
-from flask_app import gk, limiter
+from flask_app import limiter
 from os.path import expanduser
 from os import path
 from time import time as ctime
@@ -83,7 +83,7 @@ def config_server():
     identd response, and email.
 
     """
-    gk.report()
+#    gk.report()
     xsearch = xSearchForm()
     if 'logged_in' in session.keys() and session['logged_in'] == True:
         pass
