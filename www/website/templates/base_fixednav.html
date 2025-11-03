@@ -4,7 +4,15 @@
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
   <head>
-
+  <style>
+    input {
+      padding: 8px;
+      font-size: 16px;
+      width: 250px;
+      margin-bottom: 10px;
+      display: block;
+    }
+  </style>
 <meta http-equiv="Content-Security-Policy" content="
 font-src 'self' cdn.jsdelivr.net data:;
 img-src 'self' cdn.jsdelivr.net jigsaw.w3.org static.mywot.com;
@@ -52,14 +60,22 @@ pintrk('page');
 	</style>
 
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="mask-icon" href="{{ url_for('static', filename='custom/brand/safari-pinned-tab.svg') }}" color="#DAA520">
-    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='custom/brand/mstile-144x144.ico') }}">
-    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='custom/brand/android-chrome-192x192.ico') }}">
-    <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='custom/brand/android-chrome-512x512.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='custom/brand/apple-touch-icon.ico') }}">
-    <link rel="icon" href="{{ url_for('static', filename='custom/brand/favicon-96x96.ico') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='custom/brand/favicon-96x96.ico') }}" type="image/x-icon">
-  <meta property="og:image" content="{{ url_for('static', filename='repository-open-graph-template.ico') }}">
+<!-- Standard favicon for browsers -->
+<link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='custom/brand/favicon-96x96.png') }}?v=2">
+<!-- Android Chrome -->
+<link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='custom/brand/android-chrome-192x192.png') }}">
+<link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='custom/brand/android-chrome-512x512.png') }}">
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='custom/brand/apple-touch-icon.png') }}">
+<!-- Safari Pinned Tab -->
+<link rel="mask-icon" href="{{ url_for('static', filename='custom/brand/safari-pinned-tab.png') }}" color="#DAA520">
+<!-- Windows Tile -->
+<meta name="msapplication-TileImage" content="{{ url_for('static', filename='custom/brand/mstile-144x144.png') }}">
+<!-- PWA Manifest -->
+<link rel="manifest" href="/site.webmanifest">
+<!-- Open Graph Image for Social Sharing -->
+<meta property="og:image" content="{{ url_for('static', filename='custom/brand/repository-open-graph-template.png') }}">
+
   <meta property="og:title" content="PyNet Converge script named Bauderr for Trio-Ircproxy.py">
   <meta property="og:description" content="Where can I get a proxy server list for IRC? Proxy server/vhost list for IRC clients, click here/tap.">
   <meta name="theme-color" content="#DAA520">
