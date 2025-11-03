@@ -6,7 +6,6 @@
 *ipreg.ini
 .cache/*
 .config/*
-.git/*
 .ipython/*
 .local/*
 .nano/*
