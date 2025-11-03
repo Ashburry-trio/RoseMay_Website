@@ -11,6 +11,10 @@ from flask_app import app
 from website import xSearchForm
 views = Blueprint('views', __name__, template_folder='templates', static_folder='static')
 
+@app.route("/test1")
+def login():
+    return render_template("test.html")
+
 @app.route('/site.webmanifest')
 def manifest():
     return jsonify({
@@ -20,32 +24,42 @@ def manifest():
         "display": "browser",
         "background_color": "#DAA520",
         "theme_color": "#DAA520",
-        "description": "An mSL script for mIRC ($20) and Adiirc (FREE) chat clients which will connect to a http/1.0 CONNECT proxy-server (hosted here) for awesome and fast functionality.",
+        "description": "An mSL script for mIRC ($20) and Adiirc (FREE) chat clients which will connect to a http/1.0 CONNECT proxy-server (hosted by me) for awesome and fast functionality.",
         "icons": [
             {
-            "src": "/static/custom/brand/android-chrome-192x192.ico",
+            "src": "/static/custom/brand/android-chrome-192x192.png",
             "sizes": "192x192",
-            "type": "image/ico"
+            "type": "image/png"
             },
             {
-            "src": "/static/custom/brand/android-chrome-512x512.ico",
+            "src": "/static/custom/brand/android-chrome-512x512.png",
             "sizes": "512x512",
-            "type": "image/ico"
+            "type": "image/png"
             },
             {
-            "src": "/static/custom/brand/apple-touch-icon.ico",
+            "src": "/static/custom/brand/apple-touch-icon.png",
             "sizes": "180x180",
-            "type": "image/ico"
+            "type": "image/png"
             },
             {
-            "src": "/static/custom/brand/mstile-144x144.ico",
+            "src": "/static/custom/brand/mstile-144x144.png",
             "sizes": "144x144",
-            "type": "image/ico"
+            "type": "image/png"
             },
             {
-            "src": "/static/custom/brand/favicon.ico",
+            "src": "/static/custom/brand/favicon.png",
             "sizes": "16x16",
-            "type": "image/ico"
+            "type": "image/png"
+            },
+            {
+            "src": "/static/custom/brand/repository-open-graph-template.png",
+            "sizes": "16x16",
+            "type": "image/png"
+            },
+            {
+            "src": "/static/custom/brand/safari-pinned-tab.png",
+            "sizes": "16x16",
+            "type": "image/png"
             }
         ]
     }
