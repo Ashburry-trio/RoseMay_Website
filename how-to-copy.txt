@@ -1,4 +1,4 @@
-Below I show you how to copy the RoseMay_Website/* folder 
+Below I show you how to copy the RoseMay_Website/* folder
 to the home directory where it can be used by the Flask
 webserver. It is important you create the filesystem exactly
 as-is when created by myself on my PA filesystem.
@@ -19,11 +19,16 @@ Once it opens and loads, type the following commands:
 cd ~/
 cp -rf ~/RoseMay_Website/* ~/*
 
+Or just this:
+
+chmod +x install.sh
+./install.sh
+
 That is all.
 
 After this you need to edit your /var/www/website_com.wsgi file
 then edit your "/www/flask_app.py" file and change to:
-    
+
     config['SERVER_NAME'] = 'username.pythonanywhere.com'
 
 Change the username.pythonanywhere,com with the www.website.com of your webserver.
@@ -31,8 +36,14 @@ Change the username.pythonanywhere,com with the www.website.com of your webserve
 Under the WEB tab where the STATIC section is add the following two locations:
 
     /static/    ~/www/website/static/
-    /css/       ~/www/website/static/css
-
+    /css/       ~/www/website/static/css/
+    /img/       ~/www/website/static/images/
 This is because sometimes I may use /css/ for the css files instead of url_for('static','css/normal_index.css')
 instead I can just put "/css/normal_index.css" or "/static/css/normal_index.css"
 
+Don't forget to:
+
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+o End of Document
