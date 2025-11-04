@@ -11,13 +11,13 @@ from time import time
 def random_string(length):
     return secrets.token_urlsafe(length)
 
-config = ConfigParser()
-config.read('~/secrets.ini')
+config: ConfigParser[str,str,str] = ConfigParser()
+config.read('~/www/app/secrets.ini')
 if not config.has_section('email') or not 'from' in config['email'].keys() \
         or not 'smtp_server' in config['email'].keys() or not 'password' in \
                                                 config['email'].keys():
     config['email'] = {}
-    config['email']['from'] = 'from email'
+    config['email']['from'] = 'from@email.eml'
     config['email']['password'] = 'SECreT PasSWOrd'
     config['email']['smtp_server'] = 'smtp.privateemail.com'
     raise BaseException('Missing email configuration in www/app/secrets.ini')
@@ -34,16 +34,18 @@ message["From"] = sender_email
 def send_email(receiver_email: str, username: str) -> None:
     message["To"] = receiver_email
     confirm = ConfigParser()
-    confirm.read('confirm.ini')
+    confirm.read('~/www/app/confirm.ini')
     if not confirm.has_section('email'):
         confirm['email'] = {}
     if receiver_email in confirm['email'].keys() and confirm['email'][receiver_email] is not None:
         split_text = confirm['email'][receiver_email].split(' ')
-        if time() - split_text[0] < 60 * 10:
+        if time() - split_text[0] < 60 * 15:
             return
     randomstring = random_string(32)
     url = "https://www.MyProxyIP.com/confirm_email?email=" + randomstring
     confirm['email'][receiver_email] = str(int(time())) + ' ' + randomstring
+    with open('~/www/app/confirm.ini', 'w') as fp:
+        confirm.write(fp, space_around_delimiters = True)
     # Create the plain-text and HTML version of your message
     email_body = """\
     <html>
