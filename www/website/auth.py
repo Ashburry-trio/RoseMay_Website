@@ -161,7 +161,7 @@ def ip_reg_check(client_ip) -> ConfigParser:
             pass
     else:
         return
-    ip_info: ConfigParser = ConfigParser()
+    ip_info: ConfigParser[str,str] = ConfigParser()
     ip_file: str = ip_to_hash_filename(client_ip)   # Hashes the IP for filename
     try:
         ip_info.read(ip_file)
@@ -180,7 +180,6 @@ def ip_reg_check(client_ip) -> ConfigParser:
         if ip_info:
             with open(ip_file,'w') as fp:
                 ip_info.write(fp, space_around_delimiters = True)
-            flash('It Worked!! Attacker is: '+ip_info['security']['is_attacker'])
         else:
             pass
     except IP_is_Bad:
@@ -291,7 +290,7 @@ def question_form():
         goodemail = validate_email_or_login(user_email, email = True)
         gooduser: bool | str = validate_email_or_login(username, email = False)
         if not goodemail or not gooduser:
-            flash('<a href="https://simple.wikipedia.org/wiki/Alphanumeric">Alphabetic</a> and <u>digit</u> characters only. Not <b>ones</b> nor <b>zeros</b>.', category='error')
+            flash('<a href="https://simple.wikipedia.org/wiki/Alphanumeric">Alphabetic</a> and <u>digit</u> characters only.', category='error')
             # render forgot.html
         else:
             found_user, found_email, found_q1, found_q2 = fetch_user_by_detail(detail = goodemail)

@@ -47,9 +47,9 @@ pintrk('page');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{% block desc %}Where can I get a proxy server list for IRC clients? Proxy server/vhost list for IRC clients, click/tap here.{% endblock desc %}">
     <meta name="author" content="Ashburry and contributors">
-    <title>{% block title %}PyNet Converge mSL script named Bauderr for Trio-IRCproxy.py{% endblock title %}</title>
+    <title>{% block title %}PyNet Converge mSL script named Bauderr for Trio-IRCproxy.py host{% endblock title %}</title>
 
-    <link rel="canonical" href="https://ashburry.pythonanywhere.com/">
+    <link rel="canonical" href="https://www.myproxyip.com/">
     <link rel="manifest" href="/site.webmanifest">
 
     <style>
@@ -316,7 +316,7 @@ pintrk('page');
   </li>
 {%- endif -%}
 </ul>
-<form method="POST" action="https://ashburry.pythonanywhere.com/xdcc/search.html">
+<form method="POST" action="/xdcc/search.html">
     {{ xsearch.hidden_tag() }}
 <div class="form-group row">
     <div class="col-sm-8">

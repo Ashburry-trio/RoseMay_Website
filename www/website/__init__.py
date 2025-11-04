@@ -15,24 +15,18 @@ from chardet import detect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Length, DataRequired
+from forms import xSearchForm
 
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '..','app')
 
-
-casino_user: ConfigParser[str,str] = ConfigParser()
-casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
 casino_app: ConfigParser[str,str] = ConfigParser()
+casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
+casino_user: ConfigParser[str,str] = ConfigParser()
 casino_last_update: list[int] = [0]
 email_file = path.join(path.expanduser("~"), "website_and_proxy", "email.ini")
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
-
-class xSearchForm(FlaskForm):
-    search = StringField('XDCC Search',
-                         render_kw={"class": "form-control me-2", "placeholder": "XDCC Search", "aria-label": "Search"},
-                         validators=[DataRequired()])
-    search_button = SubmitField('Search', render_kw={"class": "btn btn-outline-success", "type": "submit"})
 
 
 def usable_decode(text: bytes | str) -> str:
@@ -61,11 +55,18 @@ def usable_decode(text: bytes | str) -> str:
 # formerly def checkAlnum()
 # Make sure all letters and numbers are alphanumeric
 def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
+    """Validate email or username strings for anything not allowed
+        vars:
+            :@param word: a text string that can be username or an email
+            :@param email: a bool, if False word is not an email
+            :@returns: list containing the word and a email
+            :rtype: list
+    """
     if ':' in word:
         passwd: str = word.split(':')[1]
         if passwd == 'nopass':
             word = word.split(':')[0] + ':nopass123'
-        if passwd == 'nopass123':
+        if passwd == ':nopass123':
             return False
         del passwd
     passwd: str
@@ -113,9 +114,7 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
             if fnmatch(word,'*@*') and word.count('@') == 1:
                 client_name = word.split('@')[1]
                 if not client_name.isalnum() or len(client_name) > 20 \
-                      or len(client_name) < 2 \
-                      or profanity.contains_profanity(client_name):
-                    return False
+                      or len(client_name) < 2: return False
                 login = word.split('@')[0]
             else:
                 login = word
@@ -129,8 +128,6 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
             return False
         if len(passwd) > 32 or len(passwd) < 8:
             return False
-        if '1' in username or '0' in username:
-                return False
         if not passwd or passwd.startswith('javascript') \
           or passwd.startswith('return') or passwd.startswith('style') \
           or passwd.startswith('script') or '.' in passwd \
@@ -143,7 +140,6 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
        or username.startswith('script') or '.' in username \
        or username.startswith('input') or ':' in username \
        or '@' in username or 'admin' in username \
-       or 'adm1n' in username or 'admln' in username \
        or profanity.contains_profanity(username):
         return False
     for L in word:
@@ -216,9 +212,11 @@ def colourstrip(data_in: str | bytes) -> str:
 
 
 class NoSuchUser(BaseException):
-    pass
+    global users
+    clear_session()
+    users.clear()
 
-def writePassword(secret: str, users: ConfigParser) -> None:
+def writePassword(secret: str, users: ConfigParser[str,str]) -> None:
     users['passcode']['secret'] = secret
     try:
         save_user(users)
@@ -259,7 +257,7 @@ def get_user_pages():
             nicklist = set()
             chanlist = set()
             ass_ini = path.expanduser(path.join('~','www','website','templates','users', udir, net, 'assets.ini'))
-            config_ini = ConfigParser()
+            config_ini: ConfigParser[str,str] = ConfigParser()
             config_ini.read(ass_ini)
             if 'nicks' in config_ini.keys() and 'nicks' in config_ini['nicks'].keys():
                 for nick in config_ini['nicks']['nicks'].split(' '):
@@ -278,7 +276,8 @@ def get_user_pages():
 def user_exists(username: str) -> bool:
     user_low: str = username.lower()
     del username
-    user_low_strip: list[str, bool] = strip_html(user_low)
+    user_low_strip: tuple[str, bool] = strip_html(user_low)
+    del user_low
     if user_low_strip[1]:
         return False
     if isdir(path.join(path.expanduser('~'), 'website_and_proxy', 'users', user_low_strip[0])):
@@ -326,7 +325,7 @@ def save_casino_app():
     casino_last_update[0] = int(secstime())
 
 def load_users_ini(username: str | None = None) -> ConfigParser | None:
-    users: ConfigParser = ConfigParser()
+    users: ConfigParser[str,str] = ConfigParser()
     if username == None:
         if 'username' in session.keys():
             username = session['username']
@@ -386,7 +385,7 @@ def fetch_user_by_detail(detail) -> [bool | str, bool | str, [bool | str, bool |
 
 def load_users_email(username: str | None = None, email: str | None = None) -> [ConfigParser,bool]:
     global email_file
-    users: ConfigParser = ConfigParser()
+    users: ConfigParser[str,str] = ConfigParser()
     if email is None:
         if 'username' in session.keys():
             username = session['username']
@@ -429,14 +428,14 @@ def login_user_post(username: str, password: str):
         else:
             flash("Bad Password for UserName.", category='error')
             return make_response(render_template('login.html', xsearch=xsearch), 401)
-    except (ValueError, KeyError, FileNotFoundError, NoSuchUser) as exp:
+    except (ValueError, KeyError, FileNotFoundError, NoSuchUser):
         flash("Unknown UserName.", category="error")
         return make_response(render_template("login.html", xsearch=xsearch), 401)
 
 
-def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str, q2_a: str, power: str = 'normal'):
+def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str | None , q2_a: str | None, power: str = 'normal'):
     clear_session()
-    users: ConfigParser
+    users: ConfigParser[str,str]
     q1_q = q1_q.strip()
     q1_a = q1_a.strip()
     q2_q = q2_q.strip()
@@ -555,7 +554,7 @@ def save_casino_user(username: str | None = None) -> None:
         username = session['username']
     if not username:
         return None
-    username_low: list[str, bool] = strip_html(username.lower())
+    username_low: tuple[str, bool] = strip_html(username.lower())
     if username_low[1]:
         return None
     casio_file_name = path.join(path.expanduser("~"), "website_and_proxy", "users", f"{username_low[0]}", "casino.ini")

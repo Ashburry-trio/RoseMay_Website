@@ -50,8 +50,8 @@ def make_key(key2: str | bytes | bool = None):
     return key2
 
 def char_is_good(single_char: str | bytes):
-    if bytes == type(single_char):
-        single_char = bytes.decode(single_char, 'utf-8')
+    if bytes_txt == type(single_char):
+        single_char = bytes_txt.decode(single_char, 'utf-8')
     if not single_char.isalnum() or single_char in ' _-,.<>/?;:\'\"' \
                     + '{}[]()+=!@#$\§%^&*\\|':
         return False
