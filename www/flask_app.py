@@ -50,9 +50,12 @@ def make_key(key2: str | bytes | bool = None):
     return key2
 
 def char_is_good(single_char: str | bytes):
-    if bytes_txt == type(single_char):
-        single_char = bytes_txt.decode(single_char, 'utf-8')
-    if not single_char.isalnum() or single_char in ' _-,.<>/?;:\'\"' \
+    bytes_txt: str
+    if bytes == type(single_char):
+        bytes_txt = bytes.decode(single_char, 'utf-8')
+    else:
+        bytes_txt = single_char
+    if not bytes_txt.isalnum() and bytes_txt not in ' _-,.<>/?;:\'\"' \
                     + '{}[]()+=!@#$\§%^&*\\|':
         return False
     return True
@@ -82,7 +85,7 @@ def set_csp_headers(response):
         "default-src 'self'; "  # Default to only allowing content from the same origin
         "script-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/ https://cdnjs.cloudflare.com https://ashburry.pythonanywhere.com https://www.myproxyip.com'unsafe-inline'; "  # Allow Bootstrap CDN
         "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "  # Allow Bootstrap styles, and inline styles
-        "img-src 'self' https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/;"  # Only allow images from the same origin
+        "img-src 'self' https://www.myproxyip.com https://ashburry.pythonanywhere.com https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/;"  # Only allow images from the same origin
         "font-src 'self' https://ashburry.pythonanywhere.com https://www.myproxyip.com"
     )
     return response

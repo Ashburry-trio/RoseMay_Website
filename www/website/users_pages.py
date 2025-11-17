@@ -12,6 +12,7 @@ users_pages = Blueprint('users_pages', __name__, template_folder='templates', st
 @users_pages.route('/user/<user>/admin.html', methods=['GET'])
 @users_pages.route('/user/<user>/admin/', methods=['GET'])
 def user_admin_page(user):
+    global users
 #    gk.report()
     xsearch = xSearchForm()
     users = load_users_ini()
@@ -28,8 +29,8 @@ def user_admin_page(user):
         return render_template('/users/'+ user + '/admin.html', content_page_name='user-pages', user_up=user_up, xsearch=xsearch)
 
 
-@users_pages.route('/user/<user>/', methods=['GET'])
 @users_pages.route('/user/<user>/index.html', methods=['GET'])
+@users_pages.route('/user/<user>/', methods=['GET'])
 def user_index_pages(user):
 #    gk.report()
     xsearch = xSearchForm()
@@ -41,7 +42,7 @@ def user_index_pages(user):
     del user
     has_page: bool = user_page_exists(user_low)
     if has_page:
-        load_users_ini()
+        users = load_users_ini()
         user_up = users['main']['username']
 
         return render_template('/users/'+user_low + '/index.html',content_page_name='user-pages', user_up=user_up, xsearch=xsearch)
@@ -49,23 +50,23 @@ def user_index_pages(user):
         return redirect('/user/nobody.html')
 
 
+@users_pages.route('/user/nobody.html', methods=['GET'])
 @users_pages.route('/nobody/', methods=['GET'])
 @users_pages.route('/nobody.html', methods=['GET'])
-@users_pages.route('/user/nobody.html', methods=['GET'])
 @users_pages.route('/user/', methods=['GET'])
 def no_user_page():
 #    gk.report()
     xsearch = xSearchForm()
-    has_page: bool = None
-    user_up: str = None
+    has_page: bool = 'None'
+    user_up: str = 'None'
     if 'username' in session.keys():
         user_up = session['username']
     asset_list: tuple[tuple[str, str, tuple[str]], tuple[str, str, tuple[str]]] = get_user_pages()
-    return render_template('users/nobody.html', content_page_name='user-pages', user_up=user_up, has_page=has_page, assets=asset_list, xsearch=xsearch)
+    return render_template('users/nobody.html', content_page_name='user-pages', user_up=user_up, has_page=has_page, asset_list=asset_list, xsearch=xsearch)
 
 
-@users_pages.route('/user/', methods=['GET'])
 @users_pages.route('/user/create.html', methods=['GET'])
+@users_pages.route('/user/', methods=['GET'])
 @users_pages.route('/create.html', methods=['GET'])
 @users_pages.route('/create/', methods=['GET'])
 def user_create_page():
@@ -73,4 +74,4 @@ def user_create_page():
     xsearch = xSearchForm()
     has_page: bool
     # content_page_name='user-pages'
-    # return Response("This page has not been created, yet; much like all of this site. But eventually it will be finished and it will be large")
+    return Response("This page has not been created, yet; much like all of this site. But eventually it will be finished and it will be large")

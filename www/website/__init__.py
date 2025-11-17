@@ -15,19 +15,19 @@ from chardet import detect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Length, DataRequired
-from forms import xSearchForm
+from .forms import xSearchForm
 
 _dir = path.dirname(path.abspath(__file__))
 app_dir = path.join(_dir, '..','app')
 
-casino_app: ConfigParser[str,str] = ConfigParser()
+casino_app: ConfigParser = ConfigParser()
 casino_file = path.join(path.expanduser("~"), "www", "app", "casino.ini")
-casino_user: ConfigParser[str,str] = ConfigParser()
+casino_user: ConfigParser = ConfigParser()
 casino_last_update: list[int] = [0]
 email_file = path.join(path.expanduser("~"), "website_and_proxy", "email.ini")
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
-
+users: ConfigParser
 
 def usable_decode(text: bytes | str) -> str:
     """Decode the bytes so it can be used.
@@ -150,7 +150,10 @@ def validate_email_or_login(word: str, email: bool = False) -> [str,bool]:
 
 
 def clear_session():
-    [session.pop(key) for key in list(session.keys()) if not key.startswith('_')]
+    try:
+        [session.pop(key) for key in session.keys() if not key.startswith('_')]
+    except RuntimeError:
+        pass
 
 
 def colourstrip(data_in: str | bytes) -> str:
@@ -213,10 +216,13 @@ def colourstrip(data_in: str | bytes) -> str:
 
 class NoSuchUser(BaseException):
     global users
+    try:
+        users.clear()
+    except NameError:
+        pass
     clear_session()
-    users.clear()
 
-def writePassword(secret: str, users: ConfigParser[str,str]) -> None:
+def writePassword(secret: str, users: ConfigParser) -> None:
     users['passcode']['secret'] = secret
     try:
         save_user(users)
@@ -247,17 +253,20 @@ def user_page_exists(username: str) -> bool:
     else:
         return False
 
+import sys
+
 def get_user_pages():
-    user_dirs = next(walk(path.expanduser(path.join('~','www','website','templates','users'))),(None,[],None))[1]
+    _, user_dirs, _ = next(walk(path.expanduser(path.join('~','www','website','templates','users'))),(None,[],None))
     total_nicklist = set()
     total_chanlist = set()
+    asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = None
     for udir in user_dirs:
-        nets = next(walk(path.expanduser(path.join('~','www','website','templates','users', udir))),(None,[],None))[1]
+        _, nets, _= next(walk(path.expanduser(path.join('~','www','website','templates','users', udir))),(None,[],None))
         for net in nets:
             nicklist = set()
             chanlist = set()
             ass_ini = path.expanduser(path.join('~','www','website','templates','users', udir, net, 'assets.ini'))
-            config_ini: ConfigParser[str,str] = ConfigParser()
+            config_ini: ConfigParser = ConfigParser()
             config_ini.read(ass_ini)
             if 'nicks' in config_ini.keys() and 'nicks' in config_ini['nicks'].keys():
                 for nick in config_ini['nicks']['nicks'].split(' '):
@@ -265,9 +274,10 @@ def get_user_pages():
             if 'chans' in config_ini.keys() and 'chans' in config_ini['chans'].keys():
                 for chan in config_ini['chans']['chans'].split(' '):
                     chanlist.add(chan)
-            total_nicklist.add((net, udir, tuple(nicklist)))
-            total_chanlist.add((net, udir, tuple(chanlist)))
-    asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = (sorted(tuple(total_chanlist)), sorted(tuple(total_nicklist)))
+            total_chanlist.add((udir, net, tuple(sorted(chanlist))))
+            total_nicklist.add((udir, net, tuple(sorted(nicklist))))
+    asset_list = (tuple(sorted(total_chanlist)), tuple(sorted(total_nicklist)))
+    print("asset_list[0]: "+str(asset_list[0]), file=sys.stderr)
     return asset_list
     # asset_list[0] is Chan list
     # asset_list[1] is Nickname list
@@ -325,7 +335,7 @@ def save_casino_app():
     casino_last_update[0] = int(secstime())
 
 def load_users_ini(username: str | None = None) -> ConfigParser | None:
-    users: ConfigParser[str,str] = ConfigParser()
+    users: ConfigParser = ConfigParser()
     if username == None:
         if 'username' in session.keys():
             username = session['username']
@@ -385,7 +395,7 @@ def fetch_user_by_detail(detail) -> [bool | str, bool | str, [bool | str, bool |
 
 def load_users_email(username: str | None = None, email: str | None = None) -> [ConfigParser,bool]:
     global email_file
-    users: ConfigParser[str,str] = ConfigParser()
+    users: ConfigParser = ConfigParser()
     if email is None:
         if 'username' in session.keys():
             username = session['username']
@@ -435,7 +445,7 @@ def login_user_post(username: str, password: str):
 
 def register_user_post(username: str, passwd: str, email: str, q1_q: str, q1_a: str, q2_q: str | None , q2_a: str | None, power: str = 'normal'):
     clear_session()
-    users: ConfigParser[str,str]
+    global users
     q1_q = q1_q.strip()
     q1_a = q1_a.strip()
     q2_q = q2_q.strip()

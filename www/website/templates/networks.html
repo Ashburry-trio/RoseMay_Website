@@ -6,7 +6,7 @@
   {% if not user.logged_in %}
   <p>You must be signed-in to view your irc network activity.</p>
   {% elif networks == None %}
-  <p>You are not logged-in to any irc networks at this time. Note: Including website logins.</p>
+  <p>You are not logged-in to any irc networks at this time.</p>
   {% else %}
 <p>Listing {{ network|length }} active networks for: <strong>{{ user.username }}</strong></p>
 {% set bold = [0] %}
