@@ -105,14 +105,12 @@ sess.init_app(app)
 
 from website.views import views
 from website.auth import auth
-from website.navfix import navfix
 from website.users_pages import users_pages
 from website.casino import casino
 from website.config import config
 app.register_blueprint(users_pages, url_prefix='/')
 app.register_blueprint(views, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
-app.register_blueprint(navfix, url_prefix='/')
 app.register_blueprint(casino, url_prefix='/')
 app.register_blueprint(config, url_prefix='/')
 

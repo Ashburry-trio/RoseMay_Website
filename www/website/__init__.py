@@ -257,7 +257,6 @@ import sys
 
 def get_user_pages():
     _, user_dirs, _ = next(walk(path.expanduser(path.join('~','www','website','templates','users'))),(None,[],None))
-    total_nicklist = set()
     total_chanlist = set()
     asset_list: tuple[tuple[str, str, tuple[str] | None],tuple[str, str, tuple[str] | None]] = None
     for udir in user_dirs:
@@ -274,10 +273,9 @@ def get_user_pages():
             if 'chans' in config_ini.keys() and 'chans' in config_ini['chans'].keys():
                 for chan in config_ini['chans']['chans'].split(' '):
                     chanlist.add(chan)
-            total_chanlist.add((udir, net, tuple(sorted(chanlist))))
-            total_nicklist.add((udir, net, tuple(sorted(nicklist))))
-    asset_list = (tuple(sorted(total_chanlist)), tuple(sorted(total_nicklist)))
-    print("asset_list[0]: "+str(asset_list[0]), file=sys.stderr)
+            total_chanlist.add((udir, net, tuple(sorted(chanlist)), tuple(sorted(nicklist))))
+    asset_list = tuple(sorted(total_chanlist))
+    print("asset_list: "+str(asset_list), file=sys.stderr)
     return asset_list
     # asset_list[0] is Chan list
     # asset_list[1] is Nickname list

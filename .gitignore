@@ -1,6 +1,6 @@
 */www/app/ip_reg/*
 */website_and_proxy/users/*
-*/users/*
+*/users/*/*
 *fo-verify.html
 *mywotddd*
 *ip_reg*
@@ -18,14 +18,15 @@ virtualenvs/*
 *.pyc
 *secret*
 *secret.txt
+*password*
 reload.py
 api_*.py
 flask_session_*/*
 pany*
 .*
 www/app/ip_reg/*
-www/website/templates/users/*
-www/website/static/users/*
+www/website/templates/users/*/*
+www/website/users/*/*
 www_proxy/*
 www2/*
 README.txt

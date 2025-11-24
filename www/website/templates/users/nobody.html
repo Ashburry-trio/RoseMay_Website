@@ -1,0 +1,22 @@
+{% extends 'base_fixednav.html' %}
+{% block title %}Listing rooms for nicks on networks{% endblock title %}
+{% block h1 %}Nobody.html{% endblock h1 %}
+{% block content %}
+{% if not asset_list %}
+<p>There are no assets</p>
+{% else %}
+{% for item in asset_list %}
+    {% set user, net, chanlist, nicklist = item %}
+<p>User: {{ user }} Net: {{ net }}<br>Rooms:
+{% for chan in chanlist %}
+{{ chan }}
+{% endfor %}
+<br>Nicks:
+{% for nick in nicklist %}
+{{ nick }}
+{% endfor %}
+{% endfor %}
+
+{% endif %}
+{% endblock content %}
+</p>
