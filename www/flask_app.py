@@ -83,9 +83,11 @@ def set_csp_headers(response):
     # Set a Content Security Policy header allowing Bootstrap's JavaScript CDN
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "  # Default to only allowing content from the same origin
-        "script-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/ https://cdnjs.cloudflare.com https://ashburry.pythonanywhere.com https://www.myproxyip.com'unsafe-inline'; "  # Allow Bootstrap CDN
+        "script-src 'self' https://ct.pinterest.com  https://s.pinimg.com https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://static.mywot.com/ https://cdnjs.cloudflare.com https://ashburry.pythonanywhere.com https://www.myproxyip.com 'unsafe-inline';"  # Allow Bootstrap CDN
+        "connect-src 'self' ct.pinterest.com;"
+        "frame-src 'self' ct.pinterest.com s.pinimg.com;"
         "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "  # Allow Bootstrap styles, and inline styles
-        "img-src 'self' https://www.myproxyip.com https://ashburry.pythonanywhere.com https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/;"  # Only allow images from the same origin
+        "img-src 'self' https://www.myproxyip.com https://ashburry.pythonanywhere.com https://www.mywot.com https://jigsaw.w3.org https://static.mywot.com/ ct.pinterest.com;"  # Only allow images from the same origin
         "font-src 'self' https://ashburry.pythonanywhere.com https://www.myproxyip.com"
     )
     return response

@@ -9,7 +9,41 @@
 <div class="container"><form method="post">
 <p><label for="email">E-Mail: </label> <input type="email" name="email"></p>
 <p><label for="username">Username: </label> <input type="username" name="username"></p>
-<p><label for="password">Password: </label> <input type="password" name="password"></p>
+<div class="password-field">
+    <input type="password" id="password" placeholder="Password">
+    <span id="togglePwd" class="eye">&#128065;</span>
+</div>
+<style>
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 300px;
+}
+
+.password-field input {
+    padding: 10px 40px 10px 10px; /* space on right for icon */
+    font-size: 15px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    width: 300px;
+}
+
+.password-field .eye {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+    opacity: 0.6;
+}
+
+.password-field .eye:hover {
+    opacity: 1;
+}
+
+</style>
+
 <p><label for="q1_q">Security Question:</label></p>
 <p>
 <select name="q1_q">
@@ -29,21 +63,19 @@
 <button type="submit" class="btn btn-primary">Register</button>
 </form></div><p class="h3">Already have an account?</p><p class="h4"><a href="/login.html" text="Go to the sign-in page.">click here to <u><strong>sign-in</strong></u>.</a></p>
 
-  <script>
-		const togglePassword = document
-			.querySelector('#togglePassword');
-		const password = document.querySelector('#password');
-		togglePassword.addEventListener('click', () => {
-			// Toggle the type attribute using
-			// getAttribute() method
-			const type = password
-				.getAttribute('type') === 'password' ?
-				'text' : 'password';
-			password.setAttribute('type', type);
-			// Toggle the eye and bi-eye icon
-			this.classList.toggle('bi-eye');
-		});
-	</script>
+<script>
+const pwd = document.getElementById("password");
+const toggle = document.getElementById("togglePwd");
+
+toggle.addEventListener("click", () => {
+    const isText = pwd.type === "text";
+    pwd.type = isText ? "password" : "text";
+
+    // Change icon (open/closed eye look)
+    toggle.textContent = isText ? "👁️" : "🙈";
+});
+</script>
+
 <style>
     .dropdown {
   display: inline-block;
