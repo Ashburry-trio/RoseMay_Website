@@ -211,6 +211,7 @@ def index_test():
 @views.route('/xdcc/search.html', methods=['GET', 'POST'])
 def xsearch_page():
     xsearch = xSearchForm()
+    search_results = {}
     if xsearch.validate_on_submit():
         filesearch = escape(xsearch.search.data)
         filesearch = parse_xsearch_filename(filesearch)

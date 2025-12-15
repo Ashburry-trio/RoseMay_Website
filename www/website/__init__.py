@@ -27,7 +27,7 @@ casino_last_update: list[int] = [0]
 email_file = path.join(path.expanduser("~"), "website_and_proxy", "email.ini")
 user_dir: list[str | None] = [None]
 user_file: list[str | None] = [None]
-users: ConfigParser
+users = ConfigParser()
 
 def usable_decode(text: bytes | str) -> str:
     """Decode the bytes so it can be used.
