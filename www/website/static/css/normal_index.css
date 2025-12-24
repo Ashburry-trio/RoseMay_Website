@@ -42,8 +42,10 @@ body {
     color:white;
 }
 .float-left {
-    float: left;margin-right:10px;
+    float: left;
+    margin-right:10px;
 }
+
 .button-search {
     width: 150px;
     font-weight: bolder;

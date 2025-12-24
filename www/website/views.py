@@ -213,72 +213,49 @@ def xsearch_page():
     xsearch = xSearchForm()
     search_results = {}
     if xsearch.validate_on_submit():
-        filesearch = escape(xsearch.search.data)
+        filesearch = xsearch.search.data
         filesearch = parse_xsearch_filename(filesearch)
-        if len(filesearch) < 3 or len(filesearch) > 75:
-            flash("Search term must be at least 3 characters and a max of 75 characters: " + str(len(filesearch)) + ' chars')
-            return render_template("/search/search.html", content_page_name='xsearch', locations={}, xsearch=xsearch, search_results={}, found=False, error=True, error_type='length')
+        filesearch_clean = filesearch.replace('*','').replace('?','')
+        if len(filesearch_clean) < 3 or len(filesearch_clean) > 75:
+            flash("Search term must be at least 3 characters and a max of 75 characters: " + str(len(filesearch)) + ' chars used')
+            return render_template("/search/search.html", content_page_name='xsearch', xsearch=xsearch, active_locations={}, search_results={}, found=False, error_msg='Search string length is out of bounds. (<3 and >75)')
         else:
             pass
-    return render_template("/search/search.html", content_page_name='xsearch', xsearch=xsearch, active_locations={}, search_all_locations=True, search_results=search_results, found=True, error=False, error_type='')
+    return render_template("/search/search.html", content_page_name='xsearch', xsearch=xsearch, active_locations={}, search_results=search_results, found=True, error_msg='')
 
 
 def parse_xsearch_filename(filesearch_no_space: str):
-    filesearch_no_space = escape(filesearch_no_space)
     filesearch_no_space = filesearch_no_space.strip()
-    filesearch_no_space = '*' + filesearch_no_space
-    filesearch_no_space = filesearch_no_space.replace('  ', ' ')
-    filesearch_no_space = filesearch_no_space.replace(' - ',' -')
-
-    excluded_terms = filesearch_no_space[filesearch_no_space.find(' -',3):len(filesearch_no_space)].split('-')
-    excluded_finished = []
-    for fn in excluded_terms:
-        excluded_finished.append(fn.strip())
-    del fn
-    filesearch_no_space = filesearch_no_space[0:filesearch_no_space.find(' -',3)]
-    filesearch_no_space = filesearch_no_space.replace('~','')
-    filesearch_no_space = filesearch_no_space.replace('-','.')
+    filesearch_no_space = '*' + filesearch_no_space + '*'
+    filesearch_no_space = filesearch_no_space.replace(' - ','.')
     filesearch_no_space = filesearch_no_space.replace(' ','.')
+    filesearch_no_space = filesearch_no_space.replace('-_','.')
+    filesearch_no_space = filesearch_no_space.replace('_-','.')
     filesearch_no_space = filesearch_no_space.replace('_','.')
-    filesearch_no_space = filesearch_no_space.replace('\\','.')
-    filesearch_no_space = filesearch_no_space.replace('/','.')
-    filesearch_no_space = filesearch_no_space.replace(',','.')
+    filesearch_no_space = filesearch_no_space.replace('-','.')
+    filesearch_no_space = filesearch_no_space.replace('~','.')
+    filesearch_no_space = filesearch_no_space.replace('-','.')
+    filesearch_no_space = filesearch_no_space.replace('_','.')
+    filesearch_no_space = filesearch_no_space.replace('\\','')
+    filesearch_no_space = filesearch_no_space.replace('/','')
     filesearch_no_space = filesearch_no_space.replace(';','.')
-    filesearch_no_space = filesearch_no_space.replace('?','.')
-    filesearch_no_space = filesearch_no_space.replace(':','.')
+    filesearch_no_space = filesearch_no_space.replace('?','')
+    filesearch_no_space = filesearch_no_space.replace(':','')
     filesearch_no_space = filesearch_no_space.replace('"','')
     filesearch_no_space = filesearch_no_space.replace('\'','')
-    filesearch_no_space = filesearch_no_space.replace('[','.')
-    filesearch_no_space = filesearch_no_space.replace(']','.')
-    filesearch_no_space = filesearch_no_space.replace('{','.')
-    filesearch_no_space = filesearch_no_space.replace('}','.')
-    filesearch_no_space = filesearch_no_space.replace('(','.')
-    filesearch_no_space = filesearch_no_space.replace(')','.')
-    filesearch_no_space = filesearch_no_space.replace('+','.')
-    filesearch_no_space = filesearch_no_space.replace('=','.')
-    filesearch_no_space = filesearch_no_space.replace('!','.')
-    filesearch_no_space = filesearch_no_space.replace('&','*and*')
+    filesearch_no_space = filesearch_no_space.replace('[','')
+    filesearch_no_space = filesearch_no_space.replace(']','')
+    filesearch_no_space = filesearch_no_space.replace('&','.and.')
     filesearch_no_space = filesearch_no_space.replace('^','.')
     filesearch_no_space = filesearch_no_space.replace('\`','')
-    filesearch_no_space = filesearch_no_space.replace('..',' ')
-    filesearch_no_space = filesearch_no_space.replace('..',' ')
-    filesearch_no_space = filesearch_no_space.replace('..',' ')
-    filesearch_no_space = filesearch_no_space.replace('.',' ')
-    filesearch_no_space = filesearch_no_space.replace('   ',' ')
-    filesearch_no_space = filesearch_no_space.replace('  ',' ')
-    filesearch_no_space = filesearch_no_space.replace('  ',' ')
-    filesearch_no_space = filesearch_no_space.replace('\t',' ')
+    filesearch_no_space = filesearch_no_space.replace('\t','.')
     filesearch_no_space = filesearch_no_space.replace('*','')
-    filesearch_no_space = filesearch_no_space.replace('*','')
-    filesearch_no_space = filesearch_no_space.replace('*','')
-    filesearch_no_space = filesearch_no_space.replace('?','')
-    filesearch_no_space = filesearch_no_space.replace('?','')
-    if not filesearch_no_space:
-        return None
+    whle ".." in filesearch_no_space:
+        filesearch_no_space = filesearch_no_space.replace('..','.')
+    whle "**" in filesearch_no_space:
+        filesearch_no_space = filesearch_no_space.replace('**','*')
+    filesearch_no_space = escape(filesearch_no_space)
     return filesearch_no_space
-
-#filesearch_no_space = filesearch_no_space.replace('~',' -')
-#   return filesearch_no_space
 
 @views.route('/hosted.html', methods=['GET', 'POST'])
 @views.route('/hosted/', methods=['GET', 'POST'])
@@ -318,9 +295,11 @@ def contrib():
 
 @views.route('/privacypolicy/', methods=['GET', 'POST'])
 @views.route('/privacy-policy/', methods=['GET', 'POST'])
+@views.route('/privacy_policy/', methods=['GET', 'POST'])
 @views.route('/policy/', methods=['GET', 'POST'])
 @views.route('/privacypolicy.html', methods=['GET', 'POST'])
 @views.route('/privacy-policy.html', methods=['GET', 'POST'])
+@views.route('/privacy_policy.html', methods=['GET', 'POST'])
 @views.route('/policy.html', methods=['GET', 'POST'])
 def policy():
 #    gk.report()
@@ -337,6 +316,8 @@ def security():
 
 @views.route('/download.html', methods=['GET', 'POST'])
 @views.route('/download/', methods=['GET', 'POST'])
+@views.route('/get/', methods=['GET', 'POST'])
+@views.route('/get.html', methods=['GET', 'POST'])
 def download_msl():
 #    gk.report()
     xsearch = xSearchForm()

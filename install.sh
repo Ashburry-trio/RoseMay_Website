@@ -7,5 +7,5 @@ mv * -t ~/ -f
 cd ..
 rm -f -r ./RoseMay_Website
 cd ~/
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip wheel setuptools
 python -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
