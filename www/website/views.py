@@ -225,10 +225,14 @@ def xsearch_page():
 
 
 def parse_xsearch_filename(filesearch_no_space: str):
+    # NOt suitable for filennames from xdcc bot becuse this funtion
+    # allows astriks and question mark.
     filesearch_no_space = filesearch_no_space.strip()
     filesearch_no_space = '*' + filesearch_no_space + '*'
     filesearch_no_space = filesearch_no_space.replace(' - ','.')
-    filesearch_no_space = filesearch_no_space.replace(' ','.')
+    filesearch_no_space = filesearch_no_space.replace(' -','.')
+    filesearch_no_space = filesearch_no_space.replace('- ','.')
+    filesearch_no_space = filesearch_no_space.replace('-_-','.')
     filesearch_no_space = filesearch_no_space.replace('-_','.')
     filesearch_no_space = filesearch_no_space.replace('_-','.')
     filesearch_no_space = filesearch_no_space.replace('_','.')
@@ -239,24 +243,25 @@ def parse_xsearch_filename(filesearch_no_space: str):
     filesearch_no_space = filesearch_no_space.replace('\\','')
     filesearch_no_space = filesearch_no_space.replace('/','')
     filesearch_no_space = filesearch_no_space.replace(';','.')
-    filesearch_no_space = filesearch_no_space.replace('?','')
     filesearch_no_space = filesearch_no_space.replace(':','')
     filesearch_no_space = filesearch_no_space.replace('"','')
     filesearch_no_space = filesearch_no_space.replace('\'','')
+    filesearch_no_space = filesearch_no_space.replace('\`','')
     filesearch_no_space = filesearch_no_space.replace('[','')
     filesearch_no_space = filesearch_no_space.replace(']','')
     filesearch_no_space = filesearch_no_space.replace('&','.and.')
     filesearch_no_space = filesearch_no_space.replace('^','.')
-    filesearch_no_space = filesearch_no_space.replace('\`','')
     filesearch_no_space = filesearch_no_space.replace('\t','.')
     filesearch_no_space = filesearch_no_space.replace('*','')
-    whle ".." in filesearch_no_space:
+    filesearch_no_space = filesearch_no_space.replace(' ','.')
+    while ".." in filesearch_no_space:
         filesearch_no_space = filesearch_no_space.replace('..','.')
-    whle "**" in filesearch_no_space:
+    while "**" in filesearch_no_space:
         filesearch_no_space = filesearch_no_space.replace('**','*')
-    filesearch_no_space = escape(filesearch_no_space)
     return filesearch_no_space
-
+    while "." in filesearch_no_space:
+        filesearch_no_space = filesearch_no_space.replace('.','*')
+    return filesearch_no_space
 @views.route('/hosted.html', methods=['GET', 'POST'])
 @views.route('/hosted/', methods=['GET', 'POST'])
 def hosted_info():
